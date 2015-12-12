@@ -1,0 +1,1 @@
+export const GENERATE_NEW_TILES = 'GENERATE_NEW_TILES';
