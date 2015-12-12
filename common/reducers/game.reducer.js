@@ -11,11 +11,11 @@ const initialState = fromJS({
 export default function game(state = initialState, action) {
   switch (action.type) {
     case GENERATE_NEW_TILES:
-      return action.payload
-    case INCREMENT_COUNTER:
-      return state + 1
-    case DECREMENT_COUNTER:
-      return state - 1
+      return state.merge( fromJS({
+        game: {
+          rack: action.payload
+        }
+      }));
     default:
       return state
   }

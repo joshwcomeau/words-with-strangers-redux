@@ -6,7 +6,7 @@ module.exports = {
 
   entry: [
     'webpack-hot-middleware/client',
-    './client/index.js'
+    './client/index.jsx'
   ],
 
   output: {
@@ -26,7 +26,7 @@ module.exports = {
       {
         test:     /\.jsx?$/,
         loader:   'babel',
-        exclude:  /node_modules/.
+        exclude:  /node_modules/,
         include:  __dirname,
         query: {
           optional: [ 'runtime' ],

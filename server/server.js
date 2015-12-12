@@ -41,7 +41,10 @@ function handleRender(req, res) {
 
   // compile an initial state
   const initialState = {
-    rack: tiles
+    game: {
+      board: [],
+      rack: tiles
+    }
   };
 
   const store = configureStore(initialState);

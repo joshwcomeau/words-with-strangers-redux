@@ -1,7 +1,7 @@
 import { bindActionCreators } from 'redux';
 import { connect }            from 'react-redux';
-import TileRack               from '../components/TileRack';
-import * as GameActions       from '../actions/game';
+import TileRack               from '../components/TileRack.jsx';
+import * as GameActions       from '../actions/game.actions';
 
 function mapStateToProps(state) {
   return {
