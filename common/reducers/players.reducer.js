@@ -1,20 +1,10 @@
-import { fromJS }             from 'immutable';
-import { GENERATE_NEW_TILES } from '../actions/game.actions';
+import { List, fromJS }             from 'immutable';
 
-// Initial state for the 'game' slice of the state.
-const initialState = fromJS({
-  board: [],
-  rack:  []
-});
 
-export default function game(state = initialState, action) {
+export default function game(state = List(), action) {
   switch (action.type) {
-    case GENERATE_NEW_TILES:
-      return state.merge( fromJS({
-        game: {
-          rack: action.payload
-        }
-      }));
+    case ADD_PLAYER:
+      return state.push( action.player );
     default:
       return state
   }

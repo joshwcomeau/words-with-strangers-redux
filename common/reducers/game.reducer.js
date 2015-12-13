@@ -1,5 +1,5 @@
 import { List, Map, fromJS }  from 'immutable';
-import { GENERATE_NEW_TILES } from '../actions/game.actions';
+import { ADD_TILES_TO_RACK } from '../constants/actions.constants';
 
 // Initial state for the 'game' slice of the state.
 const initialState = fromJS({
@@ -9,12 +9,9 @@ const initialState = fromJS({
 
 export default function game(state = initialState, action) {
   switch (action.type) {
-    case GENERATE_NEW_TILES:
-      return state.merge( fromJS({
-        game: {
-          rack: action.payload
-        }
-      }));
+    case ADD_TILES_TO_RACK:
+      return state.mergeIn( ['rack'], action.tiles );
+
     default:
       return state
   }
