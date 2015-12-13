@@ -1,8 +1,11 @@
 import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import rootReducer from '../reducers';
+import thunk                            from 'redux-thunk';
+
+import { logger }                       from '../middleware';
+import rootReducer                      from '../reducers';
 
 const createStoreWithMiddleware = applyMiddleware(
+  logger,
   thunk
 )(createStore);
 
@@ -16,6 +19,9 @@ export default function configureStore(initialState) {
       store.replaceReducer(nextRootReducer);
     });
   }
+
+  // For testing purposes, attach the store to the window
+  window.__store = store;
 
   return store
 }
