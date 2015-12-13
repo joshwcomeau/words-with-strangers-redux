@@ -15,6 +15,7 @@
     "babel-polyfill": "^6.3.14",
     "babel-runtime": "^6.3.13",
     "express": "^4.13.3",
+    "history": "~1.13.0",
     "immutable": "^3.7.5",
     "lodash": "^3.10.1",
     "qs": "^6.0.1",

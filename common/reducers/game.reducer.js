@@ -1,6 +1,6 @@
-import * as _                       from 'lodash';
-import { List, Map, fromJS, toJS }  from 'immutable';
-import { validatePlacement }        from '../lib/game_logic.lib';
+import * as _                 from 'lodash';
+import { List, Map, fromJS }  from 'immutable';
+import { validatePlacement }  from '../lib/game_logic.lib';
 import {
   ADD_TILES_TO_RACK,
   PLACE_TILE,

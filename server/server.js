@@ -1,21 +1,25 @@
 /* eslint-disable no-console, no-use-before-define */
 
-import path                 from 'path';
-import Express              from 'express';
-import qs                   from 'qs';
+import path                       from 'path';
+import Express                    from 'express';
+import qs                         from 'qs';
 
-import webpack              from 'webpack';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
-import webpackConfig        from '../webpack.config.js';
+import webpack                    from 'webpack';
+import webpackDevMiddleware       from 'webpack-dev-middleware';
+import webpackHotMiddleware       from 'webpack-hot-middleware';
+import webpackConfig              from '../webpack.config.js';
 
-import React                from 'react';
-import { renderToString }   from 'react-dom/server';
-import { Provider }         from 'react-redux';
+import React                      from 'react';
+import { renderToString }         from 'react-dom/server';
+import { RoutingContext, match }  from 'react-router';
+import { Provider }               from 'react-redux';
 
-import configureStore       from '../common/store/configureStore';
-import App                  from '../common/containers/App';
-import { fetchTiles }       from '../common/lib/tiles.lib';
+import createLocation             from 'history/lib/createLocation';
+
+import routes                     from '../common/routes';
+import configureStore             from '../common/store/configureStore';
+import App                        from '../common/containers/App';
+import { fetchTiles }             from '../common/lib/tiles.lib';
 
 const app = new Express();
 const port = 3000;
@@ -33,32 +37,39 @@ app.use( webpackHotMiddleware(compiler) );
 app.use(handleRender);
 
 function handleRender(req, res) {
-  const params = qs.parse(req.query);
+  const location  = createLocation(req.url);
+  const params    = qs.parse(req.query);
 
-  const tiles = fetchTiles(8);
-
-
-
-  // compile an initial state
-  const initialState = {
-    game: {
-      board: [],
-      rack: tiles
+  match({routes, location}, (err, redirectLocation, renderProps) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).end('Internal server error D:');
     }
-  };
 
-  const store = configureStore(initialState);
+    if ( !renderProps ) return res.status(404).end('Not found.');
 
-  const html = renderToString(
-    <Provider store={store}>
-      <App />
-    </Provider>
-  );
 
-  const finalState = store.getState();
+    // compile an initial state
+    // TODO: Remove this. Just for testing.
+    const initialState = {
+      game: {
+        board: [],
+        rack: fetchTiles(8)
+      }
+    };
 
-  res.send( renderFullPage(html, finalState) );
+    const store = configureStore(initialState);
+    const finalState = store.getState();
 
+    const InitialComponent = (
+      <Provider store={store}>
+        <RoutingContext {...renderProps} />
+      </Provider>
+    );
+    const componentHTML = renderToString(InitialComponent);
+
+    res.send( renderFullPage(componentHTML, finalState) );
+  });
 }
 
 function renderFullPage(html, initialState) {
