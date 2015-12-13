@@ -1,4 +1,4 @@
-import { List, Map, fromJS }  from 'immutable';
+import { fromJS }             from 'immutable';
 import { GENERATE_NEW_TILES } from '../actions/game.actions';
 
 // Initial state for the 'game' slice of the state.

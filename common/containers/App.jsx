@@ -5,7 +5,7 @@ import * as GameActions       from '../actions/game.actions';
 
 function mapStateToProps(state) {
   return {
-    tiles: state.getIn(['game', 'rack', 'tiles'])
+    tiles: state.getIn(['game', 'rack'])
   }
 }
 

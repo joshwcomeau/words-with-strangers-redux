@@ -11,6 +11,7 @@ export function fetchTiles(num) {
   const letters = getRandomLetters(num);
   return letters.map( (letter, index) => {
     return {
+      _id: Math.round(Math.random() * 100000),
       letter,
       points: 1,
       x: index
