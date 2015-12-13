@@ -23,6 +23,7 @@ module.exports = {
 
   module: {
     loaders: [
+      // JAVASCRIPT
       {
         test:     /\.jsx?$/,
         loader:   'babel',
@@ -32,7 +33,17 @@ module.exports = {
           plugins: ['transform-runtime'],
           presets: ['es2015', 'react']
         }
+      },
+      // SASS
+      {
+        test: /\.scss$/,
+        loaders: ['style', 'css', 'sass']
       }
     ]
+  },
+
+  resolve: {
+    extensions: ['', '.js', '.jsx', '.sass'],
+    modulesDirectories: ['src', 'node_modules']
   }
 }

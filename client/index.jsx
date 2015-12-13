@@ -16,6 +16,8 @@ const rootElement   = document.getElementById('app');
 
 const history       = createBrowserHistory();
 
+require('../client/scss/main.scss')
+
 render(
   (
     <Provider store={store}>
