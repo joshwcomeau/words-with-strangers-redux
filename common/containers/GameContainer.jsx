@@ -1,6 +1,6 @@
 import { bindActionCreators } from 'redux';
 import { connect }            from 'react-redux';
-import TileRack               from '../components/TileRack.jsx';
+import Game                   from '../components/game/Game.jsx';
 import * as GameActions       from '../actions/game.actions';
 
 function mapStateToProps(state) {
@@ -11,4 +11,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(GameActions, dispatch);
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( TileRack );
+export default connect( mapStateToProps, mapDispatchToProps )( Game );

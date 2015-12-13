@@ -18,7 +18,6 @@ import createLocation             from 'history/lib/createLocation';
 
 import routes                     from '../common/routes';
 import configureStore             from '../common/store/configureStore';
-import App                        from '../common/containers/App';
 import { fetchTiles }             from '../common/lib/tiles.lib';
 
 const app = new Express();

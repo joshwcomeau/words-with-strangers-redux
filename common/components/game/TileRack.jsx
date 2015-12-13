@@ -1,8 +1,9 @@
-import React from 'react';
+import React  from 'react';
+import * as _ from 'lodash';
 
 const TileRack = React.createClass({
   renderTiles() {
-    return this.props.rack.map( tile => {
+    return this.props.tiles.map( tile => {
       return (
         <div className='tile' key={tile._id}>
           {tile.letter}
