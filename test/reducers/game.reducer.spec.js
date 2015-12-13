@@ -57,7 +57,7 @@ describe('gameReducer', () => {
 
     expect(nextState).to.equal(fromJS({
       board: [ { _id: '2', letter: 'Z', x: 2, y: 4 } ],
-      rack: [ { _id: '1', letter: 'A' } ]
+      rack:  [ { _id: '1', letter: 'A' } ]
     }));
   });
 });

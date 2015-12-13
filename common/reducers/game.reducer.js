@@ -17,30 +17,44 @@ export default function game(state = initialState, action) {
       return state.mergeIn( ['rack'], action.tiles );
 
     case PLACE_TILE:
-      // Helper used in iteration to find the tile by the action's _id
-      const tileFinder = tile => {
-        return tile.get('_id') === action.tile._id;
-      };
+      const [
+        oldTileLocation, oldTileIndex, newTileLocation, newTileSet
+      ] = extractPlaceTileData(state, action)
 
-      // First, figure out whether the tile is located on the board, or the rack.
-      const tileLocation = state.get('rack').find(tileFinder) ? 'rack' : 'board';
-
-      // Figure out where we want to put the tile (rack or board),
-      // and prepare our new tile data
-      const newTileLocation = action.tile.location;
-      const newTileData = _.omit(action.tile, 'location');
-
-      // Get the original data & merge it with our new data to create our new tile.
-      const [tileIndex, tile] = state.get(tileLocation).findEntry(tileFinder);
-      const newTile = tile.merge(newTileData);
-
-      // Finally, remove the original tile, and add our new tile
+      // We aren't actually just moving the tile from one area to another.
+      // We'll delete the original tile, and then place a new tile.
       return state
-        .deleteIn( [tileLocation, tileIndex] )
-        .set( newTileLocation, state.get(newTileLocation).push(newTile) );
-
+        .deleteIn( [oldTileLocation, oldTileIndex] )
+        .set( newTileLocation, newTileSet );
 
     default:
       return state
   }
+}
+
+
+// Helper that fetches all the info we need, to keep clutter out of the
+// reducer switch.
+function extractPlaceTileData(state, action) {
+  // Helper used in iteration to find the tile by the action's _id
+  const tileFinder = tile => {
+    return tile.get('_id') === action.tile._id;
+  };
+
+  // First, figure out whether the tile is located on the board, or the rack.
+  const oldTileLocation = state.get('rack').find(tileFinder) ? 'rack' : 'board';
+
+  // Figure out where we want to put the tile (rack or board),
+  // and prepare our new tile data
+  const newTileLocation = action.tile.location;
+  const newTileData = _.omit(action.tile, 'location');
+
+  // Get the original data & merge it with our new data to create our new tile.
+  const [oldTileIndex, oldTile] = state.get(oldTileLocation).findEntry(tileFinder);
+  const newTile = oldTile.merge(newTileData);
+
+  // Create our new board/rack, with this new tile.
+  const newTileSet = state.get(newTileLocation).push(newTile);
+
+  return [ oldTileLocation, oldTileIndex, newTileLocation, newTileSet ];
 }
