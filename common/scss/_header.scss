@@ -1,0 +1,171 @@
+@import 'variables';
+
+$header-height: 4rem;
+$header-height-button: 2.5rem;
+
+#main-layout-header-spacer {
+  position: relative;
+  height: $header-height;
+}
+
+#main-layout-header {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: $white;
+  height: $header-height;
+  line-height: $header-height;
+  box-shadow: 0px 3px 4px -4px rgba(0,0,0,0.5);
+
+  #main-layout-logo {
+    position: relative;
+    left: 1rem;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: $red;
+  }
+
+  nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    .nav-link {
+      float: right;
+      margin-left: 1.5rem;
+      color: $navy;
+    }
+  }
+
+  .header-account {
+    position: relative;
+    width: $header-height;
+    height: $header-height;
+    border-left: 1px solid $lightgray;
+
+    .account-thumb {
+      position: absolute;
+      display: block;
+      outline: none;
+      width: $header-height-button;
+      height: $header-height-button;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      border: 0;
+      background-size: cover;
+      background-position: center center;
+      background-image: url('/images/avatars/animal-03.png');
+      border-radius: 100%;
+    }
+
+    .account-menu-blocker {
+      top: $header-height;
+    }
+
+    .account-menu {
+      top: $header-height + 0.4rem;
+      right: 0.8rem;
+      white-space: nowrap;
+      padding: 0.3rem 0;
+
+      a {
+        display: block;
+        padding: 0.4rem 1.5rem;
+        border-bottom: 1px solid $lightgray;
+        color: #111;
+
+        &:last-of-type {
+          border-bottom: 0;
+        }
+
+
+        &:hover {
+          text-decoration: none;
+          background: $teal;
+          color: $white;
+
+          strong, span {
+            color: $white;
+          }
+        }
+      }
+
+      .profile-link {
+        span {
+          font-weight: 100;
+          color: #444;
+          font-size: 0.7rem;
+        }
+      }
+
+      .log-out-link {
+        font-size: 0.7rem;
+        font-weight: 500;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .header-log-in {
+    position: relative;
+
+    .log-in-text {
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .log-in-menu-blocker {
+      top: $header-height;
+    }
+
+    .log-in-menu {
+      top: $header-height + 0.4rem;
+      right: 0rem;
+      width: 20rem;
+
+      h5 {
+        margin: 0;
+        font-weight: 100;
+        font-size: 1rem;
+      }
+
+      form {
+        margin-bottom: 0.5rem;
+      }
+
+      input {
+        outline: none;
+        width: 100%;
+        padding: 7px;
+        font-size: 0.8rem;
+        border-radius: 3px;
+        border: 1px solid darken($lightgray, 10%);
+        margin-top: 0.25rem;
+      }
+
+      button {
+        width: 100%;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+      }
+
+      .oauth-buttons {
+        margin-bottom: 0.5rem;
+      }
+
+      .register-link {
+        display: block;
+        margin-top: 0.5rem;
+        text-align: center;
+        font-weight: 500;
+      }
+    }
+  }
+}

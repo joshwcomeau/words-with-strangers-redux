@@ -1,0 +1,284 @@
+@import 'variables';
+
+// VARIABLES
+
+$square-size: 50px;
+$num-of-squares: 13;
+$gutter-width: 8px;
+$tile-board-size: 42px;
+$tile-rack-size: 50px;
+$rack-height: $tile-rack-size + ( $gutter-width * 2);
+$side-panel-width: 280px;
+$board-width: $square-size * $num-of-squares + ($gutter-width * 2);
+$game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
+
+// MIXINS
+@mixin tile($size) {
+  width: $size;
+  height: $size;
+  background: $yellow;
+  cursor:default;
+  border-radius: 3px;
+  border-right: 3px solid #BDA259;
+  border-bottom: 3px solid #BDA259;
+
+  &.draggable { cursor: move; }
+
+  .tile-letter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    font-size: $size * 0.5;
+    line-height: $size;
+    text-align: center;
+    font-weight: 700;
+    color: $darkgray;
+  }
+
+  .tile-points {
+    position: absolute;
+    top: 0;
+    right: -2px;
+    width: $size * 0.4;
+    height: $size * 0.4;
+    line-height: $size * 0.4;
+    text-align: center;
+    font-size: $size * 0.25;
+
+  }
+}
+
+#game {
+  position: relative;
+  left: 0;
+  right: 0;
+  margin: 1rem auto;
+  width: $game-width;
+
+  #board {
+    // TODO: Make this a little more responsive
+    width:  $board-width;
+    height: $board-width;
+    padding: $gutter-width;
+    display: flex;
+    flex-wrap: wrap;
+    background: $lightgray;
+
+    .board-square {
+      position: relative;
+      width: $square-size;
+      height: $square-size;
+      background: $white;
+      border-top: 1px solid #CCC;
+      border-left: 1px solid #CCC;
+
+      // Only the right-edge ones should have a right border
+      &:nth-child(#{$num-of-squares}n) {
+        border-right: 1px solid #CCC;
+      }
+      // Only the bottom row should have a bottom border.
+      // Math = width * width - width + 1.
+      // eg.      13  *  13   - 12
+      &:nth-child(n+#{$num-of-squares * $num-of-squares + $num-of-squares + 1}) {
+        border-bottom: 1px solid #CCC;
+      }
+    }
+
+    .tile {
+      position: absolute;
+      top:  ($square-size - $tile-board-size) / 2 - 1px;
+      left: ($square-size - $tile-board-size) / 2 - 1px;
+      @include tile($tile-board-size);
+    }
+  }
+
+  #side-panel {
+    background: $white;
+    width: $side-panel-width;
+    float: right;
+
+    .side-panel-title {
+      background: $navy;
+      color: $white;
+      font-size: 1.25rem;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    $player-row-height: 2rem;
+    $player-row-padding: 0.25rem;
+
+    .side-panel-players {
+      background: $darkgray;
+      color: $white;
+      padding: $gutter-width;
+
+      .side-panel-player {
+        position: relative;
+        line-height: $player-row-height;
+        padding: $player-row-padding;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        font-size: 0.8rem;
+
+        &:first-of-type {
+          .points {
+            color: $yellow;
+          }
+        }
+
+        &:last-of-type {
+          border-bottom: 0;
+        }
+
+        .avatar {
+          width: $player-row-height;
+          height: $player-row-height;
+          border-radius: 100%;
+          float: left;
+          margin-right: 0.6rem;
+          background-size: cover;
+          background-position: center center;
+        }
+
+        .points {
+          position: absolute;
+          font-weight: bold;
+          color: $mediumgray;
+          top: $player-row-padding;
+          right: $player-row-padding;
+          bottom: $player-row-padding;
+        }
+
+      }
+    }
+
+    .side-panel-turns {
+      background: $lightgray;
+      padding: $gutter-width;
+
+      .side-panel-turn {
+        padding: $gutter-width;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        font-size: 13px;
+        font-weight: 100;
+        text-align: center;
+        opacity: 0.75;
+
+        &:last-of-type {
+          border-bottom: 0;
+        }
+
+        &.my-turn {
+          opacity: 1;
+        }
+      }
+
+      .turn-data {
+        font-weight: 500;
+      }
+      .turn-word {
+        color: $red;
+      }
+    }
+  }
+
+  #tile-rack {
+    position: relative;
+    margin-top: $gutter-width * 2;
+    width: $board-width;
+    height: $rack-height;
+    background: $white;
+    padding: $gutter-width;
+    text-align: center;
+
+    .tile {
+      position: relative;
+      display: inline-block;
+      margin-right: $gutter-width;
+      @include tile($tile-rack-size);
+    }
+  }
+
+  #controls {
+    position: relative;
+    margin-top: $gutter-width * 2;
+    width: $board-width;
+    background: $white;
+    display: flex;
+
+    &.my-turn {
+      .turn-indicator {
+        background: $navy;
+        transition: 0.4s;
+      }
+    }
+    &.their-turn {
+      .turn-indicator {
+        background: $mediumgray;
+        transition: 0.4s;
+      }
+    }
+
+    & > div, & > button {
+      display: inline-block;
+    }
+
+    .turn-indicator {
+      flex: 0 0 150px;
+      line-height: 50px;
+      text-align: center;
+      font-weight: 500;
+      color: $white;
+      padding: 0 1rem;
+
+    }
+    .submit-word-container {
+      padding: $gutter-width;
+      flex: 1;
+
+      .submit-word {
+        width: 100%;
+        background: $red;
+        color: $white;
+
+        &:disabled {
+          background: $mediumgray;
+        }
+      }
+    }
+
+    .other-actions-container {
+      padding: $gutter-width 0;
+      flex: 0 0 110px;
+
+      button {
+        width: 46px;
+        height: 2.3rem;
+        padding-top: 4px;
+        border-radius: 3px;
+        border: 0;
+        outline: none;
+        color: $white;
+        background: $fadedteal;
+        font-weight: 500;
+        transition: background 0.5s;
+        margin-right: $gutter-width;
+
+        &:disabled {
+          background: $mediumgray;
+        }
+      }
+    }
+  }
+
+  .square-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.1);
+  }
+}

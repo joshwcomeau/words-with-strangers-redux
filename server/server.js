@@ -7,7 +7,7 @@ import qs                         from 'qs';
 import webpack                    from 'webpack';
 import webpackDevMiddleware       from 'webpack-dev-middleware';
 import webpackHotMiddleware       from 'webpack-hot-middleware';
-import webpackConfig              from '../webpack.config.js';
+import webpackConfig              from '../webpack.server.js';
 
 import React                      from 'react';
 import { renderToString }         from 'react-dom/server';
@@ -72,11 +72,14 @@ function handleRender(req, res) {
 }
 
 function renderFullPage(html, initialState) {
+  // Load and inject all relevant CSS
+  let criticalCss = require('./critical.css')
   return `
     <!doctype html>
     <html>
       <head>
         <title>Words With Strangers</title>
+        <style>${criticalCss.source}</style>
       </head>
       <body>
         <div id="app">${html}</div>

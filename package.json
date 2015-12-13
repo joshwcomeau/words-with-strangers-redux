@@ -28,7 +28,8 @@
     "redux": "^3.0.4",
     "redux-thunk": "^1.0.0",
     "reselect": "^2.0.1",
-    "serve-static": "^1.10.0"
+    "serve-static": "^1.10.0",
+    "webpack-isomorphic-tools": "^2.2.21"
   },
   "devDependencies": {
     "babel-cli": "^6.3.17",

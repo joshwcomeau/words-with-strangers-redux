@@ -16,7 +16,7 @@ const rootElement   = document.getElementById('app');
 
 const history       = createBrowserHistory();
 
-require('../client/scss/main.scss')
+require('../common/scss/main.scss')
 
 render(
   (

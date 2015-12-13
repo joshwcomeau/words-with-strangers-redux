@@ -1,6 +1,17 @@
 var path = require('path');
 var webpack = require('webpack');
 
+var Webpack_isomorphic_tools_plugin = require('webpack-isomorphic-tools/plugin')
+
+var webpack_isomorphic_tools_plugin =
+  // webpack-isomorphic-tools settings reside in a separate .js file
+  // (because they will be used in the web server code too).
+  new Webpack_isomorphic_tools_plugin(require('./webpack-isomorphic-tools-configuration'))
+  // also enter development mode since it's a development webpack configuration
+  // (see below for explanation)
+  .development()
+
+
 module.exports = {
   devtool: 'inline-source-map',
 
@@ -34,10 +45,10 @@ module.exports = {
           presets: ['es2015', 'react']
         }
       },
-      // SASS
+      // CSS
       {
-        test: /\.scss$/,
-        loaders: ['style', 'css', 'sass']
+        test: /\.css$/,
+        loader: 'fake-style!css?modules'
       }
     ]
   },
