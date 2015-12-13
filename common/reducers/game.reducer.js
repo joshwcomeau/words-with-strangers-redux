@@ -2,7 +2,7 @@ import { List, Map, fromJS }  from 'immutable';
 import { ADD_TILES_TO_RACK } from '../constants/actions.constants';
 
 // Initial state for the 'game' slice of the state.
-const initialState = fromJS({
+export const initialState = fromJS({
   board: [],
   rack:  []
 });
