@@ -1,8 +1,10 @@
-import * as _                 from 'lodash';
-import { List, Map, fromJS }  from 'immutable';
+import * as _                       from 'lodash';
+import { List, Map, fromJS, toJS }  from 'immutable';
+import { validatePlacement }        from '../lib/game_logic.lib';
 import {
   ADD_TILES_TO_RACK,
-  PLACE_TILE
+  PLACE_TILE,
+  SUBMIT_WORD
 } from '../constants/actions.constants';
 
 // Initial state for the 'game' slice of the state.
@@ -26,6 +28,15 @@ export default function game(state = initialState, action) {
       return state
         .deleteIn( [oldTileLocation, oldTileIndex] )
         .set( newTileLocation, newTileSet );
+
+    case SUBMIT_WORD:
+      // We're going to be using our game_logic lib here, and it's totally
+      // decoupled from redux. We need to pass it a plain JS board for it
+      // to work with.
+      const boardObj = state.get('board').toJS();
+
+      // TODO
+
 
     default:
       return state

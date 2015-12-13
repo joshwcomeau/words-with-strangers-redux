@@ -10,7 +10,7 @@ import {
 
 
 describe('gameReducer', () => {
-  describe('defaults', () => {
+  describe('general reducer conditions', () => {
     it('returns input state when an unknown action is provided', () => {
       const state = fromJS({ board: [ { letter: 'Q' } ] });
       const action = { type: '123nonsense' };
@@ -60,4 +60,5 @@ describe('gameReducer', () => {
       rack:  [ { _id: '1', letter: 'A' } ]
     }));
   });
+
 });
