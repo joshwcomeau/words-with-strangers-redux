@@ -1,0 +1,157 @@
+@import 'variables';
+
+.divider {
+  position: relative;
+  height: 2rem;
+  text-align: center;
+
+  &:before {
+    content: attr(data-text);
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+    padding: 0 0.6rem;
+    line-height: 2rem;
+    background: $white;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 1rem;
+    left: 0;
+    right: 0;
+    border-bottom: 1px solid darken($lightgray, 10%);
+  }
+}
+
+.clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+.center-section {
+  position: relative;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: $max-width;
+}
+
+.card {
+  background: $white;
+  border-radius: 2px;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+}
+
+
+.dropdown-menu {
+  position: absolute;
+  padding: 1.5rem;
+  background: $white;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
+  line-height: 1rem;
+  border-radius: 3px;
+
+  &.right-arrow {
+    &:before { right: 8px }
+    &:after  { right: 7px }
+  }
+
+  &.left-arrow {
+    &:before { left: 8px }
+    &:after  { left: 7px }
+  }
+
+  // Little pointer-triangle
+  &:before {
+    content: '';
+    position: absolute;
+    z-index: 2;
+    top: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid $white;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    top: -11px;
+    width: 0;
+    height: 0;
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-bottom: 11px solid rgba(0,0,0,0.2);
+  }
+}
+.dropdown-menu-blocker {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.3);
+}
+
+.button {
+  position: relative;
+  height: 2.3rem;
+  padding-top: 4px;
+  border-radius: 3px;
+  border: 0;
+  outline: none;
+  color: $white;
+  background: $fadedteal;
+  font-weight: 500;
+  transition: background 0.5s;
+
+  &:disabled {
+    background: $mediumgray;
+
+    &:hover {
+      background: $mediumgray;
+    }
+  }
+
+  &:hover {
+    background: darken($fadedteal, 8%);
+    transition: background 0.2s;
+  }
+
+  i.fa {
+    position: absolute;
+    top: 0;
+    left: 0.65rem;
+    line-height: 2.3rem;
+    font-size: 1rem;
+
+    &.right {
+      left: auto;
+      right: 0.65rem;
+    }
+  }
+
+  &.twitter {
+    background: $twitterblue;
+    &:hover {
+      background: darken($twitterblue, 8%);
+    }
+  }
+  &.google {
+    background: $googlered;
+    &:hover {
+      background: darken($googlered, 8%);
+    }
+  }
+}

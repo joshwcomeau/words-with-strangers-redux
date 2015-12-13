@@ -1,0 +1,75 @@
+@import 'variables';
+
+
+form {
+  // Remove ugly yellow colour from Chrome autofill.
+  input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+  }
+  .error-message {
+    position: relative;
+    color: $red;
+    padding: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .floating-input {
+    position: relative;
+    margin-top: 1.5rem;
+
+    textarea, input {
+      position: relative;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid $mediumgray;
+      z-index: 2;
+      width: 100%;
+      padding: 0 0.5rem;
+      outline: none;
+      font-size: 0.9rem;
+
+      &:focus {
+        border-bottom: 3px solid $teal;
+      }
+      &.invalid {
+        border-bottom: 3px solid $red !important;
+      }
+
+      &:focus + label, &.filled + label {
+        transform: translate(0,-24px);
+        font-size: 0.7em;
+        transition: 0.2s;
+      }
+
+      &.invalid + label {
+        color: $red !important;
+      }
+
+      &.valid + label {
+        color: $teal;
+      }
+    }
+
+    input {
+      height: 2.5rem;
+    }
+
+    textarea {
+      padding: 1rem;
+      height: 6rem;
+    }
+
+    label {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0.5rem;
+      right: 0;
+      bottom: 0;
+      line-height: 2.5rem;
+      transition: 0.4s;
+      color: $mediumgray;
+    }
+  }
+}

@@ -1,0 +1,73 @@
+@import 'variables';
+
+#games-list {
+  margin-top: 2rem;
+
+  header  {
+    position: relative;
+    h4 {
+    font-size: 2.5rem;
+    height: 4rem;
+    line-height: 4rem;
+    color: $yellow;
+    font-weight: 700;
+    }
+
+    button {
+      position: absolute;
+      top: 0.75rem;
+      right: 0;
+      height: 2.5rem;
+      padding-left: 2rem;
+      padding-right: 2rem;
+      background: $navy;
+      font-size: 16px;
+      font-weight: 500;
+
+      &:disabled {
+        background: $darkgray;
+      }
+    }
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  table {
+    width: 100%;
+    font-size: 14px;
+
+    th {
+      background: $lightgray;
+      padding: 0.5rem;
+      text-align: left;
+      font-weight: 700;
+    }
+    td {
+      padding: 0.4rem;
+      border-bottom: 1px solid $lightgray;
+    }
+
+    .game-list-player {
+      display: block;
+      line-height: 1.5rem;
+      margin-bottom: 0.25rem;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+
+      .player-avatar {
+        width: 1.5rem;
+        height: 1.5rem;
+        float: left;
+        margin-right: 0.5rem;
+        border-radius: 100%;
+        background-size: cover;
+        background-position: center center;
+
+      }
+    }
+  }
+}

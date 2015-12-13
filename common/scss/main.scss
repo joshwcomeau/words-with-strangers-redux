@@ -1,0 +1,42 @@
+@import './reset.scss';
+@import './variables.scss';
+
+@import './forms.scss';
+@import './game.scss';
+@import './games_list.scss';
+@import './header.scss';
+@import './parts.scss';
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  background: $teal;
+}
+
+html, body, input, button, textarea, select {
+  font-family: 'museo-sans', sans-serif;
+  font-weight: 300;
+}
+
+a {
+  text-decoration: none;
+  color: $red;
+}
+
+strong {
+  font-weight: 700;
+}
+
+.hide {
+  display: none !important;
+}
+
+.flexbox {
+  display: flex;
+}
+.flex-item {
+  flex: 1;
+}
