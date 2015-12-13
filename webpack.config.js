@@ -29,26 +29,8 @@ module.exports = {
         exclude:  /node_modules/,
         include:  __dirname,
         query: {
-          optional: [ 'runtime' ],
-          stage: 2,
-          env: {
-            development: {
-              plugins: [
-                'react-transform'
-              ],
-              extra: {
-                'react-transform': {
-                  transforms: [
-                    {
-                      transform:  'react-transform-hmr',
-                      imports: [ 'react' ],
-                      locals:  [ 'module' ]
-                    }
-                  ]
-                }
-              }
-            }
-          }
+          plugins: ['transform-runtime'],
+          presets: ['es2015', 'react']
         }
       }
     ]
