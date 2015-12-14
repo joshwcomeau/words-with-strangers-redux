@@ -1,7 +1,7 @@
 import { ADD_TILES_TO_RACK, PLACE_TILE } from '../constants/actions.constants';
 import { fetchTiles }         from '../lib/tiles.lib';
 
-export function addTilesToRack(num) {
+export function addTilesToRack(num = 8) {
   return {
     type:   ADD_TILES_TO_RACK,
     tiles:  fetchTiles(num)

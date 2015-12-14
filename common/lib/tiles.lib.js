@@ -8,6 +8,7 @@ function getRandomLetters(num) {
 }
 
 export function fetchTiles(num) {
+  console.log("Generating", num, "tiles")
   const letters = getRandomLetters(num);
   return letters.map( (letter, index) => {
     return {

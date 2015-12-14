@@ -21,7 +21,8 @@ export default function configureStore(initialState) {
   }
 
   // For testing purposes, attach the store to the window
-  window.__store = store;
+  // (only on the client, obviously);
+  if ( typeof window !== 'undefined' ) window.__store = store;
 
   return store
 }
