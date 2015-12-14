@@ -16,18 +16,29 @@ export const initialState = fromJS({
 export default function game(state = initialState, action) {
   switch (action.type) {
     case ADD_TILES_TO_RACK:
-      return state.set( 'rack', state.get('rack').concat(action.tiles) );
+      // convert tiles to Immutable
+      const tiles = fromJS(action.tiles);
+      return state.set( 'rack', state.get('rack').concat(tiles) );
+
 
     case PLACE_TILE:
+      // Find all the data about the original tile (including whether it's
+      // located on the board or the rack)
       const [
-        oldTileLocation, oldTileIndex, newTileLocation, newTileSet
-      ] = extractPlaceTileData(state, action)
+        originalTile, originalTileIndex, originalTileLocation
+      ] = getOriginalTileData(state, action);
+
+      // Create a new tile
+      const newTile = createNewTile(state, action, originalTile);
+      const newTileLocation = action.tile.location;
+      const newTileSet = state.get(newTileLocation).push(newTile);
 
       // We aren't actually just moving the tile from one area to another.
       // We'll delete the original tile, and then place a new tile.
       return state
-        .deleteIn( [oldTileLocation, oldTileIndex] )
+        .deleteIn( [originalTileLocation, originalTileIndex] )
         .set( newTileLocation, newTileSet );
+
 
     case SUBMIT_WORD:
       // We're going to be using our game_logic lib here, and it's totally
@@ -44,28 +55,41 @@ export default function game(state = initialState, action) {
 }
 
 
-// Helper that fetches all the info we need, to keep clutter out of the
-// reducer switch.
-function extractPlaceTileData(state, action) {
+// HELPER FUNCTIONS
+// Should these be here? Not entirely sure how best to structure this.
+
+function getOriginalTileData(state, action) {
   // Helper used in iteration to find the tile by the action's _id
   const tileFinder = tile => {
     return tile.get('_id') === action.tile._id;
   };
 
   // First, figure out whether the tile is located on the board, or the rack.
-  const oldTileLocation = state.get('rack').find(tileFinder) ? 'rack' : 'board';
+  const tileLocation = state.get('rack').find(tileFinder) ? 'rack' : 'board';
+  const [ tileIndex, tile ] = state.get(tileLocation).findEntry(tileFinder);
 
-  // Figure out where we want to put the tile (rack or board),
-  // and prepare our new tile data
-  const newTileLocation = action.tile.location;
-  const newTileData = _.omit(action.tile, 'location');
+  return [ tile, tileIndex, tileLocation ];
+}
 
-  // Get the original data & merge it with our new data to create our new tile.
-  const [oldTileIndex, oldTile] = state.get(oldTileLocation).findEntry(tileFinder);
-  const newTile = oldTile.merge(newTileData);
+function createNewTile(state, action, originalTile) {
+  // The tile data sent can be used to make the new tile, except it contains
+  // an extraneous field, 'location'. Ditch it!
+  let newTileData = _.omit(action.tile, 'location');
 
-  // Create our new board/rack, with this new tile.
-  const newTileSet = state.get(newTileLocation).push(newTile);
+  // We want to clone the original tile, but without its coordinates.
+  // We'll replace those with the coordinates in action.tile (we can't simply
+  // rely on the merge, since newTileData may not have any coordinates)
+  let newTile = originalTile
+    .delete('y')
+    .delete('x')
+    .merge(newTileData);
 
-  return [ oldTileLocation, oldTileIndex, newTileLocation, newTileSet ];
+
+  // Finally, all rack tiles need an 'x'. If none was provided,
+  // simply make this the highest 'x' available.
+  if ( action.tile.location === 'rack' && !action.tile.x ) {
+    newTile = newTile.set('x', state.get(action.tile.location).count());
+  }
+
+  return newTile;
 }
