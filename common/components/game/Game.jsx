@@ -12,7 +12,7 @@ const Game = React.createClass({
     return (
       <div id="game">
         <SidePanel players={this.props.players} turns={this.props.turns} />
-        <Board tiles={this.props.board} />
+        <Board tiles={this.props.board} placeTile={this.props.placeTile} />
         <TileRack tiles={this.props.rack} />
         <Controls addTiles={this.props.addTilesToRack} />
       </div>

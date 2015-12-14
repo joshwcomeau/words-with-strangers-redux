@@ -17,7 +17,7 @@ const Board = React.createClass({
     const y = Math.floor(num / BOARD_SIZE);
 
     return (
-      <BoardSquare key={x + '-' + y} x={x} y={y}>
+      <BoardSquare key={x+'-'+y} x={x} y={y} placeTile={this.props.placeTile}>
         {this.findTileAtCoords(x,y)}
       </BoardSquare>
     );

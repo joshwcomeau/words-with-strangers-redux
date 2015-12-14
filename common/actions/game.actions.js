@@ -8,7 +8,7 @@ export function addTilesToRack(num = 8) {
   }
 }
 
-export function placeTileAndValidate(tile) {
+export function placeTile(tile) {
   // Using redux-thunk, this action returns a function that:
   //   - dispatches the PLACE_TILE event, which places the tile in the new pos.
   //   - figures out if the current configuration of tiles can be submitted
@@ -23,7 +23,6 @@ export function placeTileAndValidate(tile) {
       tile
     });
 
-    // Next, check to see if the tile placement is valid
-    // TODO
+    // TODO check to see if the tile placement is valid
   };
 }

@@ -16,7 +16,6 @@ export const initialState = fromJS({
 export default function game(state = initialState, action) {
   switch (action.type) {
     case ADD_TILES_TO_RACK:
-      console.log("Adding tiles to rack", action.tiles)
       return state.set( 'rack', state.get('rack').concat(action.tiles) );
 
     case PLACE_TILE:
