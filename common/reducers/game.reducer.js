@@ -31,13 +31,13 @@ export default function game(state = initialState, action) {
       // Create a new tile
       const newTile = createNewTile(state, action, originalTile);
       const newTileLocation = action.tile.location;
-      const newTileSet = state.get(newTileLocation).push(newTile);
 
       // We aren't actually just moving the tile from one area to another.
       // We'll delete the original tile, and then place a new tile.
-      return state
-        .deleteIn( [originalTileLocation, originalTileIndex] )
-        .set( newTileLocation, newTileSet );
+      state = state.deleteIn( [originalTileLocation, originalTileIndex] )
+      state = state.set( newTileLocation, state.get(newTileLocation).push(newTile) );
+
+      return state;
 
 
     case SUBMIT_WORD:
@@ -78,7 +78,8 @@ function createNewTile(state, action, originalTile) {
 
   // We want to clone the original tile, but without its coordinates.
   // We'll replace those with the coordinates in action.tile (we can't simply
-  // rely on the merge, since newTileData may not have any coordinates)
+  // rely on the merge, since we might want to overwrite the existing coords
+  // with NO coordinates.)
   let newTile = originalTile
     .delete('y')
     .delete('x')

@@ -87,4 +87,65 @@ describe('gameReducer', () => {
     }));
   });
 
+  // This is a major pain to implement, for relatively small gains.
+  // Not too concerned.
+  xit('handles PLACE_TILE from board to rack, with a specified `x`', () => {
+    const state = fromJS({
+      board: [ { _id: '1', letter: 'O', x: 4, y: 6 } ],
+      rack:  [
+        { _id: '2', letter: 'J', x: 0 },
+        { _id: '3', letter: 'S', x: 1 },
+        { _id: '4', letter: 'H', x: 2 }
+      ]
+    });
+    const action = {
+      type: PLACE_TILE,
+      tile: {
+        _id: '1',
+        location: 'rack',
+        x: 1
+      }
+    };
+    const nextState = gameReducer(state, action);
+
+    expect(nextState).to.equal(fromJS({
+      board: [ { _id: '2', letter: 'Z', x: 5, y: 6 } ],
+      rack:  [
+        { _id: '2', letter: 'J', x: 0 },
+        { _id: '1', letter: 'O', x: 1 },
+        { _id: '3', letter: 'S', x: 2 },
+        { _id: '4', letter: 'H', x: 3 }
+      ]
+    }));
+  });
+
+  it('handles PLACE_TILE from board to board', () => {
+    const state = fromJS({
+      board: [
+        { _id: '1', letter: 'O', x: 4, y: 6 },
+        { _id: '2', letter: 'J', x: 5, y: 6 },
+      ],
+      rack: []
+    });
+    const action = {
+      type: PLACE_TILE,
+      tile: {
+        _id: '2',
+        location: 'board',
+        x: 8,
+        y: 8
+      }
+    };
+    const nextState = gameReducer(state, action);
+
+    expect(nextState).to.equal(fromJS({
+      board: [
+        { _id: '1', letter: 'O', x: 4, y: 6 },
+        { _id: '2', letter: 'J', x: 8, y: 8 },
+      ],
+      rack: []
+    }));
+  });
+
+
 });
