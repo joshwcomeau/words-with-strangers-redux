@@ -1,6 +1,5 @@
 import * as _                 from 'lodash';
 import { List, Map, fromJS }  from 'immutable';
-import { validatePlacement }  from '../lib/game_logic.lib';
 import {
   ADD_TILES_TO_RACK,
   PLACE_TILE,
@@ -41,13 +40,8 @@ export default function game(state = initialState, action) {
 
 
     case SUBMIT_WORD:
-      // We're going to be using our game_logic lib here, and it's totally
-      // decoupled from redux. We need to pass it a plain JS board for it
-      // to work with.
-      const boardObj = state.get('board').toJS();
-
-      // TODO
-
+      // We're assuming the word has already been validated, before being
+      // submitted to the store. If the action is called, the word is good.
 
     default:
       return state

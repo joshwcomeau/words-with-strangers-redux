@@ -1,5 +1,10 @@
-import { ADD_TILES_TO_RACK, PLACE_TILE } from '../constants/actions.constants';
+import {
+  ADD_TILES_TO_RACK,
+  PLACE_TILE,
+  SUBMIT_WORD
+} from '../constants/actions.constants';
 import { fetchTiles }         from '../lib/tiles.lib';
+import { getPlacedWord }  from '../lib/game_logic.lib';
 
 export function addTilesToRack(num = 8) {
   return {
@@ -25,4 +30,38 @@ export function placeTile(tile) {
 
     // TODO check to see if the tile placement is valid
   };
+}
+
+export function submitWord(type) {
+  // Using redux-thunk, this action returns a function that:
+  //   - validates the currently-placed word for evaluation
+  //   - IF the word is valid, it adds the 'turn' to the 'turns' array, and
+  //     passes control to the next player.
+  //   - ELSE, if the word is invalid, it dispatches an alert (some sort of
+  //     flash message alert? TBD) to let the player know.
+
+  return function(dispatch, getState) {
+    // First, validate the tile placement.
+    // We're going to be using our game_logic lib here, and it's totally
+    // decoupled from redux. We need to pass it a plain JS board for it
+    // to work with.
+    const boardObj  = getState().get('board').toJS();
+    const wordTiles = getPlacedWord(boardObj)
+
+    if ( wordTiles ) {
+      dispatch({
+        type: SUBMIT_WORD,
+        word: wordTiles
+      });
+
+      dispatch({
+        type: END_TURN
+      });
+    } else {
+      dispatch({
+        type: DISPLAY_ERROR,
+        message: 'Sorry, that word is not placed properly.'
+      });
+    }
+  }
 }

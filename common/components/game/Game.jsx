@@ -14,7 +14,11 @@ const Game = React.createClass({
         <SidePanel players={this.props.players} turns={this.props.turns} />
         <Board tiles={this.props.board} placeTile={this.props.placeTile} />
         <TileRack tiles={this.props.rack} />
-        <Controls addTiles={this.props.addTilesToRack} />
+        <Controls
+          status={this.props.status}
+          submitWord={this.props.submitWord}
+          addTiles={this.props.addTilesToRack}
+        />
       </div>
     );
   }
