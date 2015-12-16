@@ -55,7 +55,7 @@ export function findTile(x, y, board) {
 // RETURNS: either:
 //   - a String (enum: ['x', 'y']) if the move is valid, or
 //   - a Boolean (false) if the move is invalid.
-function findActiveAxis(tiles) {
+export function findActiveAxis(tiles) {
   const deltaX = getDeltaOfAxis(tiles, 'x');
   const deltaY = getDeltaOfAxis(tiles, 'y');
 
