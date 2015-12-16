@@ -3,7 +3,8 @@ import * as _     from 'lodash';
 
 import {
   findTile,
-  findActiveAxis
+  findActiveAxis,
+  rewindAndCaptureWord
 } from '../../common/lib/game_logic.lib';
 
 describe('Game Logic', () => {
@@ -20,6 +21,28 @@ describe('Game Logic', () => {
         { letter: 'O', x: 4, y: 8},
         1
       ]);
+
+    });
+    it('returns `undefined` if there is no tile at those coordinates', () => {
+      let board = [
+        { letter: 'W', x: 4, y: 7},
+        { letter: 'O', x: 4, y: 8},
+        { letter: 'O', x: 4, y: 9}
+      ];
+      let tileResult = findTile(4, 10, board);
+
+      expect(tileResult).to.equal(undefined);
+
+    });
+    it('returns `undefined` if we pass in negative coordinates', () => {
+      let board = [
+        { letter: 'W', x: 4, y: 7},
+        { letter: 'O', x: 4, y: 8},
+        { letter: 'O', x: 4, y: 9}
+      ];
+      let tileResult = findTile(-4, 7, board);
+
+      expect(tileResult).to.equal(undefined);
 
     });
   });
@@ -55,5 +78,52 @@ describe('Game Logic', () => {
 
       expect( findActiveAxis(board) ).to.equal('x');
     });
+
+    context('when only 1 new tile is on the board', () => {
+      xit('returns `x` when the tile extends a horizontal word');
+      xit('returns `y` when the tile extends a vertical word');
+      xit('returns `x` when the tile extends both');
+    });
+  });
+
+  describe('#rewindAndCaptureWord', () => {
+    it('returns the input tiles when there are no relevant additional tiles', () => {
+      let tiles = [
+        { letter: 'H', x: 5, y: 5 },
+        { letter: 'I', x: 6, y: 5 }
+      ];
+      let board = [
+        { letter: 'H', x: 5, y: 5 },
+        { letter: 'I', x: 6, y: 5 },
+        { letter: 'Z', x: 8, y: 8, turnId: 'irrelevant'}
+      ];
+      let activeAxis = findActiveAxis(board);
+
+      let capturedWord = rewindAndCaptureWord({tiles, board, activeAxis});
+
+      expect( capturedWord ).to.deep.equal(tiles);
+    });
+
+    it('attaches previous letters on the `x` axis', () => {
+      let tiles = [
+        { letter: 'H', x: 5, y: 5 },
+        { letter: 'I', x: 6, y: 5 }
+      ];
+      let board = [
+        { letter: 'P', x: 5, y: 5, turnId: '123' },
+        { letter: 'H', x: 6, y: 5 },
+        { letter: 'I', x: 7, y: 5 },
+        { letter: 'Z', x: 8, y: 8, turnId: 'irrelevant'}
+      ];
+      let activeAxis = findActiveAxis(board);
+
+      let capturedWord = rewindAndCaptureWord({tiles, board, activeAxis});
+
+      expect( rewindAndCaptureWord(board) ).to.deep.equal([
+        { letter: 'P', x: 5, y: 5, turnId: '123' },
+        { letter: 'H', x: 6, y: 5 },
+        { letter: 'I', x: 7, y: 5 }
+      ]);
+    })
   });
 });

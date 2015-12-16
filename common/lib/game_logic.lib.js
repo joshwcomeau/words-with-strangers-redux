@@ -12,7 +12,6 @@ export function getPlacedWord(board) {
 
   // 2. Figure out which axis we're working in, either horizontal or vertical.
   let activeAxis = findActiveAxis(newTiles);
-  let inactiveAxis = activeAxis === 'x' ? 'y' : 'x';
 
   // 3. Find any other letters that are involved in our primary word.
   // We know which letters are ours, and we know which axis we're on.
@@ -77,7 +76,7 @@ function getDeltaOfAxis(tiles, axis) {
 
 
 // RETURNS: An array of Tile objects.
-function rewindAndCaptureWord({ activeAxis, tiles: tiles, board}) {
+export function rewindAndCaptureWord({ activeAxis, tiles, board}) {
   // The idea here is I have a sequence of tiles on an axis, and I need
   // to find any missing tiles to fulfill the word.
   // Imagine this row:
@@ -113,18 +112,19 @@ function rewindAndCaptureWord({ activeAxis, tiles: tiles, board}) {
     // We've found a new earliest!
     earliestTile = cursorTile;
 
-    tileObject                = { gameId, location: 'board' };
-    tileObject[activeAxis]    = cursorTile[activeAxis]-1;
-    tileObject[inactiveAxis]  = inactiveAxisPosition;
-
     // Go back 1 space, and see if there's a tile there.
     // If not, it means we found a blank spot (or the edge of the board).
     // We can break out of this while loop.
-    cursorTile = Tiles.findOne(tileObject);
+
+    // Start by creating a new object with the X/Y coords
+    tileObject = _.pick(cursorTile, [activeAxis, inactiveAxis]);
+
+    // Subtract 1 from the active axis, and find it.
+    tileObject[activeAxis]  -= 1;
+    cursorTile = findTile(tileObject);
   }
 
-  // Reset our cursor tile, since it was possibly unset when we found a
-  // blank square.
+  // Reset our cursor tile, since it was unset to break out of the `while` loop
   cursorTile = earliestTile;
 
   // cursorTile now holds the earliest tile in the row.
