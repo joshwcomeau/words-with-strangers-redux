@@ -26,13 +26,9 @@ module.exports = {
       // JAVASCRIPT
       {
         test:     /\.jsx?$/,
-        loader:   'babel',
+        loader:   'react-hot!babel',
         exclude:  /node_modules/,
-        include:  __dirname,
-        query: {
-          plugins: ['transform-runtime'],
-          presets: ['es2015', 'react']
-        }
+        include:  __dirname
       },
       // SASS
       {
