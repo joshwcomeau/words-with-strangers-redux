@@ -8,7 +8,6 @@ import createBrowserHistory from 'history/lib/createBrowserHistory';
 
 import routes               from '../common/routes.jsx';
 import configureStore       from '../common/store/configureStore';
-import App                  from '../common/containers/App.jsx';
 
 const initialState  = window.__INITIAL_STATE__;
 const store         = configureStore(initialState);
