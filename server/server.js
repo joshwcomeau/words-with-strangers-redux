@@ -53,7 +53,10 @@ function handleRender(req, res) {
     const initialState = {
       game: {
         board: [],
-        rack: fetchTiles(8)
+        rack: fetchTiles(8),
+        status: {
+          isMyTurn: true
+        }
       }
     };
 

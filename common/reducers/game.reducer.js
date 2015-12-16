@@ -8,8 +8,11 @@ import {
 
 // Initial state for the 'game' slice of the state.
 export const initialState = fromJS({
-  board: [],
-  rack:  []
+  board:  [],
+  rack:   [],
+  status: {
+    isMyTurn: true
+  }
 });
 
 export default function game(state = initialState, action) {

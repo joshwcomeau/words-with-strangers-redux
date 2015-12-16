@@ -1,10 +1,13 @@
 import {
   ADD_TILES_TO_RACK,
   PLACE_TILE,
+  VALIDATE_PLACEMENT,
   SUBMIT_WORD
 } from '../constants/actions.constants';
 import { fetchTiles }         from '../lib/tiles.lib';
-import { getPlacedWord }  from '../lib/game_logic.lib';
+import {
+  getPlacedWord,
+}  from '../lib/game_logic.lib';
 
 export function addTilesToRack(num = 8) {
   return {
@@ -28,7 +31,15 @@ export function placeTile(tile) {
       tile
     });
 
-    // TODO check to see if the tile placement is valid
+    // Update the validity of this tile placement.
+    // If it's a valid placement, we enable the "submit word" button.
+    const boardObj = getState().get('board').toJS();
+    const isValid  = !!getPlacedWord(boardObj);
+
+    dispatch({
+      type: VALIDATE_PLACEMENT,
+      isValid
+    });
   };
 }
 
