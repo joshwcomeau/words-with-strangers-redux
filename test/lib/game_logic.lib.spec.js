@@ -15,7 +15,7 @@ describe('Game Logic', () => {
         { letter: 'O', x: 4, y: 8},
         { letter: 'O', x: 4, y: 9}
       ];
-      let tileResult = findTile(4, 8, board);
+      let tileResult = findTile({x: 4, y: 8}, board);
 
       expect(tileResult).to.deep.equal([
         { letter: 'O', x: 4, y: 8},
@@ -79,6 +79,17 @@ describe('Game Logic', () => {
       expect( findActiveAxis(board) ).to.equal('x');
     });
 
+    it('ignores tiles from previous turns', () => {
+      let board = [
+        { x: 1, y: 7 },
+        { x: 2, y: 7 },
+        { x: 3, y: 7 },
+        { x: 6, y: 9, turnId: '123' }
+      ]
+
+      expect( findActiveAxis(board) ).to.equal('x');
+    });
+
     context('when only 1 new tile is on the board', () => {
       xit('returns `x` when the tile extends a horizontal word');
       xit('returns `y` when the tile extends a vertical word');
@@ -106,8 +117,8 @@ describe('Game Logic', () => {
 
     it('attaches previous letters on the `x` axis', () => {
       let tiles = [
-        { letter: 'H', x: 5, y: 5 },
-        { letter: 'I', x: 6, y: 5 }
+        { letter: 'H', x: 6, y: 5 },
+        { letter: 'I', x: 7, y: 5 },
       ];
       let board = [
         { letter: 'P', x: 5, y: 5, turnId: '123' },
@@ -119,7 +130,7 @@ describe('Game Logic', () => {
 
       let capturedWord = rewindAndCaptureWord({tiles, board, activeAxis});
 
-      expect( rewindAndCaptureWord(board) ).to.deep.equal([
+      expect( capturedWord ).to.deep.equal([
         { letter: 'P', x: 5, y: 5, turnId: '123' },
         { letter: 'H', x: 6, y: 5 },
         { letter: 'I', x: 7, y: 5 }

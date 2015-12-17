@@ -41,8 +41,7 @@ export function getPlacedWord(board) {
 
 // Given X/Y coordinates, fetch a tile!
 // RETURNS: An array [ tileObject, tileObjectIndex ]
-export function findTile(x, y, board) {
-  console.log("Looking for", x, y, board)
+export function findTile({x, y}, board) {
   let tileIndex = _.findIndex( board, tile => (tile.x === x && tile.y === y) );
 
   if ( tileIndex === -1 ) return undefined;
@@ -55,6 +54,8 @@ export function findTile(x, y, board) {
 //   - a String (enum: ['x', 'y']) if the move is valid, or
 //   - a Boolean (false) if the move is invalid.
 export function findActiveAxis(tiles) {
+  // Don't consider tiles placed in previous turns
+  tiles = _.reject( tiles, tile => !!tile.turnId )
   const deltaX = getDeltaOfAxis(tiles, 'x');
   const deltaY = getDeltaOfAxis(tiles, 'y');
 
@@ -88,6 +89,7 @@ export function rewindAndCaptureWord({ activeAxis, tiles, board}) {
   // VARIABLES
   let wordTiles = [];       // our returned list of Tiles
   let cursorTile;           // A track-keeping tile that we use for navigation.
+  let nextTile;             // Placeholder
   let earliestTile;         // The earliest tile we've seen. The start of the word.
   let inactiveAxis;         // String. 'x' or 'y'. Opposite of 'axis'.
   let inactiveAxisPosition  // integer. Holds the static axis position.
@@ -121,7 +123,8 @@ export function rewindAndCaptureWord({ activeAxis, tiles, board}) {
 
     // Subtract 1 from the active axis, and find it.
     tileObject[activeAxis]  -= 1;
-    cursorTile = findTile(tileObject);
+    nextTile = findTile(tileObject, board);
+    cursorTile = nextTile ? nextTile[0] : null
   }
 
   // Reset our cursor tile, since it was unset to break out of the `while` loop
@@ -129,19 +132,14 @@ export function rewindAndCaptureWord({ activeAxis, tiles, board}) {
 
   // cursorTile now holds the earliest tile in the row.
   // We can advance forwards through the row, adding tiles to our array :)
-  while ( cursorTile && cursorTile[activeAxis] < BOARD_SIZE) {
+  while ( cursorTile ) {
     wordTiles.push( cursorTile );
 
-    tileObject = {
-      gameId,
-      location: 'board'
-    }
-    tileObject[activeAxis] = cursorTile[activeAxis]+1;
-    tileObject[inactiveAxis] = inactiveAxisPosition;
-
-    cursorTile = Tiles.findOne(tileObject);
+    tileObject = _.pick(cursorTile, [activeAxis, inactiveAxis]);
+    tileObject[activeAxis]  += 1;
+    nextTile = findTile(tileObject, board);
+    cursorTile = nextTile ? nextTile[0] : null
   }
 
-  console.log(wordTiles);
   return wordTiles;
 }
