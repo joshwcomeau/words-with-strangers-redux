@@ -56,7 +56,23 @@ function handleRender(req, res) {
         rack: fetchTiles(8),
         status: {
           isMyTurn: true
-        }
+        },
+        players: [{
+          _id: '1',
+          profilePhoto: 'https://pbs.twimg.com/profile_images/378800000532546226/dbe5f0727b69487016ffd67a6689e75a.jpeg',
+          username: 'BestWorderEvah',
+          points: 3
+        }, {
+          _id: '2',
+          profilePhoto: 'http://cdn2.business2community.com/wp-content/uploads/2014/10/Sushi-Cat-Halloween-Costume2.jpg2.jpg',
+          username: 'SushiCat',
+          points: 8
+        }]
+      },
+      auth_user: {
+        _id: '2',
+        profilePhoto: 'http://cdn2.business2community.com/wp-content/uploads/2014/10/Sushi-Cat-Halloween-Costume2.jpg2.jpg',
+        username: 'SushiCat'
       }
     };
 

@@ -16,7 +16,7 @@ const Game = React.createClass({
         <TileRack tiles={this.props.rack} />
         <Controls
           isMyTurn={this.props.status.isMyTurn}
-          isValidTurn={this.props.status.isValidTurn}
+          isValidPlacement={this.props.status.isValidPlacement}
           submitWord={this.props.submitWord}
         />
       </div>

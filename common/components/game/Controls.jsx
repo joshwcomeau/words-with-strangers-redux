@@ -1,13 +1,13 @@
 import React  from 'react';
 import * as _ from 'lodash';
 
-const Controls = ({isMyTurn, isValidTurn, submitWord}) => (
+const Controls = ({isMyTurn, isValidPlacement, submitWord}) => (
   <div id="controls" className={isMyTurn ? 'my-turn' : 'their-turn'}>
     <div className="turn-indicator">{isMyTurn ? 'Your Turn' : 'Their Turn'}</div>
     <div className="submit-word-container">
       <button
       className="button submit-word"
-      disabled={!isValidTurn}
+      disabled={!isValidPlacement}
       onClick={submitWord}
       >
         Submit Word
