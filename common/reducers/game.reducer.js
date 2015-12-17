@@ -3,6 +3,7 @@ import { List, Map, fromJS }  from 'immutable';
 import {
   ADD_TILES_TO_RACK,
   PLACE_TILE,
+  VALIDATE_PLACEMENT,
   SUBMIT_WORD
 } from '../constants/actions.constants';
 
@@ -41,6 +42,8 @@ export default function game(state = initialState, action) {
 
       return state;
 
+    case VALIDATE_PLACEMENT:
+      return state.setIn(['status', 'isValidPlacement'], action.isValidPlacement)
 
     case SUBMIT_WORD:
       // We're assuming the word has already been validated, before being

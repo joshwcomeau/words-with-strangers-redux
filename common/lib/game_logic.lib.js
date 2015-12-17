@@ -8,10 +8,10 @@ export function getPlacedWord(board) {
   // line, or with spaces between them), returns null.
 
   // 1. Figure out which tiles belong to this turn.
-  let newTiles = _.filter(board, tile => typeof tile.turnId === 'undefined');
+  let tiles = _.filter(board, tile => typeof tile.turnId === 'undefined');
 
   // 2. Figure out which axis we're working in, either horizontal or vertical.
-  let activeAxis = findActiveAxis(newTiles);
+  let activeAxis = findActiveAxis(tiles);
 
   // 3. Find any other letters that are involved in our primary word.
   // We know which letters are ours, and we know which axis we're on.
@@ -26,9 +26,53 @@ export function getPlacedWord(board) {
   //
   // The solution to this problem is to 'rewind' to the earliest letter
   // in the sequence, and then move forward through all the letters.
-  let allTilesInWord = rewindAndCaptureWord({ activeAxis, newTiles });
+  return rewindAndCaptureWord({ activeAxis, tiles, board });
+
 }
 
+export function validatePlacement(board) {
+  // 1. Figure out which tiles belong to this turn.
+  let tiles = _.filter(board, tile => typeof tile.turnId === 'undefined');
+
+  // 2. Figure out which axis we're working in, either horizontal or vertical.
+  let activeAxis = findActiveAxis(tiles);
+
+  // If there isn't a single axis, we know it's false.
+  if ( !activeAxis ) return false;
+
+  let inactiveAxis = activeAxis !== 'x' ? 'x' : 'y';
+  let inactiveAxisPosition = cursorTile[inactiveAxis];
+
+  // Next, Check to make sure there aren't any 'gaps' without tiles.
+  tiles = sortTilesByAxis(tiles, activeAxis);
+  let firstPosition = _.first(tiles)[activeAxis];
+  let lastPosition  = _.last(tiles)[activeAxis];
+  // We just need to iterate from the earliest position to the latest position,
+  // And ensure that every spot has a tile.
+  let positionsToAccountFor = _.range(firstPosition+1, lastPosition);
+
+  let tileObject;
+
+  _.every(positionsToAccountFor, position => {
+    tileObject = {};
+    tileObject[activeAxis] = position;
+    tileObject[inactiveAxis] = inactiveAxisPosition;
+
+    return findTile(tileObject, board);
+  })
+
+
+}
+
+export function validateWord(tiles) {
+  // TODO: Incorporate a dictionary. Check against it.
+  return true;
+}
+
+export function sortTilesByAxis(tiles, axis) {
+  // TODO: Return a sorted array by the axis given.
+  return tiles;
+}
 
 
 
@@ -37,7 +81,7 @@ export function getPlacedWord(board) {
 
 // HELPER FUNCTIONS
 // Exposed primarily so they can be tested, although they're generic enough
-// that they can be called from the outside if they really want to be.
+// that they can be called from the outside if needed.
 
 // Given X/Y coordinates, fetch a tile!
 // RETURNS: An array [ tileObject, tileObjectIndex ]
@@ -98,6 +142,8 @@ export function rewindAndCaptureWord({ activeAxis, tiles, board}) {
 
   // First, find the earliest letter.
   earliestTile = _.first( _.sortBy(tiles, tile => tile[activeAxis]) );
+
+  console.log("Found earliest", earliestTile, "in", tiles)
 
   // Create a cursor tile that will traverse back away from the earliest
   // letter. It's called a cursor simply because it moves along a row.

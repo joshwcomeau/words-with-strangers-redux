@@ -4,6 +4,7 @@ import {
   VALIDATE_PLACEMENT,
   SUBMIT_WORD
 } from '../constants/actions.constants';
+import { FULL_RACK_SIZE }     from '../constants/config.constants';
 import { fetchTiles }         from '../lib/tiles.lib';
 import {
   getPlacedWord,
@@ -33,46 +34,50 @@ export function placeTile(tile) {
 
     // Update the validity of this tile placement.
     // If it's a valid placement, we enable the "submit word" button.
-    const boardObj = getState().get('board').toJS();
-    const isValid  = !!getPlacedWord(boardObj);
+    const boardObj          = getState().toJS().game.board;
+    console.log("PLacd word", getPlacedWord(boardObj))
+    const isValidPlacement  = !!getPlacedWord(boardObj);
 
     dispatch({
       type: VALIDATE_PLACEMENT,
-      isValid
+      isValidPlacement
     });
   };
 }
 
 export function submitWord(type) {
   // Using redux-thunk, this action returns a function that:
-  //   - validates the currently-placed word for evaluation
+  //   - validates the currently-placed word
   //   - IF the word is valid, it adds the 'turn' to the 'turns' array, and
   //     passes control to the next player.
   //   - ELSE, if the word is invalid, it dispatches an alert (some sort of
   //     flash message alert? TBD) to let the player know.
 
   return function(dispatch, getState) {
-    // First, validate the tile placement.
-    // We're going to be using our game_logic lib here, and it's totally
-    // decoupled from redux. We need to pass it a plain JS board for it
-    // to work with.
-    const boardObj  = getState().get('board').toJS();
-    const wordTiles = getPlacedWord(boardObj)
+    const initialState      = getState();
+    const boardObj          = initialState.get('board').toJS();
+    const wordTiles         = getPlacedWord(boardObj);
+    const isValidWord       = validateWord(wordTiles);
 
-    if ( wordTiles ) {
-      dispatch({
-        type: SUBMIT_WORD,
-        word: wordTiles
-      });
 
-      dispatch({
-        type: END_TURN
-      });
-    } else {
-      dispatch({
+    if ( !isValidWord ) {
+      return dispatch({
         type: DISPLAY_ERROR,
-        message: 'Sorry, that word is not placed properly.'
+        message: "Sorry, that\'s not a word."
       });
     }
+
+    dispatch({
+      type: SUBMIT_WORD,
+      word: wordTiles
+    });
+
+    dispatch({
+      type: END_TURN
+    });
+
+    // We need to replenish the user's rack!
+    const numOfTilesToRefill = FULL_RACK_SIZE - getState().get('rack').count();
+    dispatch( addTilesToRack(numOfTilesToRefill) )
   }
 }

@@ -135,6 +135,53 @@ describe('Game Logic', () => {
         { letter: 'H', x: 6, y: 5 },
         { letter: 'I', x: 7, y: 5 }
       ]);
-    })
+    });
+
+    it('attaches previous letters on the `y` axis', () => {
+      let tiles = [
+        { letter: 'H', x: 5, y: 6 },
+        { letter: 'I', x: 5, y: 7 },
+      ];
+      let board = [
+        { letter: 'P', x: 5, y: 5, turnId: '123' },
+        { letter: 'H', x: 5, y: 6 },
+        { letter: 'I', x: 5, y: 7 },
+        { letter: 'Z', x: 5, y: 9, turnId: 'irrelevant'}
+      ];
+      let activeAxis = findActiveAxis(board);
+
+      let capturedWord = rewindAndCaptureWord({tiles, board, activeAxis});
+
+      expect( capturedWord ).to.deep.equal([
+        { letter: 'P', x: 5, y: 5, turnId: '123' },
+        { letter: 'H', x: 5, y: 6 },
+        { letter: 'I', x: 5, y: 7 },
+      ]);
+    });
+
+    it('attaches interspersed and subsequent letters', () => {
+      let tiles = [
+        { letter: 'T', x: 6, y: 5 },
+        { letter: 'I', x: 7, y: 5 },
+      ];
+      let board = [
+        { letter: 'T', x: 5, y: 5 },
+        { letter: 'H', x: 6, y: 5, turnId: '123' },
+        { letter: 'I', x: 7, y: 5 },
+        { letter: 'N', x: 8, y: 5, turnId: '123'},
+        { letter: 'G', x: 9, y: 5, turnId: '123'}
+      ];
+      let activeAxis = findActiveAxis(board);
+
+      let capturedWord = rewindAndCaptureWord({tiles, board, activeAxis});
+
+      expect( capturedWord ).to.deep.equal([
+        { letter: 'T', x: 5, y: 5 },
+        { letter: 'H', x: 6, y: 5, turnId: '123' },
+        { letter: 'I', x: 7, y: 5 },
+        { letter: 'N', x: 8, y: 5, turnId: '123' },
+        { letter: 'G', x: 9, y: 5, turnId: '123' }
+      ]);
+    });
   });
 });
