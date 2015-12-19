@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server/index.js",
+    "start": "nodemon server/index.js",
     "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive"
   },
   "keywords": [],
@@ -14,11 +14,14 @@
     "babel": "^6.3.13",
     "babel-polyfill": "^6.3.14",
     "babel-runtime": "^6.3.13",
+    "body-parser": "^1.14.2",
     "express": "^4.13.3",
     "history": "~1.13.0",
     "immutable": "^3.7.5",
+    "jsonwebtoken": "^5.4.1",
     "lodash": "^3.10.1",
     "mongoose": "^4.3.3",
+    "morgan": "^1.6.1",
     "nconf": "^0.8.2",
     "passport": "^0.3.2",
     "passport-jwt": "^1.2.1",

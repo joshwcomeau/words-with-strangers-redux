@@ -1,4 +1,4 @@
 {
-  "name": "Josh",
-  "public": "Another thing"
+  "MONGO_URL": "mongodb://localhost/words_with_strangers",
+  "PORT": 3000
 }

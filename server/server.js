@@ -1,11 +1,11 @@
 import qs                         from 'qs';
 import path                       from 'path';
+import nconf                      from 'nconf';
+import morgan                     from 'morgan';
 import Express                    from 'express';
 import mongoose                   from 'mongoose';
+import bodyParser                 from 'body-parser';
 
-import passport                   from 'passport';
-import passportLocal              from 'passport-local';
-import passportJwt                from 'passport-jwt';
 
 import webpack                    from 'webpack';
 import webpackDevMiddleware       from 'webpack-dev-middleware';
@@ -21,30 +21,32 @@ import createLocation             from 'history/lib/createLocation';
 
 import User                       from './models/user.model';
 
-import routes                     from '../common/routes';
+import serverRoutes               from './routes'
+import clientRoutes               from '../common/routes';
 import configureStore             from '../common/store/configureStore';
 import { fetchTiles }             from '../common/lib/tiles.lib';
 
 import './initialize';
 
-const app = new Express();
-const port = 3000;
+const app   = new Express();
+const port  = nconf.get('PORT');
+
+// use body parser so we can get info from POST and/or URL parameters
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// use morgan to log requests to the console
+app.use(morgan('dev'));
 
 // Database stuff
 // TODO: Use a cloud mongo provider.
-mongoose.connect('mongodb://localhost/words_with_strangers');
+mongoose.connect( nconf.get('MONGO_URL') );
 
-// Authentication stuff
-app.use(passport.initialize());
-const LocalStrategy = passportLocal.Strategy;
-const JwtStrategy   = passportJwt.Strategy;
 
-const jwtOptions = {
-  secretOrKey: 'secret'
-}
-passport.use(new JwtStrategy(jwtOptions, (jwtPayload, done) => {
 
-}));
+// use API Routes
+serverRoutes(app);
+
 
 // Allow for hot module reloading via webpack
 // TODO: Figure out a production strategy
@@ -56,22 +58,24 @@ app.use( webpackDevMiddleware(compiler, {
 app.use( webpackHotMiddleware(compiler) );
 
 
-app.post('/login',
-  passport.authenticate('local', { session: false }),
-  (req, res) => {
-    console.log("LOGIN ROUTE HIT")
-  }
-);
+// app.post('/login',
+//   passport.authenticate('local', { session: false }),
+//   (req, res) => {
+//     console.log("LOGIN ROUTE HIT")
+//   }
+// );
 
 // Every other request should be passed off to React Router to server-render
 // and send down to the client
 app.get('*', handleRender);
 
 function handleRender(req, res) {
+  console.log("Handling render")
   const location  = createLocation(req.url);
   const params    = qs.parse(req.query);
 
-  match({routes, location}, (err, redirectLocation, renderProps) => {
+  match({routes: clientRoutes, location}, (err, redirectLocation, renderProps) => {
+    console.log("Matched", err, renderProps)
     if (err) {
       console.error(err);
       return res.status(500).end('Internal server error D:');
