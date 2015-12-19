@@ -18,6 +18,8 @@
     "history": "~1.13.0",
     "immutable": "^3.7.5",
     "lodash": "^3.10.1",
+    "mongoose": "^4.3.3",
+    "nconf": "^0.8.2",
     "passport": "^0.3.2",
     "passport-jwt": "^1.2.1",
     "passport-local": "^1.0.0",
