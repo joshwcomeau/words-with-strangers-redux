@@ -10,11 +10,13 @@ const userSchema = new Schema({
   updatedAt:    Date
 });
 
-userSchema.pre('save', next => {
+userSchema.pre('save', function(next) {
   // Update timestamps!
   const currentDate = new Date();
   if ( this.isNew ) this.createdAt = currentDate;
   this.updatedAt = currentDate;
+
+  return next();
 });
 
 const User = mongoose.model('User', userSchema)

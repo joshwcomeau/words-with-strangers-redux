@@ -1,7 +1,7 @@
 import { expect }             from 'chai';
 import { List, Map, fromJS }  from 'immutable';
 
-import { immu_pluck }         from '../common/lib/immutable_helpers.lib.js';
+import { immu_pluck }         from '../../../common/lib/immutable_helpers.lib.js';
 
 describe('Immutable Helpers', () => {
   describe('#immu_pluck', () => {

@@ -70,12 +70,10 @@ app.use( webpackHotMiddleware(compiler) );
 app.get('*', handleRender);
 
 function handleRender(req, res) {
-  console.log("Handling render")
   const location  = createLocation(req.url);
   const params    = qs.parse(req.query);
 
   match({routes: clientRoutes, location}, (err, redirectLocation, renderProps) => {
-    console.log("Matched", err, renderProps)
     if (err) {
       console.error(err);
       return res.status(500).end('Internal server error D:');
