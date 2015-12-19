@@ -1,7 +1,6 @@
-/* eslint-disable no-console, no-use-before-define */
-
 import path                       from 'path';
 import Express                    from 'express';
+import passport                   from 'passport';
 import qs                         from 'qs';
 
 import webpack                    from 'webpack';
@@ -24,6 +23,7 @@ const app = new Express();
 const port = 3000;
 
 // Allow for hot module reloading via webpack
+// TODO: Figure out a production strategy
 const compiler = webpack(webpackConfig);
 app.use( webpackDevMiddleware(compiler, {
   noInfo: true,
@@ -32,8 +32,13 @@ app.use( webpackDevMiddleware(compiler, {
 app.use( webpackHotMiddleware(compiler) );
 
 
-// Express middleware, fired on every request
-app.use(handleRender);
+app.get('/login', (req, res) => {
+  console.log("LOGIN ROUTE HIT")
+});
+
+// Every other request should be passed off to React Router to server-render
+// and send down to the client
+app.get('*', handleRender);
 
 function handleRender(req, res) {
   const location  = createLocation(req.url);
