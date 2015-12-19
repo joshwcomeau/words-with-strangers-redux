@@ -1,7 +1,11 @@
+import qs                         from 'qs';
 import path                       from 'path';
 import Express                    from 'express';
+import mongoose                   from 'mongoose';
+
 import passport                   from 'passport';
-import qs                         from 'qs';
+import passportLocal              from 'passport-local';
+import passportJwt                from 'passport-jwt';
 
 import webpack                    from 'webpack';
 import webpackDevMiddleware       from 'webpack-dev-middleware';
@@ -15,12 +19,32 @@ import { Provider }               from 'react-redux';
 
 import createLocation             from 'history/lib/createLocation';
 
+import User                       from './models/user.model';
+
 import routes                     from '../common/routes';
 import configureStore             from '../common/store/configureStore';
 import { fetchTiles }             from '../common/lib/tiles.lib';
 
+import './initialize';
+
 const app = new Express();
 const port = 3000;
+
+// Database stuff
+// TODO: Use a cloud mongo provider.
+mongoose.connect('mongodb://localhost/words_with_strangers');
+
+// Authentication stuff
+app.use(passport.initialize());
+const LocalStrategy = passportLocal.Strategy;
+const JwtStrategy   = passportJwt.Strategy;
+
+const jwtOptions = {
+  secretOrKey: 'secret'
+}
+passport.use(new JwtStrategy(jwtOptions, (jwtPayload, done) => {
+
+}));
 
 // Allow for hot module reloading via webpack
 // TODO: Figure out a production strategy
@@ -32,9 +56,12 @@ app.use( webpackDevMiddleware(compiler, {
 app.use( webpackHotMiddleware(compiler) );
 
 
-app.get('/login', (req, res) => {
-  console.log("LOGIN ROUTE HIT")
-});
+app.post('/login',
+  passport.authenticate('local', { session: false }),
+  (req, res) => {
+    console.log("LOGIN ROUTE HIT")
+  }
+);
 
 // Every other request should be passed off to React Router to server-render
 // and send down to the client
