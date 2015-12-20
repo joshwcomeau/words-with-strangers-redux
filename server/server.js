@@ -103,11 +103,12 @@ function handleRender(req, res) {
           points: 8
         }]
       },
-      currentUser: {
+      user: {
         _id: '2',
         profilePhoto: 'http://cdn2.business2community.com/wp-content/uploads/2014/10/Sushi-Cat-Halloween-Costume2.jpg2.jpg',
         username: 'SushiCat'
-      }
+      },
+      UI: {}
     };
 
     const store = configureStore(initialState);
