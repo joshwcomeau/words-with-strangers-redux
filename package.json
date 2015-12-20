@@ -14,6 +14,7 @@
     "babel": "^6.3.13",
     "babel-polyfill": "^6.3.14",
     "babel-runtime": "^6.3.13",
+    "bcrypt": "^0.8.5",
     "body-parser": "^1.14.2",
     "express": "^4.13.3",
     "history": "~1.13.0",

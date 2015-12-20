@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import bcrypt   from 'bcrypt';
+import jwt      from 'jsonwebtoken';
 
 const Schema = mongoose.Schema;
 
@@ -10,11 +12,29 @@ const userSchema = new Schema({
   updatedAt:    Date
 });
 
+userSchema.methods.checkPassword = (password, callback) => {
+  if ( !this.password ) return callback(null, false);
+  bcrypt.compare( password, this.password, callback);
+}
+
 userSchema.pre('save', function(next) {
-  // Update timestamps!
   const currentDate = new Date();
-  if ( this.isNew ) this.createdAt = currentDate;
   this.updatedAt = currentDate;
+
+  if ( this.isNew ) {
+    this.createdAt = currentDate;
+
+    // Encrypt the selected password!
+    bcrypt.hash(this.password, 10, (err, hashedPassword) => {
+      this.password = hashedPassword;
+      return next();
+    });
+  } else {
+    return next();
+  }
+
+
+
 
   return next();
 });

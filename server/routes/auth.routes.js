@@ -1,6 +1,7 @@
 // Authentication routes.
 // Deals with registration, login, logout.
 import nconf          from 'nconf';
+import * as _         from 'lodash';
 
 import jwt            from 'jsonwebtoken';
 import passport       from 'passport';
@@ -14,10 +15,7 @@ export default function(app) {
   app.use(passport.initialize());
   const LocalStrategy = passportLocal.Strategy;
   const JwtStrategy   = passportJwt.Strategy;
-
-  const jwtOptions = {
-    secretOrKey: nconf.get('JWT_SECRET')
-  };
+  const jwtOptions    = { secretOrKey: nconf.get('JWT_SECRET') };
 
   passport.use(new JwtStrategy(jwtOptions, (jwtPayload, done) => {
     User.findById(jwtPayload._id, (err, user) => {
@@ -41,31 +39,48 @@ export default function(app) {
       if (err)    throw err;
       if (!user)  return res.status(422).json({ type: 'username_not_found' });
 
-      // Check the password. TODO: Use bcrypt
-      if ( user.password !== req.body.password )
-        return res.status(422).json({ type: 'incorrect_password' });
+      user.checkPassword( req.body.password, (err, isCorrect) => {
+        if (err) throw err;
 
-      const token = jwt.sign({ _id: user._id }, nconf.get('JWT_SECRET'));
+        if ( !isCorrect ) {
+          return res.status(422).json({ type: 'incorrect_password' });
+        }
 
-      return res.json({
-        success: true,
-        token
+        const token = jwt.sign({ _id: user._id }, nconf.get('JWT_SECRET'));
+
+        return res.json({
+          success: true,
+          token
+        });
       });
     });
   });
 
   app.post('/api/register', (req, res) => {
-    // TEMPORARY: Create a sample user
-    var tempUser = new User({
-      username: 'joshu',
-      password: 'password'
+    // TODO: Validations
+    const selectedAnimalNum = _.random(1, 3);
+    const animalPhotoUrl    = `https://s3.amazonaws.com/wordswithstrangers/animal-0${selectedAnimalNum}.png`
+
+    const user = new User({
+      username:     req.body.username,
+      password:     req.body.password,
+      profilePhoto: animalPhotoUrl
     });
 
-    tempUser.save( (err) => {
-      if (err) throw err;
+    user.save( (err) => {
+      if (err) {
+        // Duplicate username.
+        if ( err.toJSON().code === 11000 ) {
+          return res.status(409).json({ type: 'duplicate_username' })
+        } else {
+          return res.status(400).json({ type: 'unknown_error' })
+        }
+      }
 
-      console.log("Saved user!");
-      return res.json(tempUser)
+      // Generate a JWT for this new user, for use in subsequent requests.
+      const token = jwt.sign({ _id: user._id }, nconf.get('JWT_SECRET'));
+
+      return res.json({ user, token });
     });
   });
 }
