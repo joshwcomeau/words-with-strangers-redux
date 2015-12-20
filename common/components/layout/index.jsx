@@ -1,5 +1,9 @@
 import React from 'react';
 
+// TODO: Remove DevTools from production environment.
+import DevTools       from '../../containers/DevTools.jsx';
+
+
 export default class AppView extends React.Component {
   render() {
     return (
@@ -7,6 +11,7 @@ export default class AppView extends React.Component {
         <h1>Words with Strangers</h1>
         <hr />
         {this.props.children}
+        <DevTools />
       </div>
     );
   }
