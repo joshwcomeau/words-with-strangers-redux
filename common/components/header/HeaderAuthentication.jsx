@@ -1,13 +1,12 @@
 import React from 'react';
 
 const HeaderAuthentication = React.createClass({
-  getInitialState() {
-    return {
-      menuOpen: false
-    }
+  menuName: 'headerAuthentication',
+  isActive() {
+    return this.props.activeMenu === this.menuName;
   },
   toggleMenu() {
-    this.setState({ menuOpen: !this.state.menuOpen });
+    this.isActive() ? this.props.closeMenu() : this.props.openMenu(this.menuName);
   },
   submitLogin(ev) {
     ev.preventDefault();
@@ -38,9 +37,9 @@ const HeaderAuthentication = React.createClass({
         </div>
 
         {/* Login Menu */}
-        <div className={this.state.menuOpen ? '' : 'hide'}>
+        <div className={this.isActive() ? '' : 'hide'}>
           <div className="dropdown-menu-blocker log-in-menu-blocker" onClick={this.toggleMenu}></div>
-          <div className="dropdown-menu log-in-menu right-arrow {this.state.menuOpen ? '' : 'hide'}">
+          <div className="dropdown-menu log-in-menu right-arrow {this.isActive() ? '' : 'hide'}">
             <form className="log-in-form" onSubmit={this.submitLogin}>
               <input type="text" name="email_username" placeholder="Username" ref="username" />
               <input type="password" name="password" placeholder="Password" ref="password" />

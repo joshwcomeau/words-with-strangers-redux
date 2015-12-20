@@ -1,19 +1,30 @@
 import React from 'react';
 
-import HeaderAccountMenu    from './HeaderAccountMenu.jsx';
+import HeaderAccount        from './HeaderAccount.jsx';
 import HeaderAuthentication from './HeaderAuthentication.jsx';
 
 
 const Header = React.createClass({
-
+  componentDidMount() {
+    console.log(this.props);
+  },
   render() {
     return (
       <header id="main-layout-header">
         <a href="/" id="main-layout-logo">Words with Strangers</a>
         <nav>
           { this.props.authenticated ?
-            <HeaderAccountMenu user={this.props.user} /> :
-            <HeaderAuthentication />
+            <HeaderAccount
+              user={this.props.user}
+              activeMenu={this.props.activeMenu}
+              openMenu={this.props.openMenu}
+              closeMenu={this.props.closeMenu}
+            /> :
+            <HeaderAuthentication
+              activeMenu={this.props.activeMenu}
+              openMenu={this.props.openMenu}
+              closeMenu={this.props.closeMenu}
+            />
           }
           <a className="nav-link">Leaderboard</a>
           <a className="nav-link" href='/games'>Games</a>
