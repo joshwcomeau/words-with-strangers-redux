@@ -10,6 +10,8 @@ import passportJwt    from 'passport-jwt';
 
 import User           from '../models/user.model';
 
+import { API_URLS }   from '../../common/constants/config.constants';
+
 
 export default function(app) {
   app.use(passport.initialize());
@@ -32,26 +34,29 @@ export default function(app) {
     }
   );
 
-  app.post('/api/authenticate', (req, res) => {
+  app.post(API_URLS.authenticate, (req, res) => {
     User.findOne({
       username: req.body.username
     }, (err, user) => {
       if (err)    throw err;
-      if (!user)  return res.status(422).json({ type: 'username_not_found' });
+      if (!user)  return res.status(422).json({
+        type:     'username_not_found',
+        details:  "Sorry, we can't find any users with that username."
+      });
 
       user.checkPassword( req.body.password, (err, isCorrect) => {
         if (err) throw err;
 
         if ( !isCorrect ) {
-          return res.status(422).json({ type: 'incorrect_password' });
+          return res.status(422).json({
+            type:     'incorrect_password',
+            details:  "That password is incorrect!"
+          });
         }
 
         const token = jwt.sign({ _id: user._id }, nconf.get('JWT_SECRET'));
 
-        return res.json({
-          success: true,
-          token
-        });
+        return res.json({ user, token });
       });
     });
   });

@@ -6,6 +6,9 @@ import { Provider }         from 'react-redux';
 import { fromJS }           from 'immutable';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 
+require('es6-promise').polyfill();
+require('isomorphic-fetch');
+
 import routes               from '../common/routes.jsx';
 import configureStore       from '../common/store/configureStore';
 

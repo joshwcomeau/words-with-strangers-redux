@@ -5,8 +5,9 @@ export const VALIDATE_PLACEMENT     = 'VALIDATE_PLACEMENT';
 export const SUBMIT_WORD            = 'SUBMIT_WORD';
 export const END_TURN               = 'END_TURN';
 
-// USER constants
-export const LOGIN                  = 'LOGIN';
+// AUTH constants
+export const LOGIN_SUCCESS          = 'LOGIN_SUCCESS';
+export const LOGIN_FAILURE          = 'LOGIN_FAILURE';
 export const LOGOUT                 = 'LOGOUT';
 
 // UI constants
