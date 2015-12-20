@@ -1,4 +1,4 @@
-import * as _           from 'lodash';
+import * as _       from 'lodash';
 
 import { API_URLS } from '../constants/config.constants';
 import {
@@ -13,14 +13,29 @@ import {
 
 
 function authenticate(credentials) {
+  console.log("Sending", JSON.stringify(credentials));
   return fetch(API_URLS.authenticate, {
     method: 'post',
     headers: {
-      'Accept':       'application/json',
+      'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(credentials)
   });
+}
+
+function evaluateResponse(response) {
+  if ( response.status < 300 ) {
+    return response.json();
+  } else {
+    // Fetch has an extremely annoying API.
+    // In order to access both the status code AND the response JSON,
+    // I have to jump through this hoop of resolving the promise and then
+    // throwing an exception with the resolved data.
+    return response.json().then( (payload) => {
+      throw payload;
+    })
+  }
 }
 
 export function loginSuccess(payload) {
@@ -33,13 +48,13 @@ export function loginSuccess(payload) {
   };
 }
 
-export function loginFailure(payload) {
-  _.extend(payload, {
+export function loginFailure(err) {
+  _.extend(err, {
     authenticated: false
   });
   return {
     type: LOGIN_FAILURE,
-    payload
+    payload: err
   }
 }
 
@@ -57,23 +72,18 @@ export function login(credentials) {
 
 
   return function(dispatch, getState) {
-    return authenticate(credentials).then(
-      user => {
-        console.log("Authentication successful!", user)
-        dispatch(loginSuccess(user));
+    return authenticate(credentials)
+      .then( evaluateResponse )
+      .then( payload => {
+        dispatch(loginSuccess(payload));
         dispatch(closeMenu());
         dispatch(setAndDisplayFlash('notice', "Successfully logged in"));
-      },
-      err => {
-        console.log("Authentication failed", err);
+      })
+      .catch( err => {
+        // This is an actual exception, not a failed login attempt.
         dispatch(loginFailure(err));
-      }
-    );
+      });
   }
-  return {
-    type:   LOGIN,
-    user
-  };
 }
 
 export function logout() {

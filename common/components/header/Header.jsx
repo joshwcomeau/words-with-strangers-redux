@@ -21,6 +21,8 @@ const Header = React.createClass({
               closeMenu={this.props.closeMenu}
             /> :
             <HeaderAuthentication
+              login={this.props.login}
+              authError={this.props.authError}
               activeMenu={this.props.activeMenu}
               openMenu={this.props.openMenu}
               closeMenu={this.props.closeMenu}

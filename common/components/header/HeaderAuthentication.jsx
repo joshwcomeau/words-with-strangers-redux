@@ -8,27 +8,26 @@ const HeaderAuthentication = React.createClass({
   toggleMenu() {
     this.isActive() ? this.props.closeMenu() : this.props.openMenu(this.menuName);
   },
+
   submitLogin(ev) {
     ev.preventDefault();
 
-    let username = ReactDOM.findDOMNode(this.refs.username).value;
-    let password = ReactDOM.findDOMNode(this.refs.password).value;
+    const credentials = {
+      username: this.usernameInput.value,
+      password: this.passwordInput.value
+    };
 
     // TODO: some form of basic validation.
 
-    // Meteor.loginWithPassword(username, password, (err) => {
-    //   if ( err ) {
-    //     // TODO: Error handling
-    //     console.error( "Error logging in:", err );
-    //   } else if ( !Meteor.user() ){
-    //     console.error( "No formal error logging in, but we aren't logged in =(");
-    //   } else {
-    //     // Success! Just close the window.
-    //     this.setState({ menuOpen: false });
-    //   }
-    // });
-
+    this.props.login(credentials);
   },
+
+  showError() {
+    return (
+      <div className="error">{this.props.authError}</div>
+    );
+  },
+
   render() {
     return (
       <span className="nav-link header-log-in">
@@ -41,8 +40,19 @@ const HeaderAuthentication = React.createClass({
           <div className="dropdown-menu-blocker log-in-menu-blocker" onClick={this.toggleMenu}></div>
           <div className="dropdown-menu log-in-menu right-arrow {this.isActive() ? '' : 'hide'}">
             <form className="log-in-form" onSubmit={this.submitLogin}>
-              <input type="text" name="email_username" placeholder="Username" ref="username" />
-              <input type="password" name="password" placeholder="Password" ref="password" />
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                ref={ ref => this.usernameInput = ref }
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                ref={ ref => this.passwordInput = ref }
+              />
+              {this.props.authError ? this.showError() : null}
               <button className="button tori-login">Sign In</button>
             </form>
             <div className="divider" data-text="or"></div>

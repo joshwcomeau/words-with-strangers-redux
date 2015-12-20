@@ -35,6 +35,8 @@ export default function(app) {
   );
 
   app.post(API_URLS.authenticate, (req, res) => {
+    console.log(req)
+    console.log("Looking for user ", req.body.username)
     User.findOne({
       username: req.body.username
     }, (err, user) => {

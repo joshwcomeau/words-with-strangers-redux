@@ -12,8 +12,8 @@ const userSchema = new Schema({
   updatedAt:    Date
 });
 
-userSchema.methods.checkPassword = (password, callback) => {
-  if ( !this.password ) return callback(null, false);
+userSchema.methods.checkPassword = function(password, callback) {
+  console.log("CONTEXT", this);
   bcrypt.compare( password, this.password, callback);
 }
 
