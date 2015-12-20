@@ -6,9 +6,15 @@ export const SUBMIT_WORD            = 'SUBMIT_WORD';
 export const END_TURN               = 'END_TURN';
 
 // AUTH constants
+export const BEGIN_LOGIN            = 'BEGIN_LOGIN';
 export const LOGIN_SUCCESS          = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE          = 'LOGIN_FAILURE';
 export const LOGOUT                 = 'LOGOUT';
+export const ENABLE_REGISTRATION    = 'ENABLE_REGISTRATION';
+export const DISABLE_REGISTRATION   = 'DISABLE_REGISTRATION';
+export const BEGIN_REGISTRATION     = 'BEGIN_REGISTRATION';
+export const REGISTRATION_SUCCESS   = 'REGISTRATION_SUCCESS';
+export const REGISTRATION_FAILURE   = 'REGISTRATION_FAILURE';
 
 // UI constants
 export const OPEN_MENU              = 'OPEN_MENU';

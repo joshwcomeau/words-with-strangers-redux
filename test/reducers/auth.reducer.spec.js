@@ -8,7 +8,9 @@ import authReducer, {initialState} from '../../common/reducers/auth.reducer';
 import {
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  LOGOUT
+  LOGOUT,
+  ENABLE_REGISTRATION,
+  DISABLE_REGISTRATION
 }   from '../../common/constants/actions.constants';
 
 
@@ -73,4 +75,29 @@ describe('authReducer', () => {
 
     expect(nextState).to.equal(initialState);
   });
+
+  it('handles ENABLE_REGISTRATION', () => {
+    const state = fromJS({ authenticated: false });
+    const action = {
+      type: ENABLE_REGISTRATION
+    };
+    const nextState = authReducer(state, action);
+
+    expect(nextState).to.equal(fromJS({
+      authenticated: false,
+      registrationEnabled: true
+    }));
+  });
+
+
+  it('handles DISABLE_REGISTRATION', () => {
+    const state = fromJS({ registrationEnabled: true });
+    const action = {
+      type: DISABLE_REGISTRATION
+    };
+    const nextState = authReducer(state, action);
+
+    expect(nextState).to.equal(fromJS({ registrationEnabled: false }));
+  });
+
 });

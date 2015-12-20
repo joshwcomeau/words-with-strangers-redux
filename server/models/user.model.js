@@ -13,7 +13,6 @@ const userSchema = new Schema({
 });
 
 userSchema.methods.checkPassword = function(password, callback) {
-  console.log("CONTEXT", this);
   bcrypt.compare( password, this.password, callback);
 }
 
@@ -26,6 +25,7 @@ userSchema.pre('save', function(next) {
 
     // Encrypt the selected password!
     bcrypt.hash(this.password, 10, (err, hashedPassword) => {
+      console.log("Setting pass", this.password, "to", hashedPassword)
       this.password = hashedPassword;
       return next();
     });

@@ -4,39 +4,15 @@ import { API_URLS } from '../constants/config.constants';
 import {
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  LOGOUT
+  LOGOUT,
+  ENABLE_REGISTRATION,
+  DISABLE_REGISTRATION
 } from '../constants/actions.constants';
 import {
   closeMenu,
   setAndDisplayFlash
 } from './ui.actions';
 
-
-function authenticate(credentials) {
-  console.log("Sending", JSON.stringify(credentials));
-  return fetch(API_URLS.authenticate, {
-    method: 'post',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(credentials)
-  });
-}
-
-function evaluateResponse(response) {
-  if ( response.status < 300 ) {
-    return response.json();
-  } else {
-    // Fetch has an extremely annoying API.
-    // In order to access both the status code AND the response JSON,
-    // I have to jump through this hoop of resolving the promise and then
-    // throwing an exception with the resolved data.
-    return response.json().then( (payload) => {
-      throw payload;
-    })
-  }
-}
 
 export function loginSuccess(payload) {
   _.extend(payload, {
@@ -89,5 +65,45 @@ export function login(credentials) {
 export function logout() {
   return {
     type: LOGOUT
+  }
+}
+
+export function enableRegistration() {
+  return {
+    type: ENABLE_REGISTRATION
+  }
+}
+
+export function disableRegistration() {
+  return {
+    type: DISABLE_REGISTRATION
+  }
+}
+
+
+// HELPERS
+
+function authenticate(credentials) {
+  return fetch(API_URLS.authenticate, {
+    method: 'post',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(credentials)
+  });
+}
+
+function evaluateResponse(response) {
+  if ( response.status < 300 ) {
+    return response.json();
+  } else {
+    // Fetch has an extremely annoying API.
+    // In order to access both the status code AND the response JSON,
+    // I have to jump through this hoop of resolving the promise and then
+    // throwing an exception with the resolved data.
+    return response.json().then( (payload) => {
+      throw payload;
+    })
   }
 }
