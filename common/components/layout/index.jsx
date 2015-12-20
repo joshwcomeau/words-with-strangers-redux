@@ -13,12 +13,13 @@ export default class AppView extends React.Component {
         <Header
           auth={this.props.auth.authenticated}
           user={this.props.auth.user}
-          authError={this.props.auth.details}
+          error={this.props.auth.error}
           activeMenu={this.props.ui.menu}
           openMenu={this.props.openMenu}
           closeMenu={this.props.closeMenu}
           login={this.props.login}
         />
+        <div id="main-layout-header-spacer"></div>
         {this.props.children}
         <DevTools />
       </div>

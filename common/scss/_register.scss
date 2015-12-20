@@ -1,0 +1,130 @@
+@import 'variables';
+
+#register {
+  padding: 3.5rem;
+
+  .card {
+    max-width: 600px;
+    margin: 0 auto;
+
+    .card-header {
+      padding: 1rem 2rem;
+      background: $lightgray;
+      border-radius: 2px 2px 0 0;
+    }
+    .card-body {
+      padding: 2rem;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      text-align: left;
+    }
+
+    h1 {
+      font-weight: 700;
+      color: $darkgray;
+      font-size: 3rem;
+      letter-spacing: -2px;
+    }
+
+    h2 {
+      color: #000;
+      font-size: 2rem;
+      margin-bottom: 0.7rem;
+      font-weight: 700;
+    }
+
+    h3 {
+      color: $mediumgray;
+      font-size: 1.6rem;
+      line-height: 1.6rem;
+      font-weight: 500;
+    }
+
+    button {
+      width: 100%;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      height: 3rem;
+
+      i {
+        font-size: 1.5rem;
+        line-height: 3rem;
+      }
+    }
+
+    .continue {
+      margin-top: 1.5rem;
+    }
+  }
+
+  .card-body.step-2 {
+    padding: 0;
+
+    .step-2-header {
+      padding: 1rem 2rem;
+      border-radius: 2px 2px 0 0;
+      font-size: 1.75rem;
+      font-weight: 700;
+      height: 4rem;
+      line-height: 2.4rem;
+      color: $red;
+      background: $lightgray;
+
+    }
+
+    .profile-photo-header {
+      text-align: right;
+    }
+
+    .profile-photo {
+      float: left;
+      position: relative;
+      margin: 0 auto;
+      width: 250px;
+      height: 250px;
+      border-radius: 100%;
+      border: 3px solid #FFF;
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+      background-size: cover;
+      background-position: center center;
+    }
+
+    .profile-photo-container {
+      margin-top: -2rem;
+      padding: 0 2rem 1.5rem;
+      border-bottom: 1px solid #EEE;
+    }
+    .profile-photo-details {
+      padding: 4rem 1rem 0 0;
+      text-align: right;
+
+      h5 {
+        font-size: 1rem;
+        font-weight: 500;
+        margin: 0 0 0.5rem;
+      }
+
+      .button {
+        margin-top: 2rem;
+        width: 180px;
+        background: $fadedteal;
+      }
+    }
+
+    .profile-details-container {
+      .profile-details-header {
+
+      }
+      .profile-details {
+        padding: 1rem 2rem 3rem;
+
+        .display-name-container {
+          padding-right: 0.5rem;
+        }
+
+      }
+    }
+  }
+}

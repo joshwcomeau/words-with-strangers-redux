@@ -10,8 +10,6 @@ import passportJwt    from 'passport-jwt';
 
 import User           from '../models/user.model';
 
-import { API_URLS }   from '../../common/constants/config.constants';
-
 
 export default function(app) {
   app.use(passport.initialize());
@@ -34,8 +32,7 @@ export default function(app) {
     }
   );
 
-  app.post(API_URLS.authenticate, (req, res) => {
-    console.log(req)
+  app.post('/api/authenticate', (req, res) => {
     console.log("Looking for user ", req.body.username)
     User.findOne({
       username: req.body.username

@@ -6,8 +6,8 @@ import * as _                 from 'lodash';
 import authReducer, {initialState} from '../../common/reducers/auth.reducer';
 
 import {
-  LOGIN_SUCCESS,
-  LOGIN_FAILURE,
+  AUTHENTICATION_SUCCESS,
+  AUTHENTICATION_FAILURE,
   LOGOUT,
   ENABLE_REGISTRATION,
   DISABLE_REGISTRATION
@@ -24,7 +24,6 @@ describe('authReducer', () => {
     }
   };
   const exampleFailureResponse = {
-    authenticated:  false,
     type:           'username_not_found',
     details:        "Sorry, we couldn't find a user with that username."
   }
@@ -46,24 +45,46 @@ describe('authReducer', () => {
     });
   });
 
-  it('handles LOGIN_SUCCESS', () => {
-    const state = initialState;
-    const action = {
-      type: LOGIN_SUCCESS, payload: exampleSuccessResponse
-    };
-    const nextState = authReducer(state, action);
+  describe('AUTHENTICATION_SUCCESS', () => {
+    it('updates the state with the user, token, and auth status.', () => {
+      const state = Map({ authenticated: false });
+      const action = {
+        type: AUTHENTICATION_SUCCESS, payload: exampleSuccessResponse
+      };
+      const nextState = authReducer(state, action);
 
-    expect(nextState).to.equal(fromJS(exampleSuccessResponse));
+      expect(nextState).to.equal(fromJS(exampleSuccessResponse));
+    });
+
+    it('clears any previous auth errors', () => {
+      const state = Map({
+        authenticated: false,
+        error: {
+          type: 'username_exists',
+          details: 'Sorry, some jerk already took that username!'
+        }
+      });
+      const action = {
+        type: AUTHENTICATION_SUCCESS, payload: exampleSuccessResponse
+      };
+      const nextState = authReducer(state, action);
+
+      expect(nextState).to.equal(fromJS(exampleSuccessResponse))
+    });
   });
 
-  it('handles LOGIN_FAILURE', () => {
+
+  it('handles AUTHENTICATION_FAILURE', () => {
     const state = initialState;
     const action = {
-      type: LOGIN_FAILURE, payload: exampleFailureResponse
+      type: AUTHENTICATION_FAILURE, payload: exampleFailureResponse
     };
     const nextState = authReducer(state, action);
 
-    expect(nextState).to.equal(fromJS(exampleFailureResponse));
+    expect(nextState).to.equal(fromJS({
+      authenticated: false,
+      error: exampleFailureResponse
+    }));
   });
 
   it('handles LOGOUT', () => {

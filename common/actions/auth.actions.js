@@ -1,9 +1,8 @@
-import * as _       from 'lodash';
+import * as _ from 'lodash';
 
-import { API_URLS } from '../constants/config.constants';
 import {
-  LOGIN_SUCCESS,
-  LOGIN_FAILURE,
+  AUTHENTICATION_SUCCESS,
+  AUTHENTICATION_FAILURE,
   LOGOUT,
   ENABLE_REGISTRATION,
   DISABLE_REGISTRATION
@@ -14,22 +13,20 @@ import {
 } from './ui.actions';
 
 
-export function loginSuccess(payload) {
+export function authenticationSuccess(payload) {
   _.extend(payload, {
     authenticated: true
   });
   return {
-    type: LOGIN_SUCCESS,
+    type: AUTHENTICATION_SUCCESS,
     payload
   };
 }
 
-export function loginFailure(err) {
-  _.extend(err, {
-    authenticated: false
-  });
+
+export function authenticationFailure(err) {
   return {
-    type: LOGIN_FAILURE,
+    type: AUTHENTICATION_FAILURE,
     payload: err
   }
 }
@@ -37,30 +34,45 @@ export function loginFailure(err) {
 
 export function login(credentials) {
   // Thunk that
-  //   - Dispatches an 'ATTEMPTING_LOGIN' message right away.
+  //   - Dispatches a 'BEGIN_LOGIN' message right away.
   //   - makes an async request to the server to request user data + auth token
   //     - on success, calls:
-  //        - LOGIN_SUCCESS with the server's data
+  //        - AUTHENTICATION_SUCCESS with the server's data
   //        - CLOSE_MENU to dismiss the login menu
   //        - SET_AND_DISPLAY_FLASH to indicate that we've sucessfully logged in
   //     - on failure, calls
-  //        - LOGIN_FAILURE with an appropriate error message.
+  //        - AUTHENTICATION_FAILURE with an appropriate error message.
 
 
   return function(dispatch, getState) {
-    return authenticate(credentials)
+    return authenticate('/api/authenticate', credentials)
       .then( evaluateResponse )
       .then( payload => {
-        dispatch(loginSuccess(payload));
+        dispatch(authenticationSuccess(payload));
         dispatch(closeMenu());
         dispatch(setAndDisplayFlash('notice', "Successfully logged in"));
       })
       .catch( err => {
-        // This is an actual exception, not a failed login attempt.
-        dispatch(loginFailure(err));
+        dispatch(authenticationFailure(err));
       });
   }
 }
+
+
+export function register(credentials) {
+  return function(dispatch, getState) {
+    return authenticate('/api/register', credentials)
+      .then( evaluateResponse )
+      .then( payload => {
+        dispatch(authenticationSuccess(payload));
+        // TODO: Routing. Move the user beyond the registration page!
+      })
+      .catch( err => {
+        dispatch(authenticationFailure(err));
+      });
+  }
+}
+
 
 export function logout() {
   return {
@@ -81,13 +93,13 @@ export function disableRegistration() {
 }
 
 
-// HELPERS
 
-function authenticate(credentials) {
-  return fetch(API_URLS.authenticate, {
+// HELPERS
+function authenticate(route, credentials) {
+  return fetch(route, {
     method: 'post',
     headers: {
-      'Accept': 'application/json',
+      'Accept':       'application/json',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(credentials)

@@ -24,7 +24,7 @@ const HeaderAuthentication = React.createClass({
 
   showError() {
     return (
-      <div className="error">{this.props.authError}</div>
+      <div className="error">{this.props.error.details}</div>
     );
   },
 
@@ -52,7 +52,7 @@ const HeaderAuthentication = React.createClass({
                 placeholder="Password"
                 ref={ ref => this.passwordInput = ref }
               />
-              {this.props.authError ? this.showError() : null}
+              {this.props.error ? this.showError() : null}
               <button className="button tori-login">Sign In</button>
             </form>
             <div className="divider" data-text="or"></div>

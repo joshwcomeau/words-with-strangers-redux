@@ -1,10 +1,13 @@
 import { Map, fromJS }  from 'immutable';
 import {
-  LOGIN_SUCCESS,
-  LOGIN_FAILURE,
+  AUTHENTICATION_SUCCESS,
+  AUTHENTICATION_FAILURE,
   LOGOUT,
   ENABLE_REGISTRATION,
-  DISABLE_REGISTRATION
+  DISABLE_REGISTRATION,
+  REGISTRATION_SUCCESS,
+  REGISTRATION_FAILURE
+
 } from '../constants/actions.constants';
 
 // Initial state for the 'user' slice of the state.
@@ -14,10 +17,10 @@ export const initialState = Map({
 
 export default function user(state = initialState, action) {
   switch (action.type) {
-    case LOGIN_SUCCESS:
+    case AUTHENTICATION_SUCCESS:
       return fromJS(action.payload);
-    case LOGIN_FAILURE:
-      return fromJS(action.payload);
+    case AUTHENTICATION_FAILURE:
+      return state.set('error', fromJS(action.payload));
     case LOGOUT:
       return initialState;
     case ENABLE_REGISTRATION:

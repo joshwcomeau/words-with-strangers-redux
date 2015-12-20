@@ -1,16 +1,33 @@
 import React from 'react';
 import Formsy from 'formsy-react';
 
+import FloatingTextField from '../form/FloatingTextField.jsx'
+
 const Register = React.createClass({
-  enableButton() {
-    this.setState({
-      canSubmit: true
-    });
+  componentWillReceiveProps(nextProps) {
+    // If the form is submitted but the server rejects the submission,
+    // the props will be updated, and the auth object will have an 'error'
+    // property. We'll use that property to invalidate Formsy as necessary.
+    console.log("Updating with props", nextProps)
+    if ( nextProps.error ) {
+      let errors = {};
+
+      switch(nextProps.error.type) {
+        case 'duplicate_username':
+          errors = {username: 'Sorry, someone else has already taken that username. What a jerk.'}
+        case 'reserved_username':
+          errors = {username: 'Sorry, that username is a reserved word =('}
+        default:
+          errors = {username: 'Oh no! A miscellaneous server error has occured.'}
+      }
+
+      this.form.updateInputsWithError(errors);
+    }
   },
-  disableButton() {
-    this.setState({
-      canSubmit: false
-    });
+
+  submit(model, reset, invalidate) {
+    console.log("Submitting model", model);
+    this.props.register(model)
   },
 
   render() {
@@ -34,42 +51,47 @@ const Register = React.createClass({
             </button>
 
             <div className="divider" data-text="Or"></div>
-            <Formsy.Form onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+            <Formsy.Form
+              ref={ ref => this.form = ref }
+              onValidSubmit={this.submit}
+              onValid={this.props.enableRegistration}
+              onInvalid={this.props.disableRegistration}
+            >
               {/* fake fields are a workaround for chrome autofill getting the wrong fields */}
               <input style={{ display: "none" }} type="text" name="fakeusernameremembered"/>
               <input style={{ display: "none" }} type="password" name="fakepasswordremembered"/>
 
               <FloatingTextField
-              name="username"
-              type="text"
-              label="Choose a Username"
-              validations={{
-                isAlphanumeric: true,
-                maxLength: 30
-              }}
-              validationErrors={{
-                isAlphanumeric: "Our deepest apologies, but usernames can only contain letters and numbers.",
-                maxLength: "Egad! That username is too long. Keep it under 30, please."
-              }}
-              required
+                name="username"
+                type="text"
+                label="Choose a Username"
+                validations={{
+                  isAlphanumeric: true,
+                  maxLength: 30
+                }}
+                validationErrors={{
+                  isAlphanumeric: "Our deepest apologies, but usernames can only contain letters and numbers.",
+                  maxLength: "Egad! That username is too long. Keep it under 30, please."
+                }}
+                required
               />
 
               <FloatingTextField
-              name="password"
-              type="password"
-              label="Choose a Password"
-              validations={{
-                minLength: 8,
-                maxLength: 50
-              }}
-              validationErrors={{
-                minLength: "Gotta be at least 8 characters. Don't be so hackable!",
-                maxLength: "Woah there, cowboy. Password length is limited to 50 characters."
-              }}
-              required
+                name="password"
+                type="password"
+                label="Choose a Password"
+                validations={{
+                  minLength: 8,
+                  maxLength: 50
+                }}
+                validationErrors={{
+                  minLength: "Gotta be at least 8 characters. Don't be so hackable!",
+                  maxLength: "Woah there, cowboy. Password length is limited to 50 characters."
+                }}
+                required
               />
 
-              <button type="submit" className="button continue" disabled={!this.state.canSubmit}>
+              <button type="submit" className="button continue" disabled={!this.props.registrationEnabled}>
                 <i className="fa fa-caret-right right"></i>
                 Register
               </button>
@@ -80,3 +102,5 @@ const Register = React.createClass({
     );
   }
 });
+
+export default Register;
