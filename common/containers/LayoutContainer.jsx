@@ -1,6 +1,7 @@
+import * as _                 from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect }            from 'react-redux';
-import Layout                 from '../components/layout/Layout.jsx';
+import Layout                 from '../components/layout/index.jsx';
 import * as authActions       from '../actions/auth.actions';
 import * as uiActions         from '../actions/ui.actions';
 
@@ -13,4 +14,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(actionCreators, dispatch);
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( Game );
+export default connect( mapStateToProps, mapDispatchToProps )( Layout );

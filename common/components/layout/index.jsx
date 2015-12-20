@@ -1,15 +1,19 @@
-import React from 'react';
+import React    from 'react';
+
+import Header   from '../../components/header/Header.jsx';
 
 // TODO: Remove DevTools from production environment.
-import DevTools       from '../../containers/DevTools.jsx';
+import DevTools from '../../containers/DevTools.jsx';
 
 
 export default class AppView extends React.Component {
   render() {
     return (
       <div id="app-view">
-        <h1>Words with Strangers</h1>
-        <hr />
+        <Header
+          authenticated={this.props.auth.authenticated}
+          user={this.props.auth.user}
+        />
         {this.props.children}
         <DevTools />
       </div>
