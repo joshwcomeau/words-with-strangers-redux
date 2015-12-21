@@ -1,6 +1,6 @@
-import {
-  Map, List, fromJS
-}  from 'immutable';
+import { Map, List, fromJS }  from 'immutable';
+import { routeReducer }       from 'redux-simple-router';
+
 import game from './game.reducer';
 import auth from './auth.reducer';
 import ui   from './ui.reducer';
@@ -25,6 +25,10 @@ const rootReducer = ( state = Map(), action ) => {
     ),
     ui: ui(
       immutable_state.get('ui'),
+      action
+    ),
+    routing: routeReducer(
+      immutable_state.get('routing'),
       action
     )
   });

@@ -6,6 +6,7 @@ import * as authActions       from '../actions/auth.actions';
 import * as uiActions         from '../actions/ui.actions';
 
 function mapStateToProps(state) {
+  console.log(state);
   return state.toJS();
 }
 
