@@ -22,7 +22,8 @@ export function authenticationSuccess(token, saveToLocal = true) {
     type: AUTHENTICATION_SUCCESS,
     payload: {
       authenticated: true,
-      user: jwtDecode(token)
+      user: jwtDecode(token),
+      token
     }
   };
 }

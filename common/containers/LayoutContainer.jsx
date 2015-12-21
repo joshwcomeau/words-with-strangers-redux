@@ -2,15 +2,15 @@ import * as _                 from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect }            from 'react-redux';
 import Layout                 from '../components/layout/index.jsx';
-import * as authActions       from '../actions/auth.actions';
-import * as uiActions         from '../actions/ui.actions';
+import * as AuthActions       from '../actions/auth.actions';
+import * as UiActions         from '../actions/ui.actions';
 
 function mapStateToProps(state) {
   return state.toJS();
 }
 
 function mapDispatchToProps(dispatch) {
-  const actionCreators = _.extend({}, authActions, uiActions);
+  const actionCreators = _.extend({}, AuthActions, UiActions);
   return bindActionCreators(actionCreators, dispatch);
 }
 

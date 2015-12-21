@@ -22,6 +22,7 @@ const Game = React.createClass({
       </div>
     );
   }
+
 });
 
 export default DragDropContext(Html5Backend)(Game);

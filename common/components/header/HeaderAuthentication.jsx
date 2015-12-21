@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 const HeaderAuthentication = React.createClass({
   menuName: 'headerAuthentication',
@@ -26,6 +27,10 @@ const HeaderAuthentication = React.createClass({
     return (
       <div className="error">{this.props.error.details}</div>
     );
+  },
+
+  clickRegister() {
+
   },
 
   render() {
@@ -67,7 +72,12 @@ const HeaderAuthentication = React.createClass({
               </button>
             </div>
             <div className="divider" data-text="Don't have an account?"></div>
-            <a href="/register" className="register-link">Register now</a>
+            <Link
+              to="/register"
+              className="register-link"
+              onClick={this.props.closeMenu}>
+                Register now
+            </Link>
           </div>
         </div>
       </span>
