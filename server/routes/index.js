@@ -1,10 +1,17 @@
 // API routes
 // Does not render or return HTML/JS. Only returns JSON.
 
-import auth from './auth.routes';
+import authRoutes   from './auth.routes';
+import reactRoutes  from './react.routes';
 
 export default function(app) {
   // By just calling all the route functions with the supplied app, we
   // connect each respective set of routes with our Express application.
-  auth(app);
+
+  // Authentication routes (login, register)
+  authRoutes(app);
+
+  // Finally, the server-rendered React route. This is a catch-all, since
+  // it relies on React-Router to do the routing from here.
+  reactRoutes(app);
 }
