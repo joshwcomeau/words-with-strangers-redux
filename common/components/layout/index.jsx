@@ -1,7 +1,6 @@
 import React    from 'react';
 
 import Header   from '../../components/header/Header.jsx';
-
 // TODO: Remove DevTools from production environment.
 import DevTools from '../../containers/DevTools.jsx';
 

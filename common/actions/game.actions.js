@@ -35,7 +35,6 @@ export function placeTile(tile) {
     // Update the validity of this tile placement.
     // If it's a valid placement, we enable the "submit word" button.
     const boardObj          = getState().toJS().game.board;
-    console.log("PLacd word", getPlacedWord(boardObj))
     const isValidPlacement  = !!getPlacedWord(boardObj);
 
     dispatch({

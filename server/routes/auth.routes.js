@@ -33,7 +33,6 @@ export default function(app) {
   );
 
   app.post('/api/authenticate', (req, res) => {
-    console.log("Looking for user ", req.body.username)
     User.findOne({
       username: req.body.username
     }, (err, user) => {

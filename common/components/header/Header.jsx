@@ -5,9 +5,6 @@ import HeaderAuthentication from './HeaderAuthentication.jsx';
 
 
 const Header = React.createClass({
-  componentDidMount() {
-    console.log(this.props);
-  },
   render() {
     return (
       <header id="main-layout-header">

@@ -57,14 +57,6 @@ app.use( webpackDevMiddleware(compiler, {
 }) );
 app.use( webpackHotMiddleware(compiler) );
 
-
-// app.post('/login',
-//   passport.authenticate('local', { session: false }),
-//   (req, res) => {
-//     console.log("LOGIN ROUTE HIT")
-//   }
-// );
-
 // Every other request should be passed off to React Router to server-render
 // and send down to the client
 app.get('*', handleRender);

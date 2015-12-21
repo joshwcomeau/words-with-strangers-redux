@@ -8,11 +8,10 @@ const Register = React.createClass({
     // If the form is submitted but the server rejects the submission,
     // the props will be updated, and the auth object will have an 'error'
     // property. We'll use that property to invalidate Formsy as necessary.
-    console.log("Updating with props", nextProps)
     if ( nextProps.error ) {
       let errors = {};
 
-      switch(nextProps.error.type) {
+      switch(error.type) {
         case 'duplicate_username':
           errors = {username: 'Sorry, someone else has already taken that username. What a jerk.'}
         case 'reserved_username':
@@ -26,7 +25,6 @@ const Register = React.createClass({
   },
 
   submit(model, reset, invalidate) {
-    console.log("Submitting model", model);
     this.props.register(model)
   },
 

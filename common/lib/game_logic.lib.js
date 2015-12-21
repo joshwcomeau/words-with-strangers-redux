@@ -143,8 +143,6 @@ export function rewindAndCaptureWord({ activeAxis, tiles, board}) {
   // First, find the earliest letter.
   earliestTile = _.first( _.sortBy(tiles, tile => tile[activeAxis]) );
 
-  console.log("Found earliest", earliestTile, "in", tiles)
-
   // Create a cursor tile that will traverse back away from the earliest
   // letter. It's called a cursor simply because it moves along a row.
   cursorTile = earliestTile;

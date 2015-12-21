@@ -11,7 +11,7 @@ import {
   closeMenu,
   setAndDisplayFlash
 } from './ui.actions';
-
+import { pushPath } from 'redux-simple-router';
 
 export function authenticationSuccess(payload) {
   _.extend(payload, {
@@ -65,7 +65,7 @@ export function register(credentials) {
       .then( evaluateResponse )
       .then( payload => {
         dispatch(authenticationSuccess(payload));
-        // TODO: Routing. Move the user beyond the registration page!
+        dispatch(pushPath('/game'))
       })
       .catch( err => {
         dispatch(authenticationFailure(err));

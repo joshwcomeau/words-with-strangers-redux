@@ -41,3 +41,8 @@ strong {
 .flex-item {
   flex: 1;
 }
+
+// TEMP. Just to make life better in development.
+#app-view, #main-layout-header {
+  width: 70%;
+}
