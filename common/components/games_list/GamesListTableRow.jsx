@@ -1,4 +1,6 @@
-import React from 'react';
+import React    from 'react';
+import { Link } from 'react-router';
+import moment   from 'moment';
 
 const GamesListTableRow = React.createClass({
   joinGame() {

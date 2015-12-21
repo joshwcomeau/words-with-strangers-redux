@@ -1,9 +1,10 @@
 import { Map, List, fromJS }  from 'immutable';
 import { routeReducer }       from 'redux-simple-router';
 
-import game from './game.reducer';
-import auth from './auth.reducer';
-import ui   from './ui.reducer';
+import game       from './game.reducer';
+import gamesList  from './games_list.reducer';
+import auth       from './auth.reducer';
+import ui         from './ui.reducer';
 
 
 const rootReducer = ( state = Map(), action ) => {
@@ -17,6 +18,10 @@ const rootReducer = ( state = Map(), action ) => {
     // they take their slice of the state, as well as the action invoked.
     game: game(
       immutable_state.get('game'),
+      action
+    ),
+    gamesList: gamesList(
+      immutable_state.get('gamesList'),
       action
     ),
     auth: auth(
