@@ -2,6 +2,7 @@
 
 $header-height: 4rem;
 $header-height-button: 2.5rem;
+$nav-link-spacing: 1.5rem;
 
 #main-layout-header-spacer {
   position: relative;
@@ -36,7 +37,7 @@ $header-height-button: 2.5rem;
 
     .nav-link {
       float: right;
-      margin-left: 1.5rem;
+      margin-left: $nav-link-spacing;
       color: $navy;
     }
 
@@ -119,6 +120,7 @@ $header-height-button: 2.5rem;
 
     .log-in-text {
       margin: 0;
+      margin-right: $nav-link-spacing;
       cursor: pointer;
     }
 
@@ -128,7 +130,7 @@ $header-height-button: 2.5rem;
 
     .log-in-menu {
       top: $header-height + 0.4rem;
-      right: 0rem;
+      right: $nav-link-spacing;
       width: 20rem;
 
       h5 {
