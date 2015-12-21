@@ -11,7 +11,7 @@ export default class AppView extends React.Component {
     return (
       <div id="app-view">
         <Header
-          auth={this.props.auth.authenticated}
+          authenticated={this.props.auth.authenticated}
           user={this.props.auth.user}
           error={this.props.auth.error}
           activeMenu={this.props.ui.menu}

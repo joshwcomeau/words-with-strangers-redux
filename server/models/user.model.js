@@ -25,18 +25,12 @@ userSchema.pre('save', function(next) {
 
     // Encrypt the selected password!
     bcrypt.hash(this.password, 10, (err, hashedPassword) => {
-      console.log("Setting pass", this.password, "to", hashedPassword)
       this.password = hashedPassword;
       return next();
     });
   } else {
     return next();
   }
-
-
-
-
-  return next();
 });
 
 const User = mongoose.model('User', userSchema)

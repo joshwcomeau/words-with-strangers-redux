@@ -1,11 +1,16 @@
 import React from 'react';
 
 const HeaderAccount = React.createClass({
-
-  toggleMenu() {
-    this.setState({ menuOpen: !this.state.menuOpen });
+  menuName: 'headerAuthentication',
+  isActive() {
+    return this.props.activeMenu === this.menuName;
   },
+  toggleMenu() {
+    this.isActive() ? this.props.closeMenu() : this.props.openMenu(this.menuName);
+  },
+
   profileLink() {
+    return '/game'
     // return FlowRouter.path('profile', { profileId: this.props.currentUser._id });
   },
   logout() {
@@ -18,13 +23,13 @@ const HeaderAccount = React.createClass({
     return (
       <span className="nav-link header-account">
         <button className="account-thumb" onClick={this.toggleMenu} style={{
-          backgroundImage: `url('${this.props.currentUser.profile.photo}')`
+          backgroundImage: `url('${this.props.user.profilePhoto}')`
         }}></button>
-      <div className={this.state.menuOpen ? '' : 'hide'}>
+      <div className={this.isActive() ? '' : 'hide'}>
         <div className="dropdown-menu-blocker account-menu-blocker" onClick={this.toggleMenu}></div>
           <div className="dropdown-menu account-menu right-arrow">
             <a href={this.profileLink()} className="profile-link">
-              <strong>{this.props.currentUser.username}</strong><br />
+              <strong>{this.props.user.username}</strong><br />
               <span>View My Profile</span>
             </a>
             <a className="log-out-link" onClick={this.logout}>Log Out</a>
