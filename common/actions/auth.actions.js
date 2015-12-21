@@ -1,4 +1,5 @@
-import * as _ from 'lodash';
+import * as _     from 'lodash';
+import jwtDecode  from 'jwt-decode';
 
 import {
   AUTHENTICATION_SUCCESS,
@@ -13,18 +14,21 @@ import {
 } from './ui.actions';
 import { pushPath } from 'redux-simple-router';
 
-export function authenticationSuccess(payload) {
-  _.extend(payload, {
-    authenticated: true
-  });
+export function authenticationSuccess(token, saveToLocal = true) {
+  if ( saveToLocal ) localStorage.setItem('wws_auth_token', token);
+
   return {
     type: AUTHENTICATION_SUCCESS,
-    payload
+    payload: {
+      authenticated: true,
+      user: jwtDecode(token)
+    }
   };
 }
 
 
 export function authenticationFailure(err) {
+  localStorage.removeItem('wws_auth_token');
   return {
     type: AUTHENTICATION_FAILURE,
     payload: err
@@ -47,8 +51,8 @@ export function login(credentials) {
   return function(dispatch, getState) {
     return authenticate('/api/authenticate', credentials)
       .then( evaluateResponse )
-      .then( payload => {
-        dispatch(authenticationSuccess(payload));
+      .then( response => {
+        dispatch(authenticationSuccess(response.token));
         dispatch(closeMenu());
         dispatch(setAndDisplayFlash('notice', "Successfully logged in"));
       })
@@ -75,6 +79,7 @@ export function register(credentials) {
 
 
 export function logout() {
+  localStorage.removeItem('wws_auth_token');
   return {
     type: LOGOUT
   }
@@ -95,6 +100,7 @@ export function disableRegistration() {
 
 
 // HELPERS
+// TODO: Move this into middleware!
 function authenticate(route, credentials) {
   return fetch(route, {
     method: 'post',

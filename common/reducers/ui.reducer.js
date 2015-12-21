@@ -1,4 +1,4 @@
-import { Map, fromJS }             from 'immutable';
+import { Map, fromJS } from 'immutable';
 import {
   OPEN_MENU,
   CLOSE_MENU,

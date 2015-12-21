@@ -52,9 +52,12 @@ export default function(app) {
           });
         }
 
-        const token = jwt.sign({ _id: user._id }, nconf.get('JWT_SECRET'));
+        // TODO: Move this to middleware.
+        const userJson = _.pick(user, ['_id', 'username', 'profilePhoto']);
 
-        return res.json({ user, token });
+        const token = jwt.sign(userJson, nconf.get('JWT_SECRET'));
+
+        return res.json({ token });
       });
     });
   });
