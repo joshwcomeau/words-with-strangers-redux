@@ -12,6 +12,7 @@ const Header = React.createClass({
         <nav>
           { this.props.authenticated ?
             <HeaderAccount
+              logout={this.props.logout}
               user={this.props.user}
               activeMenu={this.props.activeMenu}
               openMenu={this.props.openMenu}

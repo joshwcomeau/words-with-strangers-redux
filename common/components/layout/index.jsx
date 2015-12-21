@@ -17,6 +17,7 @@ export default class AppView extends React.Component {
           openMenu={this.props.openMenu}
           closeMenu={this.props.closeMenu}
           login={this.props.login}
+          logout={this.props.logout}
         />
         <div id="main-layout-header-spacer"></div>
         {this.props.children}
