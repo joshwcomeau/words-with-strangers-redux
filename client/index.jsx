@@ -1,13 +1,11 @@
 import 'babel-polyfill';
+import 'isomorphic-fetch';
 import React                from 'react';
 import { render }           from 'react-dom';
 import { Router }           from 'react-router';
 import { Provider }         from 'react-redux';
 import { fromJS }           from 'immutable';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
-
-require('es6-promise').polyfill();
-require('isomorphic-fetch');
 
 import routes               from '../common/routes.jsx';
 import configureStore       from '../common/store/configureStore';
