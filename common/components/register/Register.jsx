@@ -28,6 +28,17 @@ const Register = React.createClass({
     this.props.register(model)
   },
 
+  // Wrap our prop methods for enabling/disabling registration, so that we
+  // can check the state and see if they're necessary. No sense polluting
+  // the state history with a bunch of inconsequential changes.
+  enableRegistration() {
+    if ( !this.props.registrationEnabled ) this.props.enableRegistration();
+  },
+  disableRegistration() {
+    if ( this.props.registrationEnabled ) this.props.disableRegistration();
+  },
+
+
   render() {
     return (
       <div id="register">
@@ -52,8 +63,8 @@ const Register = React.createClass({
             <Formsy.Form
               ref={ ref => this.form = ref }
               onValidSubmit={this.submit}
-              onValid={this.props.enableRegistration}
-              onInvalid={this.props.disableRegistration}
+              onValid={this.enableRegistration}
+              onInvalid={this.disableRegistration}
             >
               {/* fake fields are a workaround for chrome autofill getting the wrong fields */}
               <input style={{ display: "none" }} type="text" name="fakeusernameremembered"/>
