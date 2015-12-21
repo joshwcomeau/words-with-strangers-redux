@@ -11,7 +11,7 @@ const Register = React.createClass({
     if ( nextProps.error ) {
       let errors = {};
 
-      switch(error.type) {
+      switch(nextProps.error.type) {
         case 'duplicate_username':
           errors = {username: 'Sorry, someone else has already taken that username. What a jerk.'}
         case 'reserved_username':

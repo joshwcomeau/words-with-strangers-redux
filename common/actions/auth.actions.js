@@ -15,6 +15,7 @@ import {
 import { pushPath } from 'redux-simple-router';
 
 export function authenticationSuccess(token, saveToLocal = true) {
+  console.log("Received token", token)
   if ( saveToLocal ) localStorage.setItem('wws_auth_token', token);
 
   return {
@@ -67,8 +68,8 @@ export function register(credentials) {
   return function(dispatch, getState) {
     return authenticate('/api/register', credentials)
       .then( evaluateResponse )
-      .then( payload => {
-        dispatch(authenticationSuccess(payload));
+      .then( response => {
+        dispatch(authenticationSuccess(response.token));
         dispatch(pushPath('/game'))
       })
       .catch( err => {

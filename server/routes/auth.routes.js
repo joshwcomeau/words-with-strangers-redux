@@ -84,9 +84,9 @@ export default function(app) {
       }
 
       // Generate a JWT for this new user, for use in subsequent requests.
-      const token = jwt.sign({ _id: user._id }, nconf.get('JWT_SECRET'));
+      const token = jwt.sign(user, nconf.get('JWT_SECRET'));
 
-      return res.json({ user, token });
+      return res.json({ token });
     });
   });
 }
