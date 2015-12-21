@@ -13,6 +13,8 @@ import routes                   from '../common/routes.jsx';
 import configureStore           from '../common/store/configureStore';
 import { authenticationSuccess} from '../common/actions/auth.actions';
 
+import websockets               from '../common/lib/websockets.lib';
+
 const initialState  = window.__INITIAL_STATE__;
 const store         = configureStore(initialState);
 const rootElement   = document.getElementById('app');
@@ -23,6 +25,7 @@ const selectRoutingState = state => state.toJS().routing;
 syncReduxAndRouter(history, store, selectRoutingState);
 
 require('../common/scss/main.scss');
+
 
 // Log the user in, if a JWT exists in localStorage
 const token = localStorage.getItem('wws_auth_token');

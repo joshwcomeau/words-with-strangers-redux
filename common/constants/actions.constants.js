@@ -5,6 +5,11 @@ export const VALIDATE_PLACEMENT     = 'VALIDATE_PLACEMENT';
 export const SUBMIT_WORD            = 'SUBMIT_WORD';
 export const END_TURN               = 'END_TURN';
 
+// GAMES_LIST constants
+export const ADD_GAMES_TO_LIST      = 'ADD_GAMES_TO_LIST';
+export const JOIN_GAME              = 'JOIN_GAME';
+export const CREATE_GAME            = 'CREATE_GAME';
+
 // AUTH constants
 export const AUTHENTICATION_SUCCESS = 'AUTHENTICATION_SUCCESS';
 export const AUTHENTICATION_FAILURE = 'AUTHENTICATION_FAILURE';

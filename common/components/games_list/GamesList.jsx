@@ -1,18 +1,14 @@
-import React from 'react';
+import React            from 'react';
+import GamesListHeader  from './GamesListHeader.jsx';
+import GamesListTable   from './GamesListTable.jsx';
 
-
-const GamesList = React.createClass({
-  render() {
-    return (
-      <div id="games-list" className="center-section">
-      </div>
-    );
-  }
-});
+const GamesList = ({ gamesList, auth, createGame }) => (
+  <div id="games-list" className="center-section">
+    <GamesListHeader authenticated={auth.authenticated} />
+    <div className="card">
+      <GamesListTable games={gamesList} />
+    </div>
+  </div>
+);
 
 export default GamesList
-
-// <GamesListHeader isLoggedIn={this.isLoggedIn()} />
-// <div className="card">
-//   { this.data.games ? <GamesListTable games={this.data.games} /> : <Loading /> }
-// </div>
