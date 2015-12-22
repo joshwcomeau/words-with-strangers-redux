@@ -1,5 +1,6 @@
-import logger from './logger.middleware';
+import loggerMiddleware from './logger.middleware';
+import socketMiddleware from './socket.middleware';
 
 export {
-  logger
+  loggerMiddleware, socketMiddleware
 }

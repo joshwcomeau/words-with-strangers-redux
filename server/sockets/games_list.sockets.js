@@ -3,8 +3,6 @@ import * as Actions from '../../common/constants/actions.constants';
 export default function(io) {
   let gamesListIo = io.of('/games');
 
-  console.log("Setup gameslist", gamesListIo)
-
   gamesListIo.on('connection', (socket) => {
     console.log("Connection to gamesList!")
     // Send the user the initial list of games

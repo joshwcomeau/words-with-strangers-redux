@@ -8,7 +8,7 @@ import { Provider }               from 'react-redux';
 import createLocation             from 'history/lib/createLocation';
 
 import clientRoutes               from '../../common/routes';
-import configureStore             from '../../common/store/configureStore';
+import configureStore             from '../../common/store/configureStore.server';
 import { fetchTiles }             from '../../common/lib/tiles.lib';
 
 export default function(app) {

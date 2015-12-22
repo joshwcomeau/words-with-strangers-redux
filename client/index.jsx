@@ -1,5 +1,6 @@
 import 'babel-polyfill';
 import 'isomorphic-fetch';
+import io                       from 'socket.io-client';
 import React                    from 'react';
 import { render }               from 'react-dom';
 import { Router }               from 'react-router';
@@ -10,11 +11,13 @@ import createBrowserHistory     from 'history/lib/createBrowserHistory';
 import { syncReduxAndRouter }   from 'redux-simple-router'
 
 import routes                   from '../common/routes.jsx';
-import configureStore           from '../common/store/configureStore';
+import configureStore           from '../common/store/configureStore.client';
 import { authenticationSuccess} from '../common/actions/auth.actions';
 
 const initialState  = window.__INITIAL_STATE__;
-const store         = configureStore(initialState);
+
+const socket        = io()
+const store         = configureStore(initialState, socket);
 const rootElement   = document.getElementById('app');
 
 const history       = createBrowserHistory();

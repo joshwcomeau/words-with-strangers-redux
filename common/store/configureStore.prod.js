@@ -1,26 +1,17 @@
+// NEEDS WORK. UNFINISHED
+
 import { createStore, applyMiddleware } from 'redux';
 import thunk                            from 'redux-thunk';
 
+import { socketMiddleware }             from '../middleware';
 import rootReducer                      from '../reducers';
 
 const createStoreWithMiddleware = applyMiddleware(
-  thunk
+  thunk, socketMiddleware
 )(createStore);
 
-export default function configureStore(initialState) {
+export default function configureStore(initialState, socket) {
   const store = createStoreWithMiddleware(rootReducer, initialState);
-
-  if (module.hot) {
-    // Enable Webpack hot module replacement for reducers
-    module.hot.accept('../reducers', () => {
-      const nextRootReducer = require('../reducers');
-      store.replaceReducer(nextRootReducer);
-    });
-  }
-
-  // For testing purposes, attach the store to the window
-  // (only on the client, obviously);
-  if ( typeof window !== 'undefined' ) window.__store = store;
 
   return store
 }

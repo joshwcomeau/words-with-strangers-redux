@@ -5,22 +5,16 @@ import rootReducer          from '../reducers';
 import DevTools             from '../containers/DevTools.jsx';
 
 import {
-  loggerMiddleware,
-  socketMiddleware
+  loggerMiddleware
 } from '../middleware';
 
 
-let loadedSocketMiddleware;
-
 const createStoreWithMiddleware = compose(
-  applyMiddleware(loggerMiddleware, loadedSocketMiddleware, thunk),
+  applyMiddleware(loggerMiddleware, thunk),
   DevTools.instrument()
 )(createStore);
 
-export default function configureStore(initialState, socket) {
-  // On the client, we pass a socket into configureStore.
-  // this is a middleware step for sending data from client to server.
-  loadedSocketMiddleware = socketMiddleware(socket);
+export default function configureStore(initialState) {
   const store = createStoreWithMiddleware(rootReducer, initialState);
 
   if (module.hot) {

@@ -10,18 +10,19 @@ import {
 } from '../middleware';
 
 
-let loadedSocketMiddleware;
-
-const createStoreWithMiddleware = compose(
-  applyMiddleware(loggerMiddleware, loadedSocketMiddleware, thunk),
-  DevTools.instrument()
-)(createStore);
-
 export default function configureStore(initialState, socket) {
   // On the client, we pass a socket into configureStore.
   // this is a middleware step for sending data from client to server.
-  loadedSocketMiddleware = socketMiddleware(socket);
+  const loadedSocketMiddleware = socketMiddleware(socket);
+
+  const createStoreWithMiddleware = compose(
+    applyMiddleware(loggerMiddleware, loadedSocketMiddleware, thunk),
+    DevTools.instrument()
+  )(createStore);
+
   const store = createStoreWithMiddleware(rootReducer, initialState);
+
+
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
