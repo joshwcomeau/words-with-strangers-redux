@@ -1,14 +1,16 @@
-import io                       from 'socket.io-client';
+import io from 'socket.io-client';
 import {
   ADD_GAMES_TO_LIST
 } from '../constants/actions.constants';
 import * as GamesListActions from '../actions/games_list.actions';
 
+// The actual socket instance is private to this lib file.
+// It can be interacted with by calling the functions provided.
+let socket = null;
+
 
 export function initialize(store) {
-  const socket = io.connect('', {
-    query: 'person'
-  });
+  socket = io();
 
   // Sockets are used for full-duplex communication between client and server.
   // For example, when we submit a word, it emits an event to the server.

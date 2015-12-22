@@ -6,6 +6,7 @@ export const SUBMIT_WORD            = 'SUBMIT_WORD';
 export const END_TURN               = 'END_TURN';
 
 // GAMES_LIST constants
+export const REQUEST_GAMES_LIST     = 'REQUEST_GAMES_LIST';
 export const ADD_GAMES_TO_LIST      = 'ADD_GAMES_TO_LIST';
 export const JOIN_GAME              = 'JOIN_GAME';
 export const CREATE_GAME            = 'CREATE_GAME';

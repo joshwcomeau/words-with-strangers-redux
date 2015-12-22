@@ -1,9 +1,16 @@
 import {
+  REQUEST_GAMES_LIST,
   ADD_GAMES_TO_LIST,
   JOIN_GAME,
   CREATE_GAME
 } from '../constants/actions.constants';
 import { pushPath } from 'redux-simple-router';
+
+export function requestGamesList() {
+  return {
+    type: REQUEST_GAMES_LIST
+  }
+}
 
 export function addGamesToList(games) {
   if ( typeof games === 'string' ) games = [games];

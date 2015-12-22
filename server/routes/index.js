@@ -1,6 +1,3 @@
-// API routes
-// Does not render or return HTML/JS. Only returns JSON.
-
 import authRoutes   from './auth.routes';
 import reactRoutes  from './react.routes';
 

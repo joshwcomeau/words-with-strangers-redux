@@ -10,7 +10,8 @@ import webpackDevMiddleware       from 'webpack-dev-middleware';
 import webpackHotMiddleware       from 'webpack-hot-middleware';
 import webpackConfig              from '../webpack.config.js';
 
-import routes                     from './routes'
+import routes                     from './routes';
+import sockets                    from './sockets';
 
 import './initialize';
 
@@ -18,9 +19,7 @@ const app   = new Express();
 const port  = nconf.get('PORT');
 
 const http  = require('http').Server(app);
-const io    = require('socket.io')(http);
 
-import * as Actions from '../common/constants/actions.constants';
 
 
   ////////////////////////////
@@ -61,44 +60,7 @@ routes(app);
   ////////////////////////////
  //////// WEBSOCKETS ////////
 ////////////////////////////
-io.on('connection', (socket) => {
-  console.log("\nA user connected!\n\n")
-
-  socket.on('disconnect', () => console.log("Client disconnected"))
-
-  // Send the user the initial list of games
-  const games = [
-    {
-      _id: 1,
-      createdAt: '2015-12-21T16:00:00-05:00',
-      title: 'Wording Around',
-      status: 'playing',
-      players: [{
-        _id: '123',
-        username: 'Susan Smithy',
-        profilePhoto: 'https://s3.amazonaws.com/wordswithstrangers/animal-03.png'
-      }, {
-        _id: '456',
-        username: 'Johnny Ive',
-        profilePhoto: 'https://s3.amazonaws.com/wordswithstrangers/animal-01.png'
-      }]
-    }, {
-      _id: 2,
-      createdAt: '2015-12-21T15:54:12-05:00',
-      title: 'Come spell!',
-      status: 'waiting',
-      players: [{
-        _id: '789',
-        username: 'Spellington',
-        profilePhoto: 'https://s3.amazonaws.com/wordswithstrangers/animal-02.png'
-      }]
-    }
-
-  ];
-
-  socket.emit(Actions.ADD_GAMES_TO_LIST, games);
-
-})
+sockets(http);
 
 
 http.listen(port, (error) => {
