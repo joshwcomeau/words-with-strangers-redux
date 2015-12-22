@@ -1,7 +1,12 @@
 import * as Actions from '../../common/constants/actions.constants';
 
 export default function(io) {
-  io.on('connection', (socket) => {
+  let gamesListIo = io.of('/games');
+
+  console.log("Setup gameslist", gamesListIo)
+
+  gamesListIo.on('connection', (socket) => {
+    console.log("Connection to gamesList!")
     // Send the user the initial list of games
     const games = [
       {
@@ -15,7 +20,7 @@ export default function(io) {
           profilePhoto: 'https://s3.amazonaws.com/wordswithstrangers/animal-03.png'
         }, {
           _id: '456',
-          username: 'Johnny Ive',
+          username: 'Ivan John Plato',
           profilePhoto: 'https://s3.amazonaws.com/wordswithstrangers/animal-01.png'
         }]
       }, {
@@ -29,7 +34,6 @@ export default function(io) {
           profilePhoto: 'https://s3.amazonaws.com/wordswithstrangers/animal-02.png'
         }]
       }
-
     ];
 
     socket.emit(Actions.ADD_GAMES_TO_LIST, games);
