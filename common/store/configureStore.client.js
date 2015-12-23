@@ -10,13 +10,24 @@ import {
 } from '../middleware';
 
 
-export default function configureStore(initialState, socket) {
-  // On the client, we pass a socket into configureStore.
-  // this is a middleware step for sending data from client to server.
-  const loadedSocketMiddleware = socketMiddleware(socket);
+export default function configureStore(initialState, sockets) {
+  // On the client, we pass in an array of sockets.
+  // We will create one middleware step for each one.
+  // When actions are dispatched, each middleware will check its middleware.
+  // if the action has specified its namespace as a remote, the socket will
+  // emit an action on that socket with the action data, along with some
+  // mixed-in extras (like the current user's auth data.)
+
+
+  let middlewares = [];
+  sockets.forEach( (socket) => middlewares.push( socketMiddleware(socket) ) );
+
+  // Add in our misc middleware:
+  // middlewares.push( loggerMiddleware );
+  middlewares.push( thunk );
 
   const createStoreWithMiddleware = compose(
-    applyMiddleware(loggerMiddleware, loadedSocketMiddleware, thunk),
+    applyMiddleware.apply(this, middlewares),
     DevTools.instrument()
   )(createStore);
 

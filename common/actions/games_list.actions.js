@@ -27,5 +27,8 @@ export function joinGame(game) {
 }
 
 export function createGame() {
-  // TODO
+  return {
+    meta: { remote: '/games' },
+    type: CREATE_GAME
+  }
 }

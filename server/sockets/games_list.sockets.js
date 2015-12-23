@@ -1,9 +1,10 @@
 import * as Actions from '../../common/constants/actions.constants';
+import * as _ from 'lodash';
 
 export default function(io) {
   let gamesListIo = io.of('/games');
 
-  gamesListIo.on('connection', (socket) => {
+  gamesListIo.on('connection', function(socket) {
     console.log("Connection to gamesList!")
     // Send the user the initial list of games
     const games = [
@@ -36,10 +37,11 @@ export default function(io) {
 
     socket.emit(Actions.ADD_GAMES_TO_LIST, games);
 
-
-
-  })
-
-
-
+    socket.on('CREATE_GAME', function(data, socket) {
+      console.log("Request from", this)
+      console.log("Sent:", data)
+      console.log("Data keys:", _.keys(data))
+      console.log("Data values:", _.values(data))
+    })
+  });
 }

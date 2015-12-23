@@ -1,18 +1,14 @@
 import React from 'react';
 
-const GamesListHeader = ({authenticated}) => (
+const GamesListHeader = (props) => (
   <header>
-    { generateNewButton(authenticated) }
+    { generateNewButton(props) }
     <h4>Current Games</h4>
   </header>
 );
 
-function createGame() {
-  console.log("New game created!")
-}
-
-function generateNewButton(isLoggedIn) {
-  if ( isLoggedIn ) {
+function generateNewButton({authenticated, createGame}) {
+  if ( authenticated ) {
     return <button className="button" onClick={createGame}>Create New</button>
   } else {
     return <button className="button" disabled="true">Log in to Create Games</button>

@@ -14,10 +14,15 @@ import routes                   from '../common/routes.jsx';
 import configureStore           from '../common/store/configureStore.client';
 import { authenticationSuccess} from '../common/actions/auth.actions';
 
-const initialState  = window.__INITIAL_STATE__;
 
-const socket        = io()
-const store         = configureStore(initialState, socket);
+
+const sockets = [
+  io(),
+  io('http://localhost:3000/games')
+]
+const store         = configureStore(initialState, sockets);
+
+const initialState  = window.__INITIAL_STATE__;
 const rootElement   = document.getElementById('app');
 
 const history       = createBrowserHistory();
