@@ -6,7 +6,12 @@ import fs     from 'fs';
 import nconf  from 'nconf';
 import * as _ from 'lodash';
 
-const DEFAULT_CONFIG  = './server/config/default.json';
+if ( typeof process.env.NODE_ENV === 'undefined' ) {
+  process.env.NODE_ENV = 'development'
+}
+
+const DEFAULT_CONFIG = `./server/config/${process.env.NODE_ENV}.json`
+
 const PRIVATE_CONFIG  = './server/config/private.json';
 
 

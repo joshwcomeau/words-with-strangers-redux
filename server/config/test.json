@@ -1,0 +1,4 @@
+{
+  "MONGO_URL": "mongodb://localhost/words_test",
+  "PORT": 3000
+}
