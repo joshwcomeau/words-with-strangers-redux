@@ -1,17 +1,19 @@
 import mongoose from 'mongoose';
+import faker from 'faker';
 
 import { createdAndUpdatedAt } from './plugins';
 
 const Schema = mongoose.Schema;
 
 const gameSchema = new Schema({
-  username:     { type: String, required: true, unique: true },
-  password:     { type: String, required: true },
-  profilePhoto: { type: String }
+  title:            { type: String, default: 'Untitled Game' },
+  createdByUserId:  { type: Schema.Types.ObjectId },
+  players:          { type: [], default: [] }
 });
 
-gameSchema.methods.joinGame = function(user, callback) {
-  console.log("User", user, "joining game", this);
+gameSchema.methods.joinGame = function(user, saveGame = false) {
+  // TODO: Refine this.
+  this.players.push(user);
 }
 
 gameSchema.plugin(createdAndUpdatedAt, { index: true });

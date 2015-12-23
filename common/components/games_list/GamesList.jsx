@@ -26,7 +26,6 @@ const GamesList = React.createClass({
     });
 
     // Listen for added games.
-    socket.emit('CREATE_GAME', 'test')
 
 
   },
