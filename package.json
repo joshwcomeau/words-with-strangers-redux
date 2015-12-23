@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server/index.js",
-    "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive"
+    "start": "NODE_ENV=development nodemon server/index.js",
+    "test": "NODE_ENV=test mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive"
   },
   "keywords": [],
   "author": "",

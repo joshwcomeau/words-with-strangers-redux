@@ -1,4 +1,5 @@
 {
-  "MONGO_URL": "mongodb://localhost/words_with_strangers",
+  "DB_URL": "mongodb://localhost/",
+  "DB_NAME": "words_with_strangers",
   "PORT": 3000
 }

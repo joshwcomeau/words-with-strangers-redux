@@ -36,7 +36,7 @@ app.use(morgan('dev'));
  ///////// DATABASE /////////
 ////////////////////////////
 // TODO: Use a cloud mongo provider.
-mongoose.connect( nconf.get('MONGO_URL') );
+mongoose.connect( nconf.get('DB_URL') + nconf.get('DB_NAME') );
 
 
 

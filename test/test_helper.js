@@ -5,8 +5,6 @@ import nconf          from 'nconf';
 import chai           from 'chai';
 import chaiImmutable  from 'chai-immutable';
 
-console.log("Default node env", process.env.NODE_ENV);
-
 console.log("---- Tests starting! ----");
 process.env.NODE_ENV = 'test';
 
@@ -16,8 +14,8 @@ chai.use(chaiImmutable);
 
 
 // connect to and wipe the test DB
-const testDb = nconf.get('MONGO_URL');
-execSync("mongo #{testDb} --eval \"db.dropDatabase();\"");
-console.log("---- Database wiped ----")
+const dbName = nconf.get('DB_NAME');
+const dbUrl  = nconf.get('DB_URL')
+execSync(`mongo ${dbName} --eval "db.dropDatabase();"`);
 
-mongoose.connect( testDb );
+mongoose.connect( dbUrl + dbName );
