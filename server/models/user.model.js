@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt   from 'bcrypt';
 import jwt      from 'jsonwebtoken';
 
-import { setDatesOnSave } from './model_helpers';
+import { createdAndUpdatedAt } from './plugins';
 
 
 const Schema = mongoose.Schema;
@@ -10,18 +10,17 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
   username:     { type: String, required: true, unique: true },
   password:     { type: String, required: true },
-  profilePhoto: { type: String },
-  createdAt:    Date,
-  updatedAt:    Date
+  profilePhoto: { type: String }
 });
 
 userSchema.methods.checkPassword = function(password, callback) {
   bcrypt.compare( password, this.password, callback);
 }
 
-userSchema.pre('save', function(next) {
-  setDatesOnSave.call(this);
+userSchema.plugin(createdAndUpdatedAt, { index: true });
 
+
+userSchema.pre('save', function(next) {
   if ( this.isNew ) {
     // Encrypt the selected password!
     bcrypt.hash(this.password, 10, (err, hashedPassword) => {

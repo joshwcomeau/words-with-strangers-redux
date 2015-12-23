@@ -1,22 +1,20 @@
 import mongoose from 'mongoose';
 
-import { setDatesOnSave } from './model_helpers';
+import { createdAndUpdatedAt } from './plugins';
 
 const Schema = mongoose.Schema;
 
 const gameSchema = new Schema({
   username:     { type: String, required: true, unique: true },
   password:     { type: String, required: true },
-  profilePhoto: { type: String },
-  createdAt:    Date,
-  updatedAt:    Date
+  profilePhoto: { type: String }
 });
 
 gameSchema.methods.joinGame = function(user, callback) {
   console.log("User", user, "joining game", this);
 }
 
-gameSchema.pre('save', setDatesOnSave);
+gameSchema.plugin(createdAndUpdatedAt, { index: true });
 
 const Game = mongoose.model('Game', gameSchema)
 
