@@ -1,9 +1,9 @@
 import { Map, List, fromJS }  from 'immutable';
 import { routeReducer }       from 'redux-simple-router';
 
+import auth       from './auth.reducer';
 import game       from './game.reducer';
 import gamesList  from './games_list.reducer';
-import auth       from './auth.reducer';
 import ui         from './ui.reducer';
 
 
