@@ -5,9 +5,7 @@ import jwt      from 'jsonwebtoken';
 import { createdAndUpdatedAt } from './plugins';
 
 
-const Schema = mongoose.Schema;
-
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
   username:     { type: String, required: true, unique: true },
   password:     { type: String, required: true },
   profilePhoto: { type: String }

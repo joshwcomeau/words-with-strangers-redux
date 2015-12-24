@@ -1,4 +1,4 @@
-export default function createdAndUpdatedAt(schema, options) {
+export default function createdAndUpdatedAt(schema, { index = true }) {
   schema.add({
     createdAt: Date,
     updatedAt: Date
@@ -23,8 +23,8 @@ export default function createdAndUpdatedAt(schema, options) {
   });
 
   // Allow for indexing these fields.
-  if ( options && options.index ) {
-    schema.path('createdAt').index( options.index );
-    schema.path('updatedAt').index( options.index );
+  if ( index ) {
+    schema.path('createdAt').index({ index: index });
+    schema.path('updatedAt').index({ index: index });
   }
 }
