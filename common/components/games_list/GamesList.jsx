@@ -5,6 +5,10 @@ import GamesListHeader  from './GamesListHeader.jsx';
 import GamesListTable   from './GamesListTable.jsx';
 
 const GamesList = React.createClass({
+  componentWillMount() {
+    // Indicate to the server that we need a
+    this.props.actions.requestGamesList()
+  },
   render() {
     return (
       <div id="games-list" className="center-section">

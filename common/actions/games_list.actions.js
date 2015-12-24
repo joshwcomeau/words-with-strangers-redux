@@ -8,7 +8,8 @@ import { pushPath } from 'redux-simple-router';
 
 export function requestGamesList() {
   return {
-    type: REQUEST_GAMES_LIST
+    type: REQUEST_GAMES_LIST,
+    meta: { remote: '/games' }
   }
 }
 
@@ -28,7 +29,7 @@ export function joinGame(game) {
 
 export function createGame() {
   return {
-    meta: { remote: '/games' },
-    type: CREATE_GAME
+    type: CREATE_GAME,
+    meta: { remote: '/games' }
   }
 }
