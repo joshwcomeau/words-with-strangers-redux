@@ -4,13 +4,9 @@ import thunk                                      from 'redux-thunk';
 import rootReducer          from '../reducers';
 import DevTools             from '../containers/DevTools.jsx';
 
-import {
-  loggerMiddleware
-} from '../middleware';
-
 
 const createStoreWithMiddleware = compose(
-  applyMiddleware(loggerMiddleware, thunk),
+  applyMiddleware(thunk),
   DevTools.instrument()
 )(createStore);
 
