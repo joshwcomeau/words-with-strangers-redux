@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 
 import Game from '../models/game.model';
 
@@ -6,13 +7,12 @@ import {
   ADD_GAMES_TO_LIST,
   CREATE_GAME
 } from '../../common/constants/actions.constants';
-import * as _ from 'lodash';
+
 
 export default function(io) {
-  let gamesListIo = io.of('/games');
+  let gamesListIo = io.of('/gamesList');
 
   gamesListIo.on('connection', function(socket) {
-    console.log("Connection to gamesList!")
 
     socket.on(REQUEST_GAMES_LIST, function(data) {
       // Send the user the initial list of games
@@ -33,14 +33,8 @@ export default function(io) {
       game.joinGame(user);
       game.save( (err) => {
         // TODO: Error handling
-
         socket.emit(ADD_GAMES_TO_LIST, [game])
       });
-
-      console.log("Request from", this)
-      console.log("Sent:", data)
-      console.log("Data keys:", _.keys(data))
-      console.log("Data values:", _.values(data))
-    })
+    });
   });
 }

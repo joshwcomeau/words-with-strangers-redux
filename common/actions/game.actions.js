@@ -2,18 +2,34 @@ import {
   ADD_TILES_TO_RACK,
   PLACE_TILE,
   VALIDATE_PLACEMENT,
-  SUBMIT_WORD
+  SUBMIT_WORD,
+  SUBSCRIBE_TO_GAME,
+  UPDATE_GAME_STATE
 } from '../constants/actions.constants';
-import { FULL_RACK_SIZE }     from '../constants/config.constants';
-import { fetchTiles }         from '../lib/tiles.lib';
+import { FULL_RACK_SIZE } from '../constants/config.constants';
 import {
   getPlacedWord,
 }  from '../lib/game_logic.lib';
 
+// TODO: Connect this with server. Meta!
 export function addTilesToRack(num = 8) {
   return {
     type:   ADD_TILES_TO_RACK,
-    tiles:  fetchTiles(num)
+  }
+}
+
+export function subscribeToGame(gameId) {
+  return {
+    type: SUBSCRIBE_TO_GAME,
+    meta: { remote: '/game' },
+    gameId
+  }
+}
+
+export function updateGameState(game) {
+  return {
+    type: UPDATE_GAME_STATE,
+    game
   }
 }
 

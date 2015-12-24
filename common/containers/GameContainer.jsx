@@ -8,7 +8,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(GameActions, dispatch);
+  return {
+    actions: bindActionCreators(GameActions, dispatch)
+  };
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( Game );

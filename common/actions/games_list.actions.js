@@ -9,14 +9,14 @@ import { pushPath } from 'redux-simple-router';
 export function requestGamesList() {
   return {
     type: REQUEST_GAMES_LIST,
-    meta: { remote: '/games' }
+    meta: { remote: '/gamesList' }
   }
 }
 
 export function addGamesToList(games) {
   if ( typeof games === 'string' ) games = [games];
   return {
-    type:   ADD_GAMES_TO_LIST,
+    type: ADD_GAMES_TO_LIST,
     games
   }
 }
@@ -30,6 +30,6 @@ export function joinGame(game) {
 export function createGame() {
   return {
     type: CREATE_GAME,
-    meta: { remote: '/games' }
+    meta: { remote: '/gamesList' }
   }
 }

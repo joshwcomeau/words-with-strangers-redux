@@ -23,7 +23,8 @@ import {
 
 const sockets = [
   io(),
-  io('http://localhost:3000/games')
+  io('http://localhost:3000/game'),
+  io('http://localhost:3000/gamesList')
 ]
 const store         = configureStore(initialState, sockets);
 

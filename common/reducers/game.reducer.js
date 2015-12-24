@@ -4,7 +4,8 @@ import {
   ADD_TILES_TO_RACK,
   PLACE_TILE,
   VALIDATE_PLACEMENT,
-  SUBMIT_WORD
+  SUBMIT_WORD,
+  UPDATE_GAME_STATE
 } from '../constants/actions.constants';
 
 // Initial state for the 'game' slice of the state.
@@ -18,6 +19,18 @@ export const initialState = fromJS({
 
 export default function game(state = initialState, action) {
   switch (action.type) {
+    case UPDATE_GAME_STATE:
+      // The server sends this after the game state changes in a major way
+      // (eg. a move gets placed, which involves moving a bunch of tiles,
+      // creating a word, etc.)
+      // we want to selectively merge this new state into the old, but we
+      // want to take care not to overwrite the local state like the ordering
+      // of tiles in the rack.
+      return state
+        .set( 'rack', fromJS(action.game.rack) )
+        .set( 'board', fromJS(action.game.board) );
+
+
     case ADD_TILES_TO_RACK:
       // convert tiles to Immutable
       const tiles = fromJS(action.tiles);

@@ -7,14 +7,12 @@ function getRandomLetters(num) {
   ], num);
 }
 
-export function fetchTiles(num) {
+export function fetchTiles(player, num = 8) {
   const letters = getRandomLetters(num);
-  return letters.map( (letter, index) => {
-    return {
-      _id: Math.round(Math.random() * 100000),
-      letter,
-      points: 1,
-      x: index
-    }
-  })
+  return letters.map( (letter, index) => ({
+    letter,
+    points: _.sample([1,10]),
+    playerId: player._id,
+    location: 'rack'
+  }))
 }
