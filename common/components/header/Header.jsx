@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 import HeaderAccount        from './HeaderAccount.jsx';
 import HeaderAuthentication from './HeaderAuthentication.jsx';
@@ -8,7 +9,7 @@ const Header = React.createClass({
   render() {
     return (
       <header id="main-layout-header">
-        <a href="/" id="main-layout-logo">Words with Strangers</a>
+        <Link to="/" id="main-layout-logo">Words with Strangers</Link>
         <nav>
           { this.props.authenticated ?
             <HeaderAccount
@@ -26,8 +27,8 @@ const Header = React.createClass({
               closeMenu={this.props.closeMenu}
             />
           }
-          <a className="nav-link">Leaderboard</a>
-          <a className="nav-link" href='/games'>Games</a>
+          <Link to='/leaderboards' className="nav-link">Leaderboard</Link>
+          <Link to='/games' className="nav-link" >Games</Link>
 
 
         </nav>

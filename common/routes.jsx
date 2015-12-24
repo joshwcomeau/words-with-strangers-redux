@@ -7,7 +7,7 @@ import RegisterContainer  from './containers/RegisterContainer.jsx';
 
 export default (
   <Route name="app" component={LayoutContainer} path="/">
-    <Route component={GameContainer} path="game" />
+    <Route component={GameContainer} path="games/:gameId" />
     <Route component={GamesListContainer} path="games" />
     <Route component={RegisterContainer} path="register" />
   </Route>
