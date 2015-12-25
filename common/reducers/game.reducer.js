@@ -10,11 +10,10 @@ import {
 
 // Initial state for the 'game' slice of the state.
 export const initialState = fromJS({
-  board:  [],
-  rack:   [],
-  status: {
-    isMyTurn: true
-  }
+  board:    [],
+  rack:     [],
+  turns:    [],
+  players:  []
 });
 
 export default function game(state = initialState, action) {

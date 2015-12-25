@@ -46,12 +46,21 @@ gameSchema.methods.joinGame = function(player, saveGame = false) {
 
 }
 
-gameSchema.methods.asSeenByPlayer = function(player) {
+gameSchema.methods.asSeenByUser = function(user) {
   // Sends a copy of the game as viewed by a player.
-  // eg. don't include the tiles in another player's rack.
+  //   - They only have access to the tiles on the board or in THEIR rack.
+  //     they don't receive the tiles in another player's rack
+  //   - The player in the `players` array that corresponds with them is
+  //     augmented with a `currentUser: true` flag.
 
-  let game = this.toJSON();
-  game.rack = _.filter(game.rack, (tile) => tile.playerId !== player._id );
+
+  let game      = this.toJSON();
+  game.rack     = game.rack.filter( tile => tile.playerId !== user._id );
+  game.players  = game.players.map( player => {
+    if ( player._id === user._id ) player.currentUser = true;
+    return player;
+  });
+
   return game;
 }
 

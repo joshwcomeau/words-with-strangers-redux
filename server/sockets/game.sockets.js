@@ -20,7 +20,7 @@ export default function(io) {
       Game.findById(data.gameId, (err, game) => {
         if (err ) return console.log("Error finding game", err);
         if ( !game ) return console.log("No game found with ID", data.gameId);
-        socket.emit(UPDATE_GAME_STATE, game.asSeenByPlayer(data.auth.user))
+        socket.emit(UPDATE_GAME_STATE, game.asSeenByUser(data.auth.user))
       })
     });
 
@@ -62,7 +62,7 @@ export default function(io) {
           // TODO: error handling
           if (err) return console.error("OH NO!!!", err);
 
-          socket.emit(UPDATE_GAME_STATE, game.asSeenByPlayer(data.auth.user))
+          socket.emit(UPDATE_GAME_STATE, game.asSeenByUser(data.auth.user))
         });
 
       });
