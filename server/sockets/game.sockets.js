@@ -17,7 +17,7 @@ export default function(io) {
 
       // Send down the initial game data.
       Game.findById(data.gameId, (err, game) => {
-        socket.emit(UPDATE_GAME_STATE, game.toJSON({ virtuals: true }))
+        socket.emit(UPDATE_GAME_STATE, game.asSeenByPlayer(data.auth.user))
       })
     });
   });

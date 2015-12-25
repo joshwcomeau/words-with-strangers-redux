@@ -12,7 +12,6 @@ export function fetchTiles(player, num = 8) {
   return letters.map( (letter, index) => ({
     letter,
     points: _.sample([1,10]),
-    playerId: player._id,
-    location: 'rack'
+    playerId: player._id
   }))
 }

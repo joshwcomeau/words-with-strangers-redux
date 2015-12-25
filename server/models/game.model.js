@@ -14,23 +14,16 @@ const TileSchema = new Schema({
   letter:   { type: String, required: true },
   points:   { type: Number, min: 1, max: 10, required: true },
   x:        { type: Number, min: 0},
-  y:        { type: Number, min: 0},
-  location: { type: String, enum: ['board', 'rack'] }
+  y:        { type: Number, min: 0}
 });
+TileSchema.plugin(createdAndUpdatedAt, { index: true });
 
 const gameSchema = new Schema({
   title:            { type: String, default: 'Untitled Game' },
   createdByUserId:  { type: Schema.Types.ObjectId },
   players:          { type: [], default: [] },
-  tiles:            { type: [TileSchema] }
-});
-
-gameSchema.virtual('board').get( function() {
-  return _.filter(this.tiles, { location: 'board' });
-});
-
-gameSchema.virtual('rack').get( function() {
-  return _.filter(this.tiles, { location: 'rack' });
+  board:            { type: [TileSchema] },
+  rack:             { type: [TileSchema] }
 });
 
 gameSchema.methods.joinGame = function(player, saveGame = false) {
@@ -44,14 +37,21 @@ gameSchema.methods.joinGame = function(player, saveGame = false) {
 
 }
 
+gameSchema.methods.asSeenByPlayer = function(player) {
+  // Sends a copy of the game as viewed by a player.
+  // eg. don't include the tiles in another player's rack.
+
+  let game = this.toJSON();
+  game.rack = _.filter(game.rack, (tile) => tile.playerId !== player._id );
+  return game;
+}
+
 gameSchema.methods.generateTiles = function(player) {
-  this.tiles = this.tiles.concat( fetchTiles(player) );
-  console.log("After concat", this.tiles)
+  this.rack = this.rack.concat( fetchTiles(player) );
 }
 
 
 gameSchema.plugin(createdAndUpdatedAt, { index: true });
-TileSchema.plugin(createdAndUpdatedAt, { index: true });
 
 const Game = mongoose.model('Game', gameSchema)
 
