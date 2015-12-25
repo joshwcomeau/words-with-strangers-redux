@@ -10,7 +10,7 @@ const Schema = mongoose.Schema;
 
 const TileSchema = new Schema({
   playerId: { type: Schema.Types.ObjectId, required: true },
-  turnId:   { type: Schema.Types.ObjectId },
+  turnId:   { type: Number },
   letter:   { type: String, required: true },
   points:   { type: Number, min: 1, max: 10, required: true },
   x:        { type: Number, min: 0},
@@ -18,12 +18,21 @@ const TileSchema = new Schema({
 });
 TileSchema.plugin(createdAndUpdatedAt, { index: true });
 
+const TurnSchema = new Schema({
+  _id:      { type: Number, required: true },
+  playerId: { type: Schema.Types.ObjectId, required: true },
+  word:     { type: String, required: true },
+  points:   { type: Number, min: 1, max: 250, required: true }
+});
+TurnSchema.plugin(createdAndUpdatedAt, { index: true });
+
 const gameSchema = new Schema({
   title:            { type: String, default: 'Untitled Game' },
   createdByUserId:  { type: Schema.Types.ObjectId },
   players:          { type: [], default: [] },
   board:            { type: [TileSchema] },
-  rack:             { type: [TileSchema] }
+  rack:             { type: [TileSchema] },
+  turns:            { type: [TurnSchema] }
 });
 
 gameSchema.methods.joinGame = function(player, saveGame = false) {

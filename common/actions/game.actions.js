@@ -9,6 +9,7 @@ import {
 import { FULL_RACK_SIZE } from '../constants/config.constants';
 import {
   getPlacedWord,
+  validateWord
 }  from '../lib/game_logic.lib';
 
 // TODO: Connect this with server. Meta!
@@ -70,7 +71,8 @@ export function submitWord(type) {
 
   return function(dispatch, getState) {
     const initialState      = getState();
-    const boardObj          = initialState.get('board').toJS();
+    const game              = initialState.toJS().game;
+    const boardObj          = game.board;
     const wordTiles         = getPlacedWord(boardObj);
     const isValidWord       = validateWord(wordTiles);
 
@@ -84,15 +86,9 @@ export function submitWord(type) {
 
     dispatch({
       type: SUBMIT_WORD,
-      word: wordTiles
+      meta: { remote: '/game' },
+      tiles: wordTiles,
+      gameId: game._id
     });
-
-    dispatch({
-      type: END_TURN
-    });
-
-    // We need to replenish the user's rack!
-    const numOfTilesToRefill = FULL_RACK_SIZE - getState().get('rack').count();
-    dispatch( addTilesToRack(numOfTilesToRefill) )
   }
 }

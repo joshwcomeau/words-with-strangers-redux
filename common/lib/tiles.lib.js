@@ -11,7 +11,7 @@ export function fetchTiles(player, num = 8) {
   const letters = getRandomLetters(num);
   return letters.map( (letter, index) => ({
     letter,
-    points: _.sample([1,10]),
+    points: _.sample([1,2,3,4,5,6,7,8,9,10]),
     playerId: player._id
   }))
 }

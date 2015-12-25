@@ -23,12 +23,7 @@ export default function game(state = initialState, action) {
       // The server sends this after the game state changes in a major way
       // (eg. a move gets placed, which involves moving a bunch of tiles,
       // creating a word, etc.)
-      // we want to selectively merge this new state into the old, but we
-      // want to take care not to overwrite the local state like the ordering
-      // of tiles in the rack.
-      return state
-        .set( 'rack', fromJS(action.game.rack) )
-        .set( 'board', fromJS(action.game.board) );
+      return state.mergeDeep( fromJS(action.game) )
 
 
     case ADD_TILES_TO_RACK:

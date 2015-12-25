@@ -12,9 +12,9 @@ import {
 export default function(io) {
   let gamesListIo = io.of('/gamesList');
 
-  gamesListIo.on('connection', function(socket) {
+  gamesListIo.on('connection', (socket) => {
 
-    socket.on(REQUEST_GAMES_LIST, function(data) {
+    socket.on(REQUEST_GAMES_LIST, (data) => {
       // Send the user the initial list of games
       Game.find({}, (err, games) => {
         socket.emit(ADD_GAMES_TO_LIST, games);
