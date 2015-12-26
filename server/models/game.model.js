@@ -6,6 +6,8 @@ import { createdAndUpdatedAt }  from './plugins';
 import { fetchTiles }           from '../../common/lib/tiles.lib';
 import { FULL_RACK_SIZE }       from '../../common/constants/config.constants';
 
+import { isTentative }          from '../../common/lib/game_logic.lib';
+
 
 const Schema = mongoose.Schema;
 
@@ -36,12 +38,56 @@ const gameSchema = new Schema({
   turns:            { type: [TurnSchema] }
 });
 
-gameSchema.methods.joinGame = function(player) {
+gameSchema.methods.join = function(player) {
   // Attach the player to the game
   this.players.push(player);
 
   // Give that player some starter tiles.
-  this.replenishPlayerRack(player)
+  this.replenishPlayerRack(player);
+
+  // Return self, for chainability;
+  return this;
+}
+
+gameSchema.methods.submitWord = function(tiles, user) {
+  // TODO: Validations.
+  // For now, we're just going to trust the client.
+
+  // 1. Create a new Turn
+  const word    = _.pluck( tiles, 'letter' ).join('');
+  const points  = _.sum( tiles, tile => tile.points );
+  const turnId  = this.turns.length;
+
+  this.turns.push({
+    word,
+    points,
+    _id: turnId,
+    playerId: user._id
+  });
+
+  // 2. add to board.
+  // Find all tentative tiles (not part of a previous turn),
+  // add the new turnId to each new tile
+  // push those tiles into the game.board.
+  let tentativeTiles = tiles.filter( isTentative );
+  tentativeTiles = tentativeTiles.map( tile => {
+    tile.turnId = turnId;
+    return tile;
+  });
+
+  tentativeTiles.forEach( tile => this.board.push(tile) );
+
+  // 3. remove from rack
+  // This is also pretty easy. We just need to delete these tiles
+  // from the rack.
+  tentativeTiles.forEach( tile => {
+    this.rack.id(tile._id).remove()
+  });
+
+  // 4. Make sure the player gets some new tiles.
+  this.replenishPlayerRack(user);
+
+  return this;
 }
 
 gameSchema.methods.asSeenByUser = function(user = {}) {
@@ -68,8 +114,6 @@ gameSchema.methods.replenishPlayerRack = function(player) {
   const playerId = mongoose.Types.ObjectId(player._id);
   const numOfRackTiles = _.filter(this.rack, { playerId }).length;
   const numToRefill = FULL_RACK_SIZE - numOfRackTiles;
-
-  console.log(`Replenishing rack for ${player.username}. Currently has ${numOfRackTiles} tiles, with a full rack size of ${FULL_RACK_SIZE}, so he needs ${numToRefill} more.`)
 
   this.rack = this.rack.concat( fetchTiles(player, numToRefill) );
 }

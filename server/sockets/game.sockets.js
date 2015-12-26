@@ -1,117 +1,118 @@
 import * as _ from 'lodash';
+import async  from 'async';
 
 import Game from '../models/game.model';
 
 import {
+  CREATE_GAME,
   SUBSCRIBE_TO_GAME,
   UNSUBSCRIBE_FROM_GAME,
   JOIN_GAME,
   UPDATE_GAME_STATE,
-  SUBMIT_WORD
+  SUBMIT_WORD,
+  ADD_GAMES_TO_LIST,
+  PUSH_PATH,
 } from '../../common/constants/actions.constants';
-import { isTentative } from '../../common/lib/game_logic.lib';
 
 export default function(mainIo) {
   let io = mainIo.of('/game');
 
   io.on('connection', (socket) => {
-    socket.on(SUBSCRIBE_TO_GAME, (data) => {
-      // Attach our user data to this socket, so that it can be used when
-      // broadcasting to the room
-      socket.auth = data.auth;
+    socket.on(CREATE_GAME,            createGame.bind(null, io, socket) );
+    socket.on(SUBSCRIBE_TO_GAME,      subscribeToGame.bind(null, io, socket) );
+    socket.on(JOIN_GAME,              joinGame.bind(null, io, socket) );
+    socket.on(SUBMIT_WORD,            submitWord.bind(null, io, socket) );
+    socket.on(UNSUBSCRIBE_FROM_GAME,  unsubscribeFromGame.bind(null, io, socket));
+  });
+}
 
-      // Send down the initial game data.
-      Game.findById(data.gameId, (err, game) => {
-        if ( err ) return console.error("Error finding game", err);
-        if ( !game ) return console.error("No game found with ID", data.gameId);
+// PRIMARY SOCKET ACTIONS
+function createGame(io, socket, data) {
+  // TODO: Validations. Ensure user auth.
 
-        socket.join(game.roomName, (err) => {
-          if ( err ) return console.error("Problem joining room", err);
-          broadcastGame(io, game);
-        });
-      });
-    });
+  const user = data.auth.user;
 
-    socket.on(UNSUBSCRIBE_FROM_GAME, (data) => {
-      Game.findById(data.gameId, (err, game) => {
-        if ( err ) return console.error("Error finding game", err);
-        if ( !game ) return console.error("No game found with ID", data.gameId);
+  // Create a game in the DB.
+  let game = new Game({
+    createdBy: user._id
+  });
 
-        socket.leave(game.roomName);
-      });
-    });
+  game.join(user).save( (err) => {
+    if ( err ) return console.error("Error creating game", err);
 
-    socket.on(JOIN_GAME, (data) => {
-      Game.findById(data.gameId, (err, game) => {
-        if (err) return console.error("Error finding game in JOIN_GAME", err);
+    socket.emit(PUSH_PATH, `/games/${game._id}`);
 
-        // TODO: Make sure this user CAN join this game!
-        // Check the status or something.
+    // Dispatch an event to everyone else watching the games list,
+    // so that they know there's a new game to join.
+    socket.broadcast.emit(ADD_GAMES_TO_LIST, [game]);
+  });
 
-        game.joinGame(data.auth.user);
+}
+function subscribeToGame(io, socket, data) {
+  // Attach our user data to this socket, so that it can be used when
+  // broadcasting to the room
+  if ( data.auth ) socket.auth_user = data.auth.user;
 
-        game.save( err => {
-          if (err) return console.error("Error saving game in JOIN_GAME", err);
+  async.auto({
+    game: findGame.bind(null, data.gameId),
+    joinRoom: ['game', (step, r) => {
+      socket.join(r.game.roomName, step);
+    }]
+  }, (err, results) => {
+    if ( err ) return console.error("Error subscribing to game", err);
 
-          // Let every socket know about this development.
-          // Important that each player gets THEIR view of the game.
-          broadcastGame(io, game);
-        });
-      });
-    });
+    broadcastGame(io, results.game);
+  });
+}
 
-    socket.on(SUBMIT_WORD, (data) => {
-      // TODO: Validations.
-      // For now, we're just going to trust the client.
+function joinGame(io, socket, data) {
+  async.auto({
+    game: findGame.bind(null, data.gameId),
+    join: ['game', (step, r) => {
+      r.game.join(data.auth.user).save(step);
+    }]
+  }, (err, results) => {
+    if ( err ) return console.error("Error joining game", err);
 
-      Game.findById(data.gameId, (err, game) => {
-        // 1. Create a new Turn
-        const word    = _.pluck( data.tiles, 'letter' ).join('');
-        const points  = _.sum( data.tiles, tile => tile.points );
-        const turnId  = game.turns.length;
-        game.turns.push({
-          word,
-          points,
-          _id: turnId,
-          playerId: data.auth.user._id
-        });
+    broadcastGame(io, results.game);
+  });
+}
 
-        // 2. add to board.
-        // Find all tentative tiles (not part of a previous turn),
-        // add the new turnId to each new tile
-        // push those tiles into the game.board.
-        let tentativeTiles = data.tiles.filter( isTentative );
-        tentativeTiles = tentativeTiles.map( tile => {
-          tile.turnId = turnId;
-          return tile;
-        });
+function submitWord(io, socket, data) {
 
-        tentativeTiles.forEach( tile => game.board.push(tile) );
+  async.auto({
+    game: findGame.bind(null, data.gameId),
+    submit: ['game', (step, r) => {
+      r.game.submitWord(data.tiles, data.auth.user).save(step)
+    }]
+  }, (err, results) => {
+    if ( err ) return console.error("Error submitting word", err);
 
-        // 3. remove from rack
-        // This is also pretty easy. We just need to delete these tiles
-        // from the rack.
-        tentativeTiles.forEach( tile => {
-          game.rack.id(tile._id).remove()
-        });
+    broadcastGame(io, results.game);
+  });
+}
 
-        // 4. Make sure the player gets some new tiles.
-        game.replenishPlayerRack(data.auth.user);
-
-        // Bam! Time to save the game, and broadcast a change.
-        game.save( (err) => {
-          // TODO: error handling
-          if (err) return console.error("OH NO!!!", err);
-
-          broadcastGame(io, game);
-        });
-
-      });
-    });
+function unsubscribeFromGame(io, socket, data) {
+  async.auto({
+    game: findGame.bind(null, data.gameId),
+    leaveRoom: ['game', (step, r) => {
+      socket.leave(r.game.roomName, step);
+    }]
+  }, (err, results) => {
+    if ( err ) return console.error("Error unsubscribing from game:", err);
   });
 }
 
 
+
+// HELPERS
+function findGame(gameId, callback) {
+  Game.findById(gameId, (err, game) => {
+    if ( err )    return callback(err);
+    if ( !game )  return callback(`No game found with ID ${gameId}`);
+    return callback(null, game);
+  });
+}
 
 function broadcastGame(io, game) {
   // Find all the sockets currently in this game
@@ -122,7 +123,7 @@ function broadcastGame(io, game) {
   impactedSockets.forEach( (iteratedSocket) => {
     iteratedSocket.emit(
       UPDATE_GAME_STATE,
-      game.asSeenByUser(iteratedSocket.auth.user)
+      game.asSeenByUser(iteratedSocket.auth_user)
     );
   });
 }

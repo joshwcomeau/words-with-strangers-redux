@@ -27,3 +27,6 @@ export const OPEN_MENU              = 'OPEN_MENU';
 export const CLOSE_MENU             = 'CLOSE_MENU';
 export const SET_AND_DISPLAY_FLASH  = 'SET_AND_DISPLAY_FLASH';
 export const DISMISS_FLASH          = 'DISMISS_FLASH';
+
+// ROUTER constants
+export const PUSH_PATH              = 'PUSH_PATH';

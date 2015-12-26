@@ -37,6 +37,6 @@ export function joinGame(gameId) {
 export function createGame() {
   return {
     type: CREATE_GAME,
-    meta: { remote: '/gamesList' }
+    meta: { remote: '/game' }
   }
 }
