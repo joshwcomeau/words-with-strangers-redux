@@ -4,6 +4,7 @@ export const PLACE_TILE             = 'PLACE_TILE';
 export const SUBMIT_WORD            = 'SUBMIT_WORD';
 export const END_TURN               = 'END_TURN';
 export const SUBSCRIBE_TO_GAME      = 'SUBSCRIBE_TO_GAME';
+export const UNSUBSCRIBE_FROM_GAME  = 'UNSUBSCRIBE_FROM_GAME';
 export const UPDATE_GAME_STATE      = 'UPDATE_GAME_STATE';
 
 // GAMES_LIST constants

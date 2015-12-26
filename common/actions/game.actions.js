@@ -3,6 +3,7 @@ import {
   PLACE_TILE,
   SUBMIT_WORD,
   SUBSCRIBE_TO_GAME,
+  UNSUBSCRIBE_FROM_GAME,
   UPDATE_GAME_STATE
 } from '../constants/actions.constants';
 import { FULL_RACK_SIZE } from '../constants/config.constants';
@@ -21,6 +22,14 @@ export function addTilesToRack(num = 8) {
 export function subscribeToGame(gameId) {
   return {
     type: SUBSCRIBE_TO_GAME,
+    meta: { remote: '/game' },
+    gameId
+  }
+}
+
+export function unsubscribeFromGame(gameId) {
+  return {
+    type: UNSUBSCRIBE_FROM_GAME,
     meta: { remote: '/game' },
     gameId
   }

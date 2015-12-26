@@ -4,6 +4,7 @@ import { List, Map, fromJS }  from 'immutable';
 import gameReducer, {initialState} from '../../common/reducers/game.reducer';
 
 import {
+  UNSUBSCRIBE_FROM_GAME,
   ADD_TILES_TO_RACK,
   PLACE_TILE,
   SUBMIT_WORD
@@ -43,6 +44,31 @@ describe('gameReducer', () => {
 
   describe('SUBMIT_WORD', () => {
     // TODO
+  });
+
+
+  describe('UNSUBSCRIBE_FROM_GAME', () => {
+    it('restores the initial state', () => {
+      const state = fromJS({
+        board: [
+          { _id: '1', letter: 'A', x: 1, y: 4, turnId: 0 },
+          { _id: '2', letter: 'Z', x: 2, y: 4, turnId: 0 }
+        ],
+        rack:  [ { _id: '3', letter: 'C' } ],
+        turns: [
+          { _id: 0, word: 'AZ'}
+        ]
+      });
+      const action = {
+        type: UNSUBSCRIBE_FROM_GAME,
+        meta: { remote: '/game' },
+        gameId: 1
+      };
+      const nextState = gameReducer(state, action);
+
+      expect(nextState).to.equal(initialState);
+
+    });
   });
 
 

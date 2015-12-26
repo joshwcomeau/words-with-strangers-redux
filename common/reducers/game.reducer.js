@@ -4,7 +4,8 @@ import {
   ADD_TILES_TO_RACK,
   PLACE_TILE,
   SUBMIT_WORD,
-  UPDATE_GAME_STATE
+  UPDATE_GAME_STATE,
+  UNSUBSCRIBE_FROM_GAME
 } from '../constants/actions.constants';
 
 // Initial state for the 'game' slice of the state.
@@ -23,6 +24,11 @@ export default function game(state = initialState, action) {
       // creating a word, etc.)
       return state.mergeDeep( fromJS(action.game) )
 
+    case UNSUBSCRIBE_FROM_GAME:
+      // this is called when the component unmounts. We can simply restore
+      // the state to its default condition, so that it doesn't interfere
+      // when we subscribe to new games.
+      return initialState;
 
     case ADD_TILES_TO_RACK:
       // convert tiles to Immutable

@@ -4,6 +4,7 @@ import faker from 'faker';
 
 import { createdAndUpdatedAt }  from './plugins';
 import { fetchTiles }           from '../../common/lib/tiles.lib';
+import { FULL_RACK_SIZE }       from '../../common/constants/config.constants';
 
 
 const Schema = mongoose.Schema;
@@ -40,7 +41,7 @@ gameSchema.methods.joinGame = function(player, saveGame = false) {
   this.players.push(player);
 
   // Give that player some starter tiles.
-  this.generateTiles(player)
+  this.replenishPlayerRack(player)
 }
 
 gameSchema.methods.asSeenByUser = function(user) {
@@ -61,8 +62,11 @@ gameSchema.methods.asSeenByUser = function(user) {
   return game;
 }
 
-gameSchema.methods.generateTiles = function(player) {
-  this.rack = this.rack.concat( fetchTiles(player) );
+gameSchema.methods.replenishPlayerRack = function(player) {
+  const numOfRackTiles = _.filter(this.rack, { playerId: player._id }).length;
+  const numToRefill = FULL_RACK_SIZE - numOfRackTiles;
+
+  this.rack = this.rack.concat( fetchTiles(player, numToRefill) );
 }
 
 

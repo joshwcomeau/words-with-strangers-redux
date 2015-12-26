@@ -4,10 +4,11 @@ import Game from '../models/game.model';
 
 import {
   SUBSCRIBE_TO_GAME,
+  UNSUBSCRIBE_FROM_GAME,
   UPDATE_GAME_STATE,
   SUBMIT_WORD
 } from '../../common/constants/actions.constants';
-
+import { isTentative } from '../../common/lib/game_logic.lib';
 
 export default function(io) {
   let gameIo = io.of('/game');
@@ -22,6 +23,10 @@ export default function(io) {
         if ( !game ) return console.log("No game found with ID", data.gameId);
         socket.emit(UPDATE_GAME_STATE, game.asSeenByUser(data.auth.user))
       })
+    });
+
+    socket.on(UNSUBSCRIBE_FROM_GAME, (data) => {
+      socket.leave(`game_${data.gameId}`);
     });
 
     socket.on(SUBMIT_WORD, (data) => {
@@ -41,21 +46,26 @@ export default function(io) {
         });
 
         // 2. add to board.
-        // Find all 'new' tiles (not part of a previous turn),
+        // Find all tentative tiles (not part of a previous turn),
         // add the new turnId to each new tile
         // push those tiles into the game.board.
-        let newTiles = data.tiles.filter( tile => !tile.turnId );
-        newTiles = newTiles.map( tile => {
+        let tentativeTiles = data.tiles.filter( isTentative );
+        tentativeTiles = tentativeTiles.map( tile => {
           tile.turnId = turnId;
           return tile;
         });
 
-        newTiles.forEach( tile => game.board.push(tile) );
+        tentativeTiles.forEach( tile => game.board.push(tile) );
 
         // 3. remove from rack
         // This is also pretty easy. We just need to delete these tiles
         // from the rack.
-        game.rack.forEach( tile => game.rack.id(tile._id).remove() );
+        tentativeTiles.forEach( tile => {
+          game.rack.id(tile._id).remove()
+        });
+
+        // 4. Make sure the player gets some new tiles.
+        game.replenishPlayerRack(data.auth.user);
 
         // Bam! Time to save the game, and broadcast a change.
         game.save( (err) => {

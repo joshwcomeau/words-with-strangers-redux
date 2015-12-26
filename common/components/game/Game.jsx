@@ -23,10 +23,11 @@ const Game = React.createClass({
     // happens, we dispatch an action locally, with the new game data, to
     // update the state.
     this.props.actions.subscribeToGame(this.props.params.gameId);
-
+  },
+  componentWillUnmount() {
+    this.props.actions.unsubscribeFromGame(this.props.params.gameId);
   },
   render() {
-    console.log("Rendering game with props", this.props)
     return (
       <div id="game">
         <SidePanel players={this.props.players} turns={this.props.turns} />
