@@ -41,7 +41,7 @@ export function validatePlacement(board) {
   if ( !activeAxis ) return false;
 
   let inactiveAxis = activeAxis !== 'x' ? 'x' : 'y';
-  let inactiveAxisPosition = cursorTile[inactiveAxis];
+  let inactiveAxisPosition = _.first(tiles)[inactiveAxis];
 
   // Next, Check to make sure there aren't any 'gaps' without tiles.
   tiles = sortTilesByAxis(tiles, activeAxis);
@@ -49,17 +49,27 @@ export function validatePlacement(board) {
   let lastPosition  = _.last(tiles)[activeAxis];
   // We just need to iterate from the earliest position to the latest position,
   // And ensure that every spot has a tile.
-  let positionsToAccountFor = _.range(firstPosition+1, lastPosition);
+  const activeAxisRange = _.range(firstPosition+1, lastPosition);
 
-  let tileObject;
+  const hasGaps = containsGapInBoard({
+    board,
+    activeAxis,
+    inactiveAxis,
+    activeAxisRange,
+    inactiveAxisPosition
+  });
 
-  _.every(positionsToAccountFor, position => {
-    tileObject = {};
-    tileObject[activeAxis] = position;
-    tileObject[inactiveAxis] = inactiveAxisPosition;
 
-    return findTile(tileObject, board);
-  })
+  // If there are gaps, we know it's wrong
+  if ( hasGaps ) return false;
+
+  // Finally, we need to check and see if these tiles are connected to
+  // previously-placed tiles
+
+  // If this is the first turn, there are no previous tiles, so we're good.
+  if ( isFirstTurn(board) ) return true;
+
+  return false
 
 
 }
@@ -91,6 +101,27 @@ export function findTile({x, y}, board) {
   if ( tileIndex === -1 ) return undefined;
 
   return [ board[tileIndex], tileIndex ];
+}
+
+// Returns a boolean based on whether this is the first turn of the game.
+// Can easily be computed based on whether there are any tiles with
+// turnId set.
+export function isFirstTurn(board) {
+  if ( _.isEmpty(board) ) return true;
+  return _.every( board, tile => tile.turnId === undefined );
+}
+
+function containsGapInBoard({board, activeAxis, inactiveAxis, activeAxisRange, inactiveAxisPosition}) {
+  let tileObject;
+
+  return !_.every(activeAxisRange, activeAxisPosition => {
+    tileObject = {};
+    tileObject[activeAxis] = activeAxisPosition;
+    tileObject[inactiveAxis] = inactiveAxisPosition;
+
+    return findTile(tileObject, board);
+  });
+
 }
 
 // Figure out whether the tiles form a horizontal or vertical line.
