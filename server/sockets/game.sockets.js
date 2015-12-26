@@ -11,45 +11,51 @@ import {
 } from '../../common/constants/actions.constants';
 import { isTentative } from '../../common/lib/game_logic.lib';
 
-export default function(io) {
-  let gameIo = io.of('/game');
+export default function(mainIo) {
+  let io = mainIo.of('/game');
 
-  gameIo.on('connection', (socket) => {
+  io.on('connection', (socket) => {
     socket.on(SUBSCRIBE_TO_GAME, (data) => {
-      socket.join(`game_${data.gameId}`);
-
       // Attach our user data to this socket, so that it can be used when
       // broadcasting to the room
       socket.auth = data.auth;
 
       // Send down the initial game data.
       Game.findById(data.gameId, (err, game) => {
-        if (err ) return console.log("Error finding game", err);
-        if ( !game ) return console.log("No game found with ID", data.gameId);
-        socket.emit(UPDATE_GAME_STATE, game.asSeenByUser(data.auth.user))
-      })
+        if ( err ) return console.error("Error finding game", err);
+        if ( !game ) return console.error("No game found with ID", data.gameId);
+
+        socket.join(game.roomName, (err) => {
+          if ( err ) return console.error("Problem joining room", err);
+          broadcastGame(io, game);
+        });
+      });
     });
 
     socket.on(UNSUBSCRIBE_FROM_GAME, (data) => {
-      socket.leave(`game_${data.gameId}`);
+      Game.findById(data.gameId, (err, game) => {
+        if ( err ) return console.error("Error finding game", err);
+        if ( !game ) return console.error("No game found with ID", data.gameId);
+
+        socket.leave(game.roomName);
+      });
     });
 
     socket.on(JOIN_GAME, (data) => {
-      socket.auth = data.auth;
-
       Game.findById(data.gameId, (err, game) => {
-        if (err) return console.log("Error finding game in JOIN_GAME", err);
+        if (err) return console.error("Error finding game in JOIN_GAME", err);
 
         // TODO: Make sure this user CAN join this game!
         // Check the status or something.
 
         game.joinGame(data.auth.user);
+
         game.save( err => {
-          if (err) return console.log("Error saving game in JOIN_GAME", err);
+          if (err) return console.error("Error saving game in JOIN_GAME", err);
 
           // Let every socket know about this development.
           // Important that each player gets THEIR view of the game.
-          broadcastGame(gameIo, game);
+          broadcastGame(io, game);
         });
       });
     });
@@ -97,7 +103,7 @@ export default function(io) {
           // TODO: error handling
           if (err) return console.error("OH NO!!!", err);
 
-          socket.emit(UPDATE_GAME_STATE, game.asSeenByUser(data.auth.user))
+          broadcastGame(io, game);
         });
 
       });

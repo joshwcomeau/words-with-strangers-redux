@@ -36,7 +36,7 @@ const gameSchema = new Schema({
   turns:            { type: [TurnSchema] }
 });
 
-gameSchema.methods.joinGame = function(player, saveGame = false) {
+gameSchema.methods.joinGame = function(player) {
   // Attach the player to the game
   this.players.push(player);
 
@@ -65,8 +65,11 @@ gameSchema.methods.asSeenByUser = function(user = {}) {
 }
 
 gameSchema.methods.replenishPlayerRack = function(player) {
-  const numOfRackTiles = _.filter(this.rack, { playerId: player._id }).length;
+  const playerId = mongoose.Types.ObjectId(player._id);
+  const numOfRackTiles = _.filter(this.rack, { playerId }).length;
   const numToRefill = FULL_RACK_SIZE - numOfRackTiles;
+
+  console.log(`Replenishing rack for ${player.username}. Currently has ${numOfRackTiles} tiles, with a full rack size of ${FULL_RACK_SIZE}, so he needs ${numToRefill} more.`)
 
   this.rack = this.rack.concat( fetchTiles(player, numToRefill) );
 }
