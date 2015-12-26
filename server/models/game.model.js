@@ -44,7 +44,7 @@ gameSchema.methods.joinGame = function(player, saveGame = false) {
   this.replenishPlayerRack(player)
 }
 
-gameSchema.methods.asSeenByUser = function(user) {
+gameSchema.methods.asSeenByUser = function(user = {}) {
   // Sends a copy of the game as viewed by a player.
   //   - They only have access to the tiles on the board or in THEIR rack.
   //     they don't receive the tiles in another player's rack
@@ -53,7 +53,9 @@ gameSchema.methods.asSeenByUser = function(user) {
 
 
   let game      = this.toJSON();
-  game.rack     = game.rack.filter( tile => tile.playerId !== user._id );
+  game.rack     = game.rack.filter( tile => {
+    return tile.playerId.toString() === user._id
+  });
   game.players  = game.players.map( player => {
     if ( player._id === user._id ) player.currentUser = true;
     return player;
