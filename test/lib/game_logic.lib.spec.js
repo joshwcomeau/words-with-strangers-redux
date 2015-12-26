@@ -15,6 +15,9 @@ import {
 
 describe('Game Logic', () => {
   describe('#isTentative', () => {
+    it('returns false when not passed a valid tile', () => {
+      expect( isTentative(null) ).to.equal(false);
+    })
     it('returns false when it has a turn ID', () => {
       const tile = { letter: 'A', turnId: 0 };
       expect( isTentative(tile) ).to.equal(false);
@@ -28,6 +31,9 @@ describe('Game Logic', () => {
 
 
   describe('#isEstablished', () => {
+    it('returns false when not passed a valid tile', () => {
+      expect( isEstablished(null) ).to.equal(false);
+    })
     it('returns false when it does not have a turn ID', () => {
       const tile = { letter: 'A', turnId: 0 };
       expect( isEstablished(tile) ).to.equal(true);

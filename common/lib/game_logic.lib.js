@@ -74,7 +74,7 @@ export function validatePlacement(board) {
   // non-primary axis.
   // This is our final check. If it has established neighbors, it's
   // a valid word! Otherwise, it's an unacceptable floater.
-  return wordHasEstablishedNeighbors(word);
+  return wordHasEstablishedNeighbors(word, board);
 
 }
 
@@ -97,12 +97,14 @@ export function validateWord(tiles) {
 // Is this tile tentative? (brand new. Not yet connected to a turn)
 // RETURNS: Boolean
 export function isTentative(tile) {
+  if ( !tile || typeof tile !== 'object' ) return false;
   return typeof tile.turnId === 'undefined'
 }
 
 // Is this tile established? (was placed in a previous turn)
 // RETURNS: Boolean
 export function isEstablished(tile) {
+  if ( !tile || typeof tile !== 'object' ) return false;
   return !isTentative(tile);
 }
 
@@ -156,8 +158,24 @@ function getDeltaOfAxis(tiles, axis) {
   return _.last(axisPoints) - _.first(axisPoints);
 }
 
-export function wordHasEstablishedNeighbors(word) {
+export function wordHasEstablishedNeighbors(word, board) {
+  const activeAxis    = findActiveAxis(word);
+  const inactiveAxis  = activeAxis !== 'x' ? 'x' : 'y';
 
+  let upperNeighbor, upperNeighborCoords, lowerNeighbor, lowerNeighborCoords;
+
+  return _.any(word, tile => {
+
+    upperNeighborCoords = _.clone(tile);
+    lowerNeighborCoords = _.clone(tile);
+    upperNeighborCoords[activeAxis]++;
+    lowerNeighborCoords[activeAxis]--;
+
+    upperNeighbor = findTile(upperNeighborCoords, board);
+    lowerNeighbor = findTile(lowerNeighborCoords, board);
+
+    return isEstablished(upperNeighbor) || isEstablished(lowerNeighbor);
+  });
 }
 
 
