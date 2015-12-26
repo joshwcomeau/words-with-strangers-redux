@@ -1,6 +1,25 @@
 import * as _ from 'lodash';
 import { BOARD_SIZE } from '../constants/config.constants.js';
 
+// NAMING CONVENTION.
+
+// Established and Tentative tiles
+//   An "established" tile is one placed in a previous turn; it cannot be moved.
+//   It is denoted with a `tileId` field that indicates the turn it was placed
+//   in.
+//   "tentative" tiles are the opposite: tiles without a turnId, that have
+//   just been placed on the board in the current turn, but not yet submitted.
+
+// Tiles and Tile Containers
+//   - A 'tile' is an Object with properties like `letter`, `x`, and `y`.
+//   - A 'board' is an array of all the tiles currently on the board.
+//   - A 'word' is an array of tiles in a gapless sequence on a single axis.
+//   - sometimes, a 'tiles' array is used as a miscellaneous assortment of tiles.
+
+
+
+// Return an array of tiles that make up the placed word.
+// Returns null if the placed word is invalid.
 export function getPlacedWord(board) {
   // Looks at the supplied `board` object (a plain-JS array of Tile objects)
   // and plucks out the ones that spell the word. Orders them.
@@ -8,10 +27,12 @@ export function getPlacedWord(board) {
   // line, or with spaces between them), returns null.
 
   // 1. Figure out which tiles belong to this turn.
-  let tiles = _.filter(board, tile => typeof tile.turnId === 'undefined');
+  let tiles = findTentativeTiles(board);
+  if ( _.isEmpty(tiles) ) return null;
 
   // 2. Figure out which axis we're working in, either horizontal or vertical.
   let activeAxis = findActiveAxis(tiles);
+  if ( !activeAxis ) return null;
 
   // 3. Find any other letters that are involved in our primary word.
   // We know which letters are ours, and we know which axis we're on.
@@ -30,47 +51,30 @@ export function getPlacedWord(board) {
 
 }
 
+// Check if this tile placement is valid.
 export function validatePlacement(board) {
-  // 1. Figure out which tiles belong to this turn.
-  let tiles = _.filter(board, tile => typeof tile.turnId === 'undefined');
+  // First, check to see if they've placed a word (all one axis, no gaps)
+  let word = getPlacedWord(board)
+  if ( _.isEmpty( word ) ) return false;
 
-  // 2. Figure out which axis we're working in, either horizontal or vertical.
-  let activeAxis = findActiveAxis(tiles);
+  // Next, we need to make sure that the word connects to the established
+  // tiles somehow...
 
-  // If there isn't a single axis, we know it's false.
-  if ( !activeAxis ) return false;
-
-  let inactiveAxis = activeAxis !== 'x' ? 'x' : 'y';
-  let inactiveAxisPosition = _.first(tiles)[inactiveAxis];
-
-  // Next, Check to make sure there aren't any 'gaps' without tiles.
-  tiles = sortTilesByAxis(tiles, activeAxis);
-  let firstPosition = _.first(tiles)[activeAxis];
-  let lastPosition  = _.last(tiles)[activeAxis];
-  // We just need to iterate from the earliest position to the latest position,
-  // And ensure that every spot has a tile.
-  const activeAxisRange = _.range(firstPosition+1, lastPosition);
-
-  const hasGaps = containsGapInBoard({
-    board,
-    activeAxis,
-    inactiveAxis,
-    activeAxisRange,
-    inactiveAxisPosition
-  });
-
-
-  // If there are gaps, we know it's wrong
-  if ( hasGaps ) return false;
-
-  // Finally, we need to check and see if these tiles are connected to
-  // previously-placed tiles
-
-  // If this is the first turn, there are no previous tiles, so we're good.
+  // ...unless, of course, this is the first turn
   if ( isFirstTurn(board) ) return true;
 
-  return false
+  // If the word incorporates established tiles, we're good!
+  if ( _.any(word, isEstablished ) ) return true;
 
+  // Otherwise, we need to check for orthogonal established tiles.
+  // _ _ I _ _    Turns   _ _ I _ _
+  // _ _ _ _ _     into   _ A T E _
+  //
+  // To do this, we need to check all neighboring tile spots in the
+  // non-primary axis.
+  // This is our final check. If it has established neighbors, it's
+  // a valid word! Otherwise, it's an unacceptable floater.
+  return wordHasEstablishedNeighbors(word);
 
 }
 
@@ -79,10 +83,6 @@ export function validateWord(tiles) {
   return true;
 }
 
-export function sortTilesByAxis(tiles, axis) {
-  // TODO: Return a sorted array by the axis given.
-  return tiles;
-}
 
 
 
@@ -92,6 +92,25 @@ export function sortTilesByAxis(tiles, axis) {
 // HELPER FUNCTIONS
 // Exposed primarily so they can be tested, although they're generic enough
 // that they can be called from the outside if needed.
+
+
+// Is this tile tentative? (brand new. Not yet connected to a turn)
+// RETURNS: Boolean
+export function isTentative(tile) {
+  return typeof tile.turnId === 'undefined'
+}
+
+// Is this tile established? (was placed in a previous turn)
+// RETURNS: Boolean
+export function isEstablished(tile) {
+  return !isTentative(tile);
+}
+
+// Find all the tiles on the board that haven't been committed to a turn yet.
+// RETURNS: An array [ <Tile object>, <Tile object> ]
+export function findTentativeTiles(board) {
+  return _.filter(board, isTentative );
+};
 
 // Given X/Y coordinates, fetch a tile!
 // RETURNS: An array [ tileObject, tileObjectIndex ]
@@ -103,26 +122,13 @@ export function findTile({x, y}, board) {
   return [ board[tileIndex], tileIndex ];
 }
 
-// Returns a boolean based on whether this is the first turn of the game.
-// Can easily be computed based on whether there are any tiles with
-// turnId set.
+
+// Compute whether there have been any finished turns yet
+// RETURNS: Boolean.
 export function isFirstTurn(board) {
-  if ( _.isEmpty(board) ) return true;
-  return _.every( board, tile => tile.turnId === undefined );
+  return _.every( board, isTentative );
 }
 
-function containsGapInBoard({board, activeAxis, inactiveAxis, activeAxisRange, inactiveAxisPosition}) {
-  let tileObject;
-
-  return !_.every(activeAxisRange, activeAxisPosition => {
-    tileObject = {};
-    tileObject[activeAxis] = activeAxisPosition;
-    tileObject[inactiveAxis] = inactiveAxisPosition;
-
-    return findTile(tileObject, board);
-  });
-
-}
 
 // Figure out whether the tiles form a horizontal or vertical line.
 // RETURNS: either:
@@ -130,7 +136,7 @@ function containsGapInBoard({board, activeAxis, inactiveAxis, activeAxisRange, i
 //   - a Boolean (false) if the move is invalid.
 export function findActiveAxis(tiles) {
   // Don't consider tiles placed in previous turns
-  tiles = _.reject( tiles, tile => !!tile.turnId )
+  tiles = _.reject( tiles, isEstablished )
   const deltaX = getDeltaOfAxis(tiles, 'x');
   const deltaY = getDeltaOfAxis(tiles, 'y');
 
@@ -148,6 +154,10 @@ export function findActiveAxis(tiles) {
 function getDeltaOfAxis(tiles, axis) {
   const axisPoints = tiles.map( tile => tile[axis]).sort();
   return _.last(axisPoints) - _.first(axisPoints);
+}
+
+export function wordHasEstablishedNeighbors(word) {
+
 }
 
 
@@ -215,6 +225,20 @@ export function rewindAndCaptureWord({ activeAxis, tiles, board}) {
     nextTile = findTile(tileObject, board);
     cursorTile = nextTile ? nextTile[0] : null
   }
+
+  // Finally do a check to make sure the word we've captured contains ALL
+  // of the tiles we passed in. This is to avoid 'gaps' between our tiles.
+  // Consider this board:
+  // _ A _ _ _ _ T _ L _ _ _
+
+  // We place 3 tiles:
+  // _ A L L _ _ T I L E S _
+  //     * *       *
+
+  const wordContainsAllTiles = _.every(tiles, tile => {
+    return _.includes(wordTiles, tile);
+  });
+  if ( !wordContainsAllTiles ) return null;
 
   return wordTiles;
 }
