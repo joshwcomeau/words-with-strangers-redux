@@ -21,10 +21,17 @@ export function addGamesToList(games) {
   }
 }
 
-export function joinGame(game) {
+export function joinGame(gameId) {
   return function(dispatch, getState) {
-    // TODO: Join game stuff. Middleware API stuff.
-  };
+    dispatch({
+      type: JOIN_GAME,
+      meta: { remote: '/game' },
+      gameId
+    });
+
+    dispatch(pushPath(`/games/${gameId}`))
+  }
+  return ;
 }
 
 export function createGame() {

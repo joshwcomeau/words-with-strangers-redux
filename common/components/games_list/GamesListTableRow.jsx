@@ -3,8 +3,8 @@ import { Link } from 'react-router';
 import moment   from 'moment';
 
 const GamesListTableRow = React.createClass({
-  joinGame() {
-    console.log("Attempted to join game");
+  joinGameClickHandler() {
+    this.props.joinGame(this.props.game._id);
   },
   generatePlayerCell() {
     return this.props.game.players.map( player => (
@@ -31,7 +31,7 @@ const GamesListTableRow = React.createClass({
           {game.status}
         </td>
         <td>
-          <button onClick={this.joinGame}>Join Game</button>
+          <button onClick={this.joinGameClickHandler}>Join Game</button>
         </td>
       </tr>
     );

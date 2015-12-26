@@ -5,6 +5,7 @@ import Game from '../models/game.model';
 import {
   SUBSCRIBE_TO_GAME,
   UNSUBSCRIBE_FROM_GAME,
+  JOIN_GAME,
   UPDATE_GAME_STATE,
   SUBMIT_WORD
 } from '../../common/constants/actions.constants';
@@ -17,6 +18,10 @@ export default function(io) {
     socket.on(SUBSCRIBE_TO_GAME, (data) => {
       socket.join(`game_${data.gameId}`);
 
+      // Attach our user data to this socket, so that it can be used when
+      // broadcasting to the room
+      socket.auth = data.auth;
+
       // Send down the initial game data.
       Game.findById(data.gameId, (err, game) => {
         if (err ) return console.log("Error finding game", err);
@@ -27,6 +32,31 @@ export default function(io) {
 
     socket.on(UNSUBSCRIBE_FROM_GAME, (data) => {
       socket.leave(`game_${data.gameId}`);
+    });
+
+    socket.on(JOIN_GAME, (data) => {
+      socket.auth = data.auth;
+
+      Game.findById(data.gameId, (err, game) => {
+        if (err) return console.log("Error finding game in JOIN_GAME", err);
+
+        // TODO: Make sure this user CAN join this game!
+        // Check the status or something.
+
+        game.joinGame(data.auth.user);
+        game.save( err => {
+          if (err) return console.log("Error saving game in JOIN_GAME", err);
+
+          // Let every socket know about this development.
+          // Important that each player gets THEIR view of the game.
+          gameIo.sockets.forEach( (iteratedSocket) => {
+            iteratedSocket.emit(
+              UPDATE_GAME_STATE,
+              game.asSeenByUser(iteratedSocket.auth.user)
+            );
+          });
+        });
+      });
     });
 
     socket.on(SUBMIT_WORD, (data) => {

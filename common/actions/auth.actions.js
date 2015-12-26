@@ -70,7 +70,7 @@ export function register(credentials) {
       .then( evaluateResponse )
       .then( response => {
         dispatch(authenticationSuccess(response.token));
-        dispatch(pushPath('/game'))
+        dispatch(pushPath('/games'))
       })
       .catch( err => {
         dispatch(authenticationFailure(err));

@@ -17,7 +17,10 @@ const GamesList = React.createClass({
           createGame={this.props.actions.createGame}
         />
         <div className="card">
-          <GamesListTable games={this.props.gamesList} />
+          <GamesListTable
+            games={this.props.gamesList}
+            joinGame={this.props.actions.joinGame}
+          />
         </div>
       </div>
     )
