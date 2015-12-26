@@ -41,9 +41,6 @@ gameSchema.methods.joinGame = function(player, saveGame = false) {
 
   // Give that player some starter tiles.
   this.generateTiles(player)
-
-  console.log("Finished joining game!", this, this.tiles, typeof this.tiles)
-
 }
 
 gameSchema.methods.asSeenByUser = function(user) {

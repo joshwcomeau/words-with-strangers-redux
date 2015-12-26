@@ -115,13 +115,9 @@ export function findTentativeTiles(board) {
 };
 
 // Given X/Y coordinates, fetch a tile!
-// RETURNS: An array [ tileObject, tileObjectIndex ]
+// RETURNS: A tile object
 export function findTile({x, y}, board) {
-  let tileIndex = _.findIndex( board, tile => (tile.x === x && tile.y === y) );
-
-  if ( tileIndex === -1 ) return undefined;
-
-  return [ board[tileIndex], tileIndex ];
+  return _.find( board, tile => (tile.x === x && tile.y === y) );
 }
 
 
@@ -153,11 +149,13 @@ export function findActiveAxis(tiles) {
 
 // Figure out how many tiles apart the highest/lowest tile are, on a given axis
 // RETURNS: An integer
-function getDeltaOfAxis(tiles, axis) {
+export function getDeltaOfAxis(tiles, axis) {
   const axisPoints = tiles.map( tile => tile[axis]).sort();
   return _.last(axisPoints) - _.first(axisPoints);
 }
 
+// Figure out if the word has any neighbouring established tiles.
+// RETURNS: Boolean
 export function wordHasEstablishedNeighbors(word, board) {
   const activeAxis    = findActiveAxis(word);
   const inactiveAxis  = activeAxis !== 'x' ? 'x' : 'y';
@@ -166,10 +164,10 @@ export function wordHasEstablishedNeighbors(word, board) {
 
   return _.any(word, tile => {
 
-    upperNeighborCoords = _.clone(tile);
-    lowerNeighborCoords = _.clone(tile);
-    upperNeighborCoords[activeAxis]++;
-    lowerNeighborCoords[activeAxis]--;
+    upperNeighborCoords = _.pick(tile, ['x', 'y']);
+    lowerNeighborCoords = _.pick(tile, ['x', 'y']);
+    upperNeighborCoords[inactiveAxis]++;
+    lowerNeighborCoords[inactiveAxis]--;
 
     upperNeighbor = findTile(upperNeighborCoords, board);
     lowerNeighbor = findTile(lowerNeighborCoords, board);
@@ -226,8 +224,7 @@ export function rewindAndCaptureWord({ activeAxis, tiles, board}) {
 
     // Subtract 1 from the active axis, and find it.
     tileObject[activeAxis]  -= 1;
-    nextTile = findTile(tileObject, board);
-    cursorTile = nextTile ? nextTile[0] : null
+    cursorTile = findTile(tileObject, board);
   }
 
   // Reset our cursor tile, since it was unset to break out of the `while` loop
@@ -240,8 +237,7 @@ export function rewindAndCaptureWord({ activeAxis, tiles, board}) {
 
     tileObject = _.pick(cursorTile, [activeAxis, inactiveAxis]);
     tileObject[activeAxis]  += 1;
-    nextTile = findTile(tileObject, board);
-    cursorTile = nextTile ? nextTile[0] : null
+    cursorTile = findTile(tileObject, board);
   }
 
   // Finally do a check to make sure the word we've captured contains ALL

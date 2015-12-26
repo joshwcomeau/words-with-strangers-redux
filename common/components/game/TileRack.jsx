@@ -5,6 +5,7 @@ import Tile   from './Tile.jsx';
 
 const TileRack = React.createClass({
   renderTiles() {
+    if ( !this.props.tiles ) return
     return this.props.tiles.map( tile => <Tile tile={tile} key={tile._id} /> );
   },
   render() {

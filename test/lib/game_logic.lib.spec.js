@@ -55,10 +55,7 @@ describe('Game Logic', () => {
       ];
       const tileResult = findTile({x: 4, y: 8}, board);
 
-      expect(tileResult).to.deep.equal([
-        { letter: 'O', x: 4, y: 8},
-        1
-      ]);
+      expect(tileResult).to.deep.equal({ letter: 'O', x: 4, y: 8});
 
     });
     it('returns `undefined` if there is no tile at those coordinates', () => {
@@ -279,7 +276,7 @@ describe('Game Logic', () => {
       const capturedWord = rewindAndCaptureWord({tiles, board, activeAxis});
 
       expect(capturedWord).to.equal(null);
-    })
+    });
   });
 
 
@@ -386,6 +383,46 @@ describe('Game Logic', () => {
           { letter: 'H', x: 5, y: 5 }
         ];
         expect( validatePlacement(board) ).to.equal(false);
+      });
+
+      it('returns true if there are established tiles within the word', () => {
+        const board = [
+          { letter: 'A', x: 4, y: 4, turnId: 0 },
+          { letter: 'T', x: 4, y: 5, turnId: 0 },
+          { letter: 'E', x: 4, y: 6 }
+        ];
+        expect( validatePlacement(board) ).to.equal(true);
+      });
+
+      it('returns true if there is a perpendicular orthogonal word', () => {
+        /* eg:
+        _ _ G _ _ < Established 'G'
+        _ _ O _ _ < Established 'O'
+        _ _ T H E < Tentative 'THE'
+        */
+        const board = [
+          { letter: 'G', x: 2, y: 2, turnId: 0 },
+          { letter: '0', x: 2, y: 1, turnId: 0 },
+          { letter: 'T', x: 2, y: 0 },
+          { letter: 'H', x: 3, y: 0 },
+          { letter: 'E', x: 4, y: 0 }
+        ];
+        expect( validatePlacement(board) ).to.equal(true);
+      });
+
+      it('returns true if there is a parallel orthogonal word', () => {
+        /* eg:
+        _ _ B _ _ < Established 'B'
+        _ _ A T _ < Established 'A', tentative 'T'
+        _ _ _ O _ < Tentative '0'
+        */
+        const board = [
+          { letter: 'B', x: 2, y: 2, turnId: 0 },
+          { letter: 'A', x: 2, y: 1, turnId: 0 },
+          { letter: 'T', x: 3, y: 1 },
+          { letter: 'O', x: 3, y: 0 }
+        ];
+        expect( validatePlacement(board) ).to.equal(true);
       });
     });
 

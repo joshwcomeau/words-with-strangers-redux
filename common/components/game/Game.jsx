@@ -25,18 +25,16 @@ const Game = React.createClass({
     this.props.actions.subscribeToGame(this.props.params.gameId);
 
   },
-  componentWillReceiveProps(nextProps) {
-    console.log("Component has received props!", nextProps);
-  },
   render() {
+    console.log("Rendering game with props", this.props)
     return (
       <div id="game">
         <SidePanel players={this.props.players} turns={this.props.turns} />
         <Board tiles={this.props.board} placeTile={this.props.actions.placeTile} />
         <TileRack tiles={this.props.rack} />
         <Controls
-          isMyTurn={this.props.status.isMyTurn}
-          isValidPlacement={this.props.status.isValidPlacement}
+          isMyTurn={this.props.isMyTurn}
+          isValidPlacement={this.props.isValidPlacement}
           submitWord={this.props.actions.submitWord}
         />
       </div>
