@@ -1,7 +1,6 @@
 import {
   ADD_TILES_TO_RACK,
   PLACE_TILE,
-  VALIDATE_PLACEMENT,
   SUBMIT_WORD,
   SUBSCRIBE_TO_GAME,
   UPDATE_GAME_STATE
@@ -35,29 +34,9 @@ export function updateGameState(game) {
 }
 
 export function placeTile(tile) {
-  // Using redux-thunk, this action returns a function that:
-  //   - dispatches the PLACE_TILE event, which places the tile in the new pos.
-  //   - figures out if the current configuration of tiles can be submitted
-  //     (essentially works out if the tiles are all in a straight line, etc).
-  // The combination of these actions means that the board is updated, and the
-  // 'SUBMIT_WORD' button can be enabled/disabled, depending on the validity.
-
-  return function(dispatch, getState) {
-    // start by placing the tile
-    dispatch({
-      type: PLACE_TILE,
-      tile
-    });
-
-    // Update the validity of this tile placement.
-    // If it's a valid placement, we enable the "submit word" button.
-    const boardObj          = getState().toJS().game.board;
-    const isValidPlacement  = !!getPlacedWord(boardObj);
-
-    dispatch({
-      type: VALIDATE_PLACEMENT,
-      isValidPlacement
-    });
+  return {
+    type: PLACE_TILE,
+    tile
   };
 }
 

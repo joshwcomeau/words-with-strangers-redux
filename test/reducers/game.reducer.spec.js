@@ -6,7 +6,6 @@ import gameReducer, {initialState} from '../../common/reducers/game.reducer';
 import {
   ADD_TILES_TO_RACK,
   PLACE_TILE,
-  VALIDATE_PLACEMENT,
   SUBMIT_WORD
 }   from '../../common/constants/actions.constants';
 
@@ -42,84 +41,8 @@ describe('gameReducer', () => {
     }));
   });
 
-  describe('VALIDATE_PLACEMENT', () => {
-    it('sets the turn to valid', () => {
-      const state = fromJS({
-        status: {
-          isValidPlacement: false
-        }
-      });
-      const action = {
-        type: VALIDATE_PLACEMENT,
-        isValidPlacement: true
-      };
-      const nextState = gameReducer(state, action);
-
-      expect(nextState).to.equal(fromJS({
-        status: {
-          isValidPlacement: true
-        }
-      }));
-    });
-
-    it('sets the turn to invalid', () => {
-      const state = fromJS({
-        status: {
-          isValidPlacement: true
-        }
-      });
-      const action = {
-        type: VALIDATE_PLACEMENT,
-        isValidPlacement: false
-      };
-      const nextState = gameReducer(state, action);
-
-      expect(nextState).to.equal(fromJS({
-        status: {
-          isValidPlacement: false
-        }
-      }));
-    });
-  });
-
   describe('SUBMIT_WORD', () => {
-    it('sets the turn to valid', () => {
-      const state = fromJS({
-        status: {
-          isValidPlacement: false
-        }
-      });
-      const action = {
-        type: VALIDATE_PLACEMENT,
-        isValidPlacement: true
-      };
-      const nextState = gameReducer(state, action);
-
-      expect(nextState).to.equal(fromJS({
-        status: {
-          isValidPlacement: true
-        }
-      }));
-    });
-
-    it('sets the turn to invalid', () => {
-      const state = fromJS({
-        status: {
-          isValidPlacement: true
-        }
-      });
-      const action = {
-        type: VALIDATE_PLACEMENT,
-        isValidPlacement: false
-      };
-      const nextState = gameReducer(state, action);
-
-      expect(nextState).to.equal(fromJS({
-        status: {
-          isValidPlacement: false
-        }
-      }));
-    });
+    // TODO
   });
 
 
