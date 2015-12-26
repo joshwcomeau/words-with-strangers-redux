@@ -49,12 +49,7 @@ export default function(io) {
 
           // Let every socket know about this development.
           // Important that each player gets THEIR view of the game.
-          gameIo.sockets.forEach( (iteratedSocket) => {
-            iteratedSocket.emit(
-              UPDATE_GAME_STATE,
-              game.asSeenByUser(iteratedSocket.auth.user)
-            );
-          });
+          broadcastGame(gameIo, game);
         });
       });
     });
@@ -107,5 +102,21 @@ export default function(io) {
 
       });
     });
+  });
+}
+
+
+
+function broadcastGame(io, game) {
+  // Find all the sockets currently in this game
+  let impactedSockets = io.sockets.filter( socket => {
+    return _.includes(socket.rooms, game.roomName)
+  });
+
+  impactedSockets.forEach( (iteratedSocket) => {
+    iteratedSocket.emit(
+      UPDATE_GAME_STATE,
+      game.asSeenByUser(iteratedSocket.auth.user)
+    );
   });
 }

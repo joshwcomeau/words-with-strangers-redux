@@ -71,6 +71,10 @@ gameSchema.methods.replenishPlayerRack = function(player) {
   this.rack = this.rack.concat( fetchTiles(player, numToRefill) );
 }
 
+gameSchema.virtual('roomName').get( function() {
+  return `game_${this._id}`;
+});
+
 
 gameSchema.plugin(createdAndUpdatedAt, { index: true });
 
