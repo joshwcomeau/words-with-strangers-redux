@@ -7,8 +7,13 @@ import Tile           from './Tile.jsx';
 
 const TileRack = React.createClass({
   renderTiles() {
-    if ( !this.props.tiles ) return
-    return this.props.tiles.map( tile => <Tile tile={tile} key={tile._id} /> );
+    let tiles = _.sortBy(this.props.tiles, 'x');
+    return tiles.map( tile => (
+      <Tile key={tile._id}
+      tile={tile}
+      switchTilePositions={this.props.switchTilePositions}
+      />)
+    );
   },
   render() {
     const { connectDropTarget, isOver } = this.props;
@@ -27,6 +32,11 @@ const TileRack = React.createClass({
 
 const rackTarget = {
   drop(props, monitor) {
+    // It's possible that this is an event bubbling up from a switch-tile drop.
+    // If the player dropped a tile onto another tile to switch their positions,
+    // we want to ignore this event.
+    if ( monitor.didDrop() ) return;
+
     const tile = monitor.getItem();
 
     const tileData = {

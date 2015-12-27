@@ -3,6 +3,7 @@ import { List, Map, fromJS }  from 'immutable';
 import {
   ADD_TILES_TO_RACK,
   PLACE_TILE,
+  SWITCH_TILE_POSITIONS,
   SUBMIT_WORD,
   UPDATE_GAME_STATE,
   UNSUBSCRIBE_FROM_GAME
@@ -22,7 +23,18 @@ export default function game(state = initialState, action) {
       // The server sends this after the game state changes in a major way
       // (eg. a move gets placed, which involves moving a bunch of tiles,
       // creating a word, etc.)
-      return state.mergeDeep( fromJS(action.game) )
+
+      // On the server, tiles in the rack don't have an 'x' coordinate.
+      // On the client, though, we want tiles to be sortable based on this
+      // value.
+      let game = fromJS(action.game);
+      let currentXPosition = 0;
+
+      game = game.set('rack', game.get('rack').map( (tile, index) => (
+        tile.set('x', index)
+      )));
+
+      return state.mergeDeep( game )
 
     case UNSUBSCRIBE_FROM_GAME:
       // this is called when the component unmounts. We can simply restore
@@ -35,13 +47,46 @@ export default function game(state = initialState, action) {
       const tiles = fromJS(action.tiles);
       return state.set( 'rack', state.get('rack').concat(tiles) );
 
+    case SWITCH_TILE_POSITIONS:
+      // We can simply drag a tile onto another tile to swap positions with it.
+
+      // We need to find both tiles' original data
+      const [
+        tile1Props, tile1Index, tile1Location
+      ] = getOriginalTileData(state, action.tile1);
+      const [
+        tile2Props, tile2Index, tile2Location
+      ] = getOriginalTileData(state, action.tile2);
+
+      console.log('tile 1 data:', tile1Props, tile1Index, tile1Location)
+      console.log('tile 2 data:', tile2Props, tile2Index, tile2Location)
+
+      const newTile1Coords = {
+        x: tile2Props.get('x'),
+        y: tile2Props.get('y')
+      }
+      const newTile2Coords = {
+        x: tile1Props.get('x'),
+        y: tile1Props.get('y')
+      }
+
+      console.log("Setting tile 1 coords", newTile1Coords);
+      console.log("Setting tile 2 coords", newTile2Coords);
+
+      state = state.setIn( [tile2Location, tile2Index], tile2Props.merge(newTile2Coords));
+
+      state = state.setIn( [tile1Location, tile1Index], tile1Props.merge(newTile1Coords));
+
+
+      return state;
+
 
     case PLACE_TILE:
       // Find all the data about the original tile (including whether it's
       // located on the board or the rack)
       const [
         originalTile, originalTileIndex, originalTileLocation
-      ] = getOriginalTileData(state, action);
+      ] = getOriginalTileData(state, action.tile);
 
       // Create a new tile
       const newTile = createNewTile(state, action, originalTile);
@@ -67,10 +112,10 @@ export default function game(state = initialState, action) {
 // HELPER FUNCTIONS
 // Should these be here? Not entirely sure how best to structure this.
 
-function getOriginalTileData(state, action) {
-  // Helper used in iteration to find the tile by the action's _id
+function getOriginalTileData(state, actionTile) {
+  // Helper used in iteration to find the tile by the actionTile's _id
   const tileFinder = tile => {
-    return tile.get('_id') === action.tile._id;
+    return tile.get('_id') === actionTile._id;
   };
 
   // First, figure out whether the tile is located on the board, or the rack.

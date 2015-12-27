@@ -1,6 +1,6 @@
 import {
-  ADD_TILES_TO_RACK,
   PLACE_TILE,
+  SWITCH_TILE_POSITIONS,
   SUBMIT_WORD,
   SUBSCRIBE_TO_GAME,
   UNSUBSCRIBE_FROM_GAME,
@@ -12,10 +12,19 @@ import {
   validateWord
 }  from '../lib/game_logic.lib';
 
-// TODO: Connect this with server. Meta!
-export function addTilesToRack(num = 8) {
+
+export function placeTile(tile) {
   return {
-    type:   ADD_TILES_TO_RACK,
+    type: PLACE_TILE,
+    tile
+  };
+}
+
+export function switchTilePositions(tile1, tile2) {
+  return {
+    type: SWITCH_TILE_POSITIONS,
+    tile1,
+    tile2
   }
 }
 
@@ -42,12 +51,7 @@ export function updateGameState(game) {
   }
 }
 
-export function placeTile(tile) {
-  return {
-    type: PLACE_TILE,
-    tile
-  };
-}
+
 
 export function submitWord(type) {
   // Using redux-thunk, this action returns a function that:

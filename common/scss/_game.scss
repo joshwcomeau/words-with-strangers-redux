@@ -24,6 +24,8 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
 
   &.draggable { cursor: move; }
 
+  &.is-dragging { opacity: 0; }
+
   .tile-letter {
     position: absolute;
     top: 0;

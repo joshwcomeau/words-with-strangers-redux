@@ -1,5 +1,6 @@
 // GAME constants
 export const ADD_TILES_TO_RACK      = 'ADD_TILES_TO_RACK';
+export const SWITCH_TILE_POSITIONS  = 'SWITCH_TILE_POSITIONS';
 export const PLACE_TILE             = 'PLACE_TILE';
 export const SUBMIT_WORD            = 'SUBMIT_WORD';
 export const END_TURN               = 'END_TURN';

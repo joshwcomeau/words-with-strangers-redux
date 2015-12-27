@@ -11,11 +11,11 @@ const BoardSquare = React.createClass({
     isOver: PropTypes.bool.isRequired
   },
   render() {
-    const { connectDropTarget, isOver } = this.props;
+    const { connectDropTarget, isOver, switchTilePositions } = this.props;
 
     return connectDropTarget(
       <div className="board-square">
-        { this.props.children ? <Tile tile={this.props.children} /> : null }
+        { this.props.children ? <Tile tile={this.props.children} switchTilePositions={switchTilePositions} /> : null }
         { isOver ? <div className='square-overlay'></div> : null }
       </div>
     );
@@ -24,6 +24,16 @@ const BoardSquare = React.createClass({
 
 const squareTarget = {
   drop(props, monitor) {
+    console.log("BoardSquare Dropped with props", props)
+    // TODO: This shares a LOT of behaviour with TileRack.jsx's rackTarget.
+    // Move it into some kind of lib file for DnD stuff?
+
+
+    // It's possible that this is an event bubbling up from a switch-tile drop.
+    // If the player dropped a tile onto another tile to switch their positions,
+    // we want to ignore this event.
+    if ( monitor.didDrop() ) return;
+
     const tile = monitor.getItem();
 
     const tileData = {
