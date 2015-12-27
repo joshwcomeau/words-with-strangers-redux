@@ -10,13 +10,17 @@ const tileSource = {
 
 const tileTarget = {
   drop(props, monitor) {
-    console.log("Tile dropped on tile. original:", monitor.didDrop())
-
     // We want to swap tile positions when dropped on top of one.
     let droppedTile = monitor.getItem();
     let underlyingTile = props.tile;
 
-    props.switchTilePositions(droppedTile, underlyingTile);
+    // Don't swap them if the underlying tile is established!
+    if ( typeof underlyingTile.turnId !== 'undefined' ) return;
+
+    // Don't swap them if they're from different locations (board or rack);
+    if ( droppedTile.location !== underlyingTile.location ) return;
+
+    return props.switchTilePositions(droppedTile, underlyingTile);
   }
 }
 
@@ -36,21 +40,11 @@ export default class Tile extends Component {
   }
 
   canBeDragged() {
-    // Tiles can only be dragged if:
-    //  - it is this player's turn
-    //  - the tile belongs to this player.
-    //  - the tile isn't part of a previously-placed word.
+    const isMyTurn = this.props.isMyTurn;
+    const isMyTile = this.props.tile.belongsToCurrentUser;
+    const isActive = typeof this.props.tile.turnId === 'undefined';
 
-    // TODO TODO TODO
-    return true;
-    // const myId = Meteor.userId();
-    //
-    // const isMyTurn = Modules.gameLogic.isMyTurn( this.props.tile.gameId );
-    // const isMyTile = this.props.tile.playerId === myId;
-    // const isActive = this.props.tile.turnId === undefined;
-    //
-    // return isMyTurn && isMyTile && isActive;
-
+    return isMyTurn && isMyTile && isActive;
   }
 
   generateTile(draggable) {

@@ -38,11 +38,13 @@ const Game = React.createClass({
           tiles={this.props.board}
           placeTile={this.props.actions.placeTile}
           switchTilePositions={this.props.actions.switchTilePositions}
+          isMyTurn={this.props.computed.isMyTurn}
         />
         <TileRack
           tiles={this.props.rack}
           placeTile={this.props.actions.placeTile}
           switchTilePositions={this.props.actions.switchTilePositions}
+          isMyTurn={this.props.computed.isMyTurn}
         />
         <Controls
           isMyTurn={this.props.computed.isMyTurn}

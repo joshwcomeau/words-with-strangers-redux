@@ -31,10 +31,16 @@ export function isMyTurn(turns, players) {
 export function isValidPlacement(board) {
   return validatePlacement(board);
 }
-
+// For the tiles in the board and rack, we want to extend them with a 'location'
+// property. That way, if we have a tile without its parent game object, we
+// will still know where it belongs.
+const boardSelector           = state => (
+  state.game.board.map( tile => _.extend(tile, { location: 'board'}) )
+);
+const rackSelector            = state => (
+  state.game.rack.map( tile => _.extend(tile, { location: 'rack'}) )
+);
 const titleSelector           = state => state.game.title;
-const boardSelector           = state => state.game.board;
-const rackSelector            = state => state.game.rack;
 const turnsSelector           = state => state.game.turns;
 const playersSelector         = state => state.game.players;
 const createdByUserIdSelector = state => state.game.createdByUserId;

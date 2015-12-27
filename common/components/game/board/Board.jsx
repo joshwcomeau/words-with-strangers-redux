@@ -23,6 +23,7 @@ const Board = React.createClass({
         y={y}
         placeTile={this.props.placeTile}
         switchTilePositions={this.props.switchTilePositions}
+        isMyTurn={this.props.isMyTurn}
       >
         {this.findTileAtCoords(x,y)}
       </BoardSquare>

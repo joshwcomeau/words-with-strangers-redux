@@ -58,9 +58,6 @@ export default function game(state = initialState, action) {
         tile2Props, tile2Index, tile2Location
       ] = getOriginalTileData(state, action.tile2);
 
-      console.log('tile 1 data:', tile1Props, tile1Index, tile1Location)
-      console.log('tile 2 data:', tile2Props, tile2Index, tile2Location)
-
       const newTile1Coords = {
         x: tile2Props.get('x'),
         y: tile2Props.get('y')
@@ -69,9 +66,6 @@ export default function game(state = initialState, action) {
         x: tile1Props.get('x'),
         y: tile1Props.get('y')
       }
-
-      console.log("Setting tile 1 coords", newTile1Coords);
-      console.log("Setting tile 2 coords", newTile2Coords);
 
       state = state.setIn( [tile2Location, tile2Index], tile2Props.merge(newTile2Coords));
 

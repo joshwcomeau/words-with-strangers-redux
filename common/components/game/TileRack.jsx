@@ -12,6 +12,7 @@ const TileRack = React.createClass({
       <Tile key={tile._id}
       tile={tile}
       switchTilePositions={this.props.switchTilePositions}
+      isMyTurn={this.props.isMyTurn}
       />)
     );
   },
