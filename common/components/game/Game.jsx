@@ -30,9 +30,18 @@ const Game = React.createClass({
   render() {
     return (
       <div id="game">
-        <SidePanel players={this.props.players} turns={this.props.turns} />
-        <Board tiles={this.props.board} placeTile={this.props.actions.placeTile} />
-        <TileRack tiles={this.props.rack} />
+        <SidePanel
+          players={this.props.players}
+          turns={this.props.turns}
+        />
+        <Board
+          tiles={this.props.board}
+          placeTile={this.props.actions.placeTile}
+        />
+        <TileRack
+          tiles={this.props.rack}
+          placeTile={this.props.actions.placeTile}
+        />
         <Controls
           isMyTurn={this.props.computed.isMyTurn}
           isValidPlacement={this.props.computed.isValidPlacement}

@@ -193,12 +193,17 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
     padding: $gutter-width;
     text-align: center;
 
+    &.moused-over {
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.35);
+    }
+
     .tile {
       position: relative;
       display: inline-block;
       margin-right: $gutter-width;
       @include tile($tile-rack-size);
     }
+
   }
 
   #controls {
