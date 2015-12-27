@@ -7,7 +7,9 @@ import {
   UNSUBSCRIBE_FROM_GAME,
   ADD_TILES_TO_RACK,
   PLACE_TILE,
-  SUBMIT_WORD
+  SUBMIT_WORD,
+  SHUFFLE_RACK,
+  RECALL_TILES_TO_RACK
 }   from '../../common/constants/actions.constants';
 
 
@@ -178,6 +180,57 @@ describe('gameReducer', () => {
           { _id: '2', letter: 'J', x: 8, y: 8 },
         ],
         rack: []
+      }));
+    });
+  });
+
+
+
+  describe('SHUFFLE_RACK', () => {
+    it('copies the new tile ordering to the rack', () => {
+      const state = fromJS({
+        rack: [ { _id: '2'}, { _id: '5' } ]
+      });
+      const action = {
+        type: SHUFFLE_RACK,
+        tiles: [ { _id: '5'}, { _id: '2' } ]
+      }
+      const nextState = gameReducer(state, action);
+
+      expect(nextState).to.equal(fromJS({
+        rack: [ { _id: '5'}, { _id: '2' } ]
+      }));
+    });
+  });
+
+
+
+  describe('RECALL_TILES_TO_RACK', () => {
+    it('brings all non-established board tiles to the rack', () => {
+      const state = fromJS({
+        board: [
+          { letter: 'B', x: 4, y: 7 },
+          { letter: 'C', x: 5, y: 7 },
+          { letter: 'D', x: 6, y: 7 },
+          { letter: 'Z', x: 2, y: 2, turnId: 0 }
+        ],
+        rack: [
+          { letter: 'A', x: 0 }
+        ]
+      });
+      const action = {
+        type: RECALL_TILES_TO_RACK
+      };
+      const nextState = gameReducer(state, action);
+
+      expect(nextState).to.equal(fromJS({
+        board: [ { letter: 'Z', x: 2, y: 2, turnId: 0 } ],
+        rack: [
+          { letter: 'A', x: 0 },
+          { letter: 'B', x: 1 },
+          { letter: 'C', x: 2 },
+          { letter: 'D', x: 3 }
+        ]
       }));
     });
   });

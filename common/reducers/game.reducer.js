@@ -6,7 +6,9 @@ import {
   SWITCH_TILE_POSITIONS,
   SUBMIT_WORD,
   UPDATE_GAME_STATE,
-  UNSUBSCRIBE_FROM_GAME
+  UNSUBSCRIBE_FROM_GAME,
+  SHUFFLE_RACK,
+  RECALL_TILES_TO_RACK
 } from '../constants/actions.constants';
 
 // Initial state for the 'game' slice of the state.
@@ -93,9 +95,38 @@ export default function game(state = initialState, action) {
 
       return state;
 
-    case SUBMIT_WORD:
-      // We're assuming the word has already been validated, before being
-      // submitted to the store. If the action is called, the word is good.
+    case SHUFFLE_RACK:
+      return state.set('rack', fromJS(action.tiles));
+
+    case RECALL_TILES_TO_RACK:
+      // This is made tricky by the fact that we need to reset the tiles'
+      // 'x' coordinate. The easiest way to accomplish this is to pull them
+      // all back in, setting the X to the array index position as we go.
+
+      function isTentative(tile) {
+        return typeof tile.get('turnId') === 'undefined';
+      }
+
+      // Create a copy of all the tentative tiles, and strip each copied
+      // tile of their coordinates.
+      const tentativeTiles = state
+        .get('board')
+        .filter( isTentative )
+        .map( tile => tile.delete('x').delete('y'));
+
+      // Remove them from the board
+      state = state.set('board', state.get('board').filterNot( isTentative ) );
+
+      // Add them to the rack
+      state = state.set('rack', state.get('rack').concat(tentativeTiles))
+
+      // Finally, update the 'x' coordinate of all tentative tiles.
+      state = state.set('rack', state.get('rack').map( (tile, index) => {
+        return tile.set('x', index);
+      }));
+
+      return state;
+
 
     default:
       return state

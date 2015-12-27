@@ -7,6 +7,8 @@ export const END_TURN               = 'END_TURN';
 export const SUBSCRIBE_TO_GAME      = 'SUBSCRIBE_TO_GAME';
 export const UNSUBSCRIBE_FROM_GAME  = 'UNSUBSCRIBE_FROM_GAME';
 export const UPDATE_GAME_STATE      = 'UPDATE_GAME_STATE';
+export const SHUFFLE_RACK           = 'SHUFFLE_RACK';
+export const RECALL_TILES_TO_RACK   = 'RECALL_TILES_TO_RACK';
 
 // GAMES_LIST constants
 export const REQUEST_GAMES_LIST     = 'REQUEST_GAMES_LIST';

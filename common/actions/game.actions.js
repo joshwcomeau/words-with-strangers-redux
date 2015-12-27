@@ -4,7 +4,9 @@ import {
   SUBMIT_WORD,
   SUBSCRIBE_TO_GAME,
   UNSUBSCRIBE_FROM_GAME,
-  UPDATE_GAME_STATE
+  UPDATE_GAME_STATE,
+  SHUFFLE_RACK,
+  RECALL_TILES_TO_RACK
 } from '../constants/actions.constants';
 import { FULL_RACK_SIZE } from '../constants/config.constants';
 import {
@@ -82,5 +84,24 @@ export function submitWord(type) {
       tiles: wordTiles,
       gameId: game._id
     });
+  }
+}
+
+export function shuffleRack() {
+  return function(dispatch, getState) {
+    // We need to do the shuffling out here because we can't do any kind
+    // of randomization inside the reducer; wouldn't be pure.
+    let tiles = _.shuffle( getState().toJS().game.rack );
+
+    dispatch({
+      type: SHUFFLE_RACK,
+      tiles
+    })
+  }
+}
+
+export function recallTilesToRack() {
+  return {
+    type: RECALL_TILES_TO_RACK
   }
 }
