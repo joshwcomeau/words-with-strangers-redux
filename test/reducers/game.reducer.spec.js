@@ -189,16 +189,16 @@ describe('gameReducer', () => {
   describe('SHUFFLE_RACK', () => {
     it('copies the new tile ordering to the rack', () => {
       const state = fromJS({
-        rack: [ { _id: '2'}, { _id: '5' } ]
+        rack: [ { _id: '2', x: 0}, { _id: '5', x: 1 } ]
       });
       const action = {
         type: SHUFFLE_RACK,
-        tiles: [ { _id: '5'}, { _id: '2' } ]
+        tiles: [ { _id: '5', x: 1}, { _id: '2', x: 0 } ]
       }
       const nextState = gameReducer(state, action);
 
       expect(nextState).to.equal(fromJS({
-        rack: [ { _id: '5'}, { _id: '2' } ]
+        rack: [ { _id: '5', x: 0}, { _id: '2', x: 1 } ]
       }));
     });
   });

@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 import {
   PLACE_TILE,
   SWITCH_TILE_POSITIONS,

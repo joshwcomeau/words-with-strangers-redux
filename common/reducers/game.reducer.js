@@ -30,13 +30,10 @@ export default function game(state = initialState, action) {
       // On the client, though, we want tiles to be sortable based on this
       // value.
       let game = fromJS(action.game);
-      let currentXPosition = 0;
 
-      game = game.set('rack', game.get('rack').map( (tile, index) => (
-        tile.set('x', index)
-      )));
+      game = game.set('rack', resetRackTilePosition( game.get('rack') ));
 
-      return state.mergeDeep( game )
+      return state.mergeDeep( game );
 
     case UNSUBSCRIBE_FROM_GAME:
       // this is called when the component unmounts. We can simply restore
@@ -96,7 +93,8 @@ export default function game(state = initialState, action) {
       return state;
 
     case SHUFFLE_RACK:
-      return state.set('rack', fromJS(action.tiles));
+      const rack = resetRackTilePosition( fromJS(action.tiles) );
+      return state.set('rack', rack);
 
     case RECALL_TILES_TO_RACK:
       // This is made tricky by the fact that we need to reset the tiles'
@@ -121,9 +119,7 @@ export default function game(state = initialState, action) {
       state = state.set('rack', state.get('rack').concat(tentativeTiles))
 
       // Finally, update the 'x' coordinate of all tentative tiles.
-      state = state.set('rack', state.get('rack').map( (tile, index) => {
-        return tile.set('x', index);
-      }));
+      state = state.set('rack', resetRackTilePosition( state.get('rack') ));
 
       return state;
 
@@ -136,6 +132,10 @@ export default function game(state = initialState, action) {
 
 // HELPER FUNCTIONS
 // Should these be here? Not entirely sure how best to structure this.
+
+function resetRackTilePosition(rack) {
+  return rack.map( (tile, index) => tile.set('x', index) );
+}
 
 function getOriginalTileData(state, actionTile) {
   // Helper used in iteration to find the tile by the actionTile's _id
