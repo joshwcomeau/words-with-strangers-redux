@@ -34,7 +34,7 @@ function createGame(io, socket, data) {
 
   // Create a game in the DB.
   let game = new Game({
-    createdBy: user._id
+    createdByUserId: user._id
   });
 
   game.join(user).save( (err) => {

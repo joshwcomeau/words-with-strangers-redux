@@ -6,7 +6,7 @@ import TileSchema               from './tile.schema';
 import TurnSchema               from './turn.schema';
 import UserSchema               from './user.schema';
 
-import { fetchTiles }           from '../../../common/lib/tiles.lib';
+import generateTiles            from '../../lib/tile_generator.lib';
 import { FULL_RACK_SIZE }       from '../../../common/constants/config.constants';
 import { isTentative }          from '../../../common/lib/game_logic.lib';
 
@@ -15,8 +15,8 @@ const Schema = mongoose.Schema;
 
 const GameSchema = new Schema({
   title:            { type: String },
-  createdByUserId:  { type: Schema.Types.ObjectId },
-  players:          { type: [UserSchema] },
+  createdByUserId:  { type: Schema.Types.ObjectId, ref: 'User' },
+  players:          { type: [], default: [] },
   board:            { type: [TileSchema] },
   rack:             { type: [TileSchema] },
   turns:            { type: [TurnSchema] }
@@ -119,7 +119,7 @@ GameSchema.methods.replenishPlayerRack = function(player) {
   const numOfRackTiles = _.filter(this.rack, { playerId }).length;
   const numToRefill = FULL_RACK_SIZE - numOfRackTiles;
 
-  this.rack = this.rack.concat( fetchTiles(player, numToRefill) );
+  this.rack = this.rack.concat( generateTiles(playerId, numToRefill) );
 }
 
 GameSchema.methods.generateTitle = function() {

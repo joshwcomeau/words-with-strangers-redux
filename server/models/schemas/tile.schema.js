@@ -17,6 +17,5 @@ const TileSchema = new Schema({
 
 TileSchema.plugin(createdAndUpdatedAt, { index: true });
 
-// TODO: Add an isEstablished / isTentative virtual property to tiles?
 
 export default TileSchema;

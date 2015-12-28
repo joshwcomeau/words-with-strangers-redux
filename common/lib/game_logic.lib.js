@@ -50,7 +50,6 @@ export function getPlacedWord(board) {
   // The solution to this problem is to 'rewind' to the earliest letter
   // in the sequence, and then move forward through all the letters.
   return rewindAndCaptureWord({ activeAxis, tiles, board });
-
 }
 
 // Check if this tile placement is valid.
@@ -77,7 +76,6 @@ export function validatePlacement(board) {
   // This is our final check. If it has established neighbors, it's
   // a valid word! Otherwise, it's an unacceptable floater.
   return wordHasEstablishedNeighbors(word, board);
-
 }
 
 export function validateWord(word) {
