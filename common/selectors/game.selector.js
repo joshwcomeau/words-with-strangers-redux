@@ -42,7 +42,16 @@ const rackSelector            = state => (
 );
 const titleSelector           = state => state.game.title;
 const turnsSelector           = state => state.game.turns;
-const playersSelector         = state => state.game.players;
+const playersSelector         = state => {
+  // We also want to store the points that each player has earned in this
+  // game so far, on the players object.
+  let turnsByPlayers = _.groupBy(state.game.turns, 'playerId');
+
+  return state.game.players.map( player => {
+    player.points = _.sum( turnsByPlayers[player._id], 'points');
+    return player;
+  });
+}
 const createdByUserIdSelector = state => state.game.createdByUserId;
 
 
