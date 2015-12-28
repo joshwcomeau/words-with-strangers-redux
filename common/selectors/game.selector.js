@@ -14,10 +14,7 @@ export function calculateCurrentTurnPlayer (turns, players) {
   // May need to revisit this at some point.
 
   // if nobody's moved yet, it's the creator's turn.
-  if ( _.isEmpty(turns) ) {
-    console.log("Turns is empty! SO Im picking the first:", players)
-    return _.first(players);
-  }
+  if ( _.isEmpty(turns) ) return _.first(players);
 
   return players[ turns.length % players.length ];
 }

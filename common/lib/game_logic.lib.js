@@ -1,6 +1,8 @@
 import * as _ from 'lodash';
 import { BOARD_SIZE } from '../constants/config.constants.js';
 
+import words from '../data/words';
+
 // NAMING CONVENTION.
 
 // Established and Tentative tiles
@@ -78,12 +80,13 @@ export function validatePlacement(board) {
 
 }
 
-export function validateWord(tiles) {
-  // TODO: Incorporate a dictionary. Check against it.
-  return true;
+export function validateWord(word) {
+  // The dictionary is set up as one big object, where the keys are the letters
+  // of the alphabet (a-z), and the values are an array of words that start
+  // with that letter.
+  const firstLetter = word[0];
+  return _.includes(words[firstLetter], word);
 }
-
-
 
 
 

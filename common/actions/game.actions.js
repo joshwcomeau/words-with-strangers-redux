@@ -66,11 +66,12 @@ export function submitWord(type) {
   //     flash message alert? TBD) to let the player know.
 
   return function(dispatch, getState) {
-    const initialState      = getState();
-    const game              = initialState.toJS().game;
-    const boardObj          = game.board;
-    const wordTiles         = getPlacedWord(boardObj);
-    const isValidWord       = validateWord(wordTiles);
+    const initialState  = getState();
+    const game          = initialState.toJS().game;
+    const boardObj      = game.board;
+    const wordTiles     = getPlacedWord(boardObj);
+    const word          = _.pluck(wordTiles, 'letter').join('').toLowerCase();
+    const isValidWord   = validateWord(word);
 
 
     if ( !isValidWord ) {

@@ -19,8 +19,8 @@ let _  = require('lodash');
 main();
 
 function main() {
-  const INPUT_PATH  = './input_words_sample.txt';
-  const OUTPUT_PATH = './common/words.json';
+  const INPUT_PATH  = './input_words.txt';
+  const OUTPUT_PATH = './common/data/words.json';
   const wordText    = fs.readFileSync(INPUT_PATH, 'utf8');
   const wordArray   = buildWordArray(wordText);
 
