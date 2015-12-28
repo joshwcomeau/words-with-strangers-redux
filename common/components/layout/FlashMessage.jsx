@@ -3,7 +3,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const FlashMessage = ({type, message}) => (
   <div id="flash-message" className={type} key='flash-msg'>
-    {message}
+    <div className="message-text">{message}</div>
   </div>
 );
 

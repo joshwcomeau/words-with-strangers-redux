@@ -7,6 +7,7 @@
   left: 0;
   right: 0;
   opacity: 0.9;
+  overflow: hidden;
   line-height: $flash-message-height;
   text-align: center;
   font-size: 1.15rem;
@@ -17,26 +18,45 @@
   &.alert   { background: $yellow; color: $mediumgray; }
   &.notice  { background: $navy; }
   &.success { background: $fadedteal; }
+
+  .message-text {
+  }
 }
 
 .flash-message-transition-enter {
   height: 1px;
-  opacity: 0.6;
+
+  .message-text {
+    opacity: 0.01;
+  }
 }
 
 .flash-message-transition-enter-active {
   height: $flash-message-height;
-  opacity: 0.9;
-  transition: 0.5s ease-out;
+  transition: height 0.5s ease-in;
+
+  .message-text {
+    opacity: 1;
+    transition: opacity 0.25s linear 0.4s;
+  }
 }
 
 .flash-message-transition-leave {
   height: $flash-message-height;
-  opacity: 0.9;
+
+  .message-text {
+    opacity: 1;
+  }
+
 }
 
 .flash-message-transition-leave-active {
   height: 1px;
-  opacity: 0.2;
-  transition: 0.3s ease-in;
+  transition: height 0.3s ease-in 0.15s;
+
+  .message-text {
+    opacity: 0.01;
+    transition: opacity 0.25s linear;
+  }
+
 }

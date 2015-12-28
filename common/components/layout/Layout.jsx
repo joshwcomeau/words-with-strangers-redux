@@ -27,8 +27,8 @@ export default class AppView extends React.Component {
 
         <ReactCSSTransitionGroup
           transitionName="flash-message-transition"
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={300}
+          transitionEnterTimeout={650}
+          transitionLeaveTimeout={450}
         >
           { this.props.ui.flash ? <FlashMessage message={this.props.ui.flash.message} type={this.props.ui.flash.type} /> : null }
         </ReactCSSTransitionGroup>
