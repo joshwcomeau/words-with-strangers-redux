@@ -71,7 +71,7 @@ const history       = createBrowserHistory();
 const selectRoutingState = state => state.toJS().routing;
 syncReduxAndRouter(history, store, selectRoutingState);
 
-require('../common/scss/main.scss');
+require('./scss/main.scss');
 
 // Log the user in, if a JWT exists in localStorage
 const token = localStorage.getItem('wws_auth_token');

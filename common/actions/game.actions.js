@@ -11,6 +11,7 @@ import {
   RECALL_TILES_TO_RACK
 } from '../constants/actions.constants';
 import { FULL_RACK_SIZE } from '../constants/config.constants';
+import { updateFlashMessage } from './ui.actions';
 import {
   getPlacedWord,
   validateWord
@@ -75,10 +76,11 @@ export function submitWord(type) {
 
 
     if ( !isValidWord ) {
-      return dispatch({
-        type: DISPLAY_ERROR,
-        message: "Sorry, that\'s not a word."
-      });
+      return dispatch(updateFlashMessage(
+        "Sorry, that's not a word.",
+        'error',
+        2000
+      ));
     }
 
     dispatch({
