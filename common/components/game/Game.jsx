@@ -20,6 +20,7 @@ const Game = React.createClass({
         <SidePanel
           players={this.props.players}
           turns={this.props.turns}
+          title={this.props.title}
         />
         <Board
           tiles={this.props.board}

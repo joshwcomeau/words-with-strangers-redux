@@ -99,7 +99,7 @@ GameSchema.methods.asSeenByUser = function(user = {}) {
   ));
 
   game.players = game.players.map( player => {
-    if ( player._id === user._id ) player.currentUser = true;
+    if ( player._id.toString() === user._id ) player.currentUser = true;
     return player;
   });
 
@@ -128,16 +128,16 @@ GameSchema.methods.generateTitle = function() {
     'wordy', 'verbose', 'gabby', 'rhetorical', 'crackerjack', 'sagacious',
     'savvy', 'poetic', 'literary', 'idyllic', 'lyrical', 'belletristic',
     'latin', 'bookish', 'classical', 'chimerical'
-  ];
+  ].map(_.capitalize);
 
   const nouns = [
     'battle', 'clash', 'crusade', 'skirmish', 'engagement', 'blitzkreig',
     'struggle', 'tournament', 'jungle', 'business', 'adventure', 'diversion',
     'dispute', 'fracas', 'melee', 'showdown', 'brawl'
-  ];
+  ].map(_.capitalize);
 
   this.title = [_.sample(adjectives), _.sample(nouns)].join(' ');
-
+  console.log("Assigned title", this.title);
 }
 
 //////////////////////////////////////////////////////////////
@@ -163,6 +163,8 @@ GameSchema.pre('save', function(next) {
 
   // Give the game a random title!
   this.generateTitle();
+
+  return next();
 });
 
 export default GameSchema;

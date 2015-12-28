@@ -7,7 +7,7 @@ import { createdAndUpdatedAt } from '../plugins';
 
 const UserSchema = new mongoose.Schema({
   username:     { type: String, required: true, unique: true },
-  password:     { type: String, required: true },
+  password:     { type: String },
   profilePhoto: { type: String }
 });
 
