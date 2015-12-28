@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { createdAndUpdatedAt }  from '../plugins';
 import TileSchema               from './tile.schema';
 import TurnSchema               from './turn.schema';
+import UserSchema               from './user.schema';
 
 import { fetchTiles }           from '../../../common/lib/tiles.lib';
 import { FULL_RACK_SIZE }       from '../../../common/constants/config.constants';
@@ -13,14 +14,20 @@ const Schema = mongoose.Schema;
 
 
 const GameSchema = new Schema({
-  title:            { type: String, default: 'Untitled Game' },
+  title:            { type: String },
   createdByUserId:  { type: Schema.Types.ObjectId },
-  players:          { type: [], default: [] },
+  players:          { type: [UserSchema] },
   board:            { type: [TileSchema] },
   rack:             { type: [TileSchema] },
   turns:            { type: [TurnSchema] }
 });
 
+GameSchema.plugin(createdAndUpdatedAt, { index: true });
+
+
+//////////////////////////////////////////////////////////////
+// INSTANCE METHODS /////////////////////////////////////////
+////////////////////////////////////////////////////////////
 GameSchema.methods.join = function(player) {
   // Attach the player to the game
   this.players.push(player);
@@ -115,12 +122,47 @@ GameSchema.methods.replenishPlayerRack = function(player) {
   this.rack = this.rack.concat( fetchTiles(player, numToRefill) );
 }
 
+GameSchema.methods.generateTitle = function() {
+  // titles consist of a wordy adjective followed by a competitive noun.
+  const adjectives = [
+    'wordy', 'verbose', 'gabby', 'rhetorical', 'crackerjack', 'sagacious',
+    'savvy', 'poetic', 'literary', 'idyllic', 'lyrical', 'belletristic',
+    'latin', 'bookish', 'classical', 'chimerical'
+  ];
+
+  const nouns = [
+    'battle', 'clash', 'crusade', 'skirmish', 'engagement', 'blitzkreig',
+    'struggle', 'tournament', 'jungle', 'business', 'adventure', 'diversion',
+    'dispute', 'fracas', 'melee', 'showdown', 'brawl'
+  ];
+
+  this.title = [_.sample(adjectives), _.sample(nouns)].join(' ');
+
+}
+
+//////////////////////////////////////////////////////////////
+// CLASS METHODS ////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////
+// VIRTUAL PROPERTIES ///////////////////////////////////////
+////////////////////////////////////////////////////////////
 GameSchema.virtual('roomName').get( function() {
   return `game_${this._id}`;
 });
 
 
-GameSchema.plugin(createdAndUpdatedAt, { index: true });
 
+//////////////////////////////////////////////////////////////
+// HOOKS ////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+GameSchema.pre('save', function(next) {
+  if ( !this.isNew ) return next();
+
+  // Give the game a random title!
+  this.generateTitle();
+});
 
 export default GameSchema;
