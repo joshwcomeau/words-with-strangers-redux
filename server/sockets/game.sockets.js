@@ -37,6 +37,8 @@ function createGame(io, socket, data) {
     createdByUserId: user._id
   });
 
+  console.log("Game created!")
+
   game.join(user).save( (err) => {
     if ( err ) return console.error("Error creating game", err);
 

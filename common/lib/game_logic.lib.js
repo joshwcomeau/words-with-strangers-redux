@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { BOARD_SIZE } from '../constants/config.constants.js';
 
 import words from '../data/words';
@@ -33,7 +33,7 @@ export function getPlacedWord(board) {
   if ( _.isEmpty(tiles) ) return null;
 
   // 2. Figure out which axis we're working in, either horizontal or vertical.
-  let activeAxis = findActiveAxis(tiles);
+  let activeAxis = findActiveAxis(board);
   if ( !activeAxis ) return null;
 
   // 3. Find any other letters that are involved in our primary word.
@@ -82,6 +82,7 @@ export function validateWord(word) {
   // The dictionary is set up as one big object, where the keys are the letters
   // of the alphabet (a-z), and the values are an array of words that start
   // with that letter.
+  return true;
   const firstLetter = word[0];
   return _.includes(words[firstLetter], word);
 }
@@ -133,20 +134,64 @@ export function isFirstTurn(board) {
 // RETURNS: either:
 //   - a String (enum: ['x', 'y']) if the move is valid, or
 //   - a Boolean (false) if the move is invalid.
-export function findActiveAxis(tiles) {
-  // Don't consider tiles placed in previous turns
-  tiles = _.reject( tiles, isEstablished )
-  const deltaX = getDeltaOfAxis(tiles, 'x');
-  const deltaY = getDeltaOfAxis(tiles, 'y');
+export function findActiveAxis(board) {
+  // If this is the first move of the game, and it's only a single letter,
+  // we can't possibly determine which axis they intended.
+  // Fortunately, it doesn't matter.
+  if ( board.length === 1 ) return 'x';
+
+  // For most evaluations, we only care about tentative tiles.
+  let relevantTiles = board.filter( isTentative );
+
+  // If there are no tentative tiles, there's no active axis.
+  if ( _.isEmpty(relevantTiles) ) return false;
+
+  // If we've only placed a single tile, the rules change.
+  // To determine its axis, we need to look at its neighbours, to see
+  // which axis/axes we're extending.
+  let singleTentativeTile = relevantTiles.length === 1;
+  if ( singleTentativeTile ) {
+    let neighbours = findNeighbouringTiles( relevantTiles[0], board );
+
+    // If we haven't found any neighbours, it means this is an illegal move.
+    // (we already handled the case of this being the first move of the game,
+    // in the first statement of this function).
+    if ( _.isEmpty(neighbours) ) return false;
+
+    relevantTiles = relevantTiles.concat( neighbours );
+  }
+
+  const deltaX = getDeltaOfAxis(relevantTiles, 'x');
+  const deltaY = getDeltaOfAxis(relevantTiles, 'y');
 
   // If all the tiles are on the same row/column, the delta for that axis
   // will be zero. If both axes are more than zero, it means we have tiles
   // that aren't neatly in a single row or column.
-  if ( deltaX && deltaY ) return false;
+  // EXCEPTION: If we've only placed a single tile, we consider the neighbors.
+  // Because of that, it's possible for both axes to have a delta.
+  // In that case, we default to 'x' (the 'y' will be orthogonal)
+  if ( deltaX && deltaY && !singleTentativeTile) return false;
 
   return deltaX ? 'x' : 'y';
-
 }
+
+// Get the 0-4 neighbours that surround a specified tile.
+// RETURNS: An array of tiles
+export function findNeighbouringTiles(tile, board) {
+  const coordsArray = [
+    { x: tile.x-1, y: tile.y   },
+    { x: tile.x,   y: tile.y+1 },
+    { x: tile.x,   y: tile.y-1 },
+    { x: tile.x+1, y: tile.y   }
+  ];
+
+  return _(coordsArray)
+    .map( coords => findTile(coords, board) )
+    .compact()
+    .value();
+}
+
+
 
 // Figure out how many tiles apart the highest/lowest tile are, on a given axis
 // RETURNS: An integer
@@ -154,6 +199,8 @@ export function getDeltaOfAxis(tiles, axis) {
   const axisPoints = tiles.map( tile => tile[axis]).sort();
   return _.last(axisPoints) - _.first(axisPoints);
 }
+
+
 
 // Figure out if the word has any neighbouring established tiles.
 // RETURNS: Boolean

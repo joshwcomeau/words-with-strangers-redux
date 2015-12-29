@@ -24,7 +24,7 @@ export default function createdAndUpdatedAt(schema, { index = true }) {
 
   // Allow for indexing these fields.
   if ( index ) {
-    schema.path('createdAt').index({ index: index });
-    schema.path('updatedAt').index({ index: index });
+    schema.path('createdAt').index({ index });
+    schema.path('updatedAt').index({ index });
   }
 }

@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.methods.checkPassword = function(password, callback) {
   bcrypt.compare( password, this.password, callback);
-}
+};
 
 UserSchema.plugin(createdAndUpdatedAt, { index: true });
 
@@ -29,4 +29,4 @@ UserSchema.pre('save', function(next) {
 
 });
 
-export default UserSchema
+export default UserSchema;

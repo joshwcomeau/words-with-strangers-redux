@@ -10,7 +10,6 @@ import DevTools from '../../containers/DevTools.jsx';
 
 export default class AppView extends React.Component {
   render() {
-    console.log("Rendering with flash", this.props.ui.flash);
     return (
       <div id="app-view">
         <Header

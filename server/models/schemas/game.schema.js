@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 import { createdAndUpdatedAt }  from '../plugins';
 import TileSchema               from './tile.schema';
 import TurnSchema               from './turn.schema';
-import UserSchema               from './user.schema';
 
 import generateTiles            from '../../lib/tile_generator.lib';
 import { FULL_RACK_SIZE }       from '../../../common/constants/config.constants';
@@ -30,7 +29,8 @@ GameSchema.plugin(createdAndUpdatedAt, { index: true });
 ////////////////////////////////////////////////////////////
 GameSchema.methods.join = function(player) {
   // Attach the player to the game
-  this.players.push(player);
+  console.log("Adding", player, "to", this.players)
+  this.players.push( player );
 
   // Give that player some starter tiles.
   this.replenishPlayerRack(player);
@@ -137,7 +137,6 @@ GameSchema.methods.generateTitle = function() {
   ].map(_.capitalize);
 
   this.title = [_.sample(adjectives), _.sample(nouns)].join(' ');
-  console.log("Assigned title", this.title);
 }
 
 //////////////////////////////////////////////////////////////

@@ -24,21 +24,6 @@ describe('User model', () => {
       });
     });
 
-    it('fails without a password', (done) => {
-      const user = new User({
-        username: 'hiya'
-      });
-
-      user.save( (err) => {
-        expect(err).to.exist;
-        expect(err.name).to.equal('ValidationError');
-        expect(err.errors).to.include.key('password');
-        expect(err.errors.password.kind).to.equal('required');
-
-        done()
-      });
-    });
-
     it('does not allow multiple users to share a username', (done) => {
       const userProperties = { username: 'duplicate', password: '12345678' };
 

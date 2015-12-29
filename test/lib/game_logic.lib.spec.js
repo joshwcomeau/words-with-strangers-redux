@@ -6,6 +6,7 @@ import {
   isEstablished,
   findTile,
   findTentativeTiles,
+  findNeighbouringTiles,
   findActiveAxis,
   rewindAndCaptureWord,
   isFirstTurn,
@@ -122,20 +123,64 @@ describe('Game Logic', () => {
 
 
 
+  describe('#findNeighbouringTiles', () => {
+    it('returns an empty array when the tile has no neighbours', () => {
+      let tile  = { x: 3, y: 3 };
+      let board = [ tile ];
+
+      expect( findNeighbouringTiles(tile, board) ).to.deep.equal([]);
+    });
+
+    it('returns a single neighbour', () => {
+      let tile      = { x: 3, y: 3 };
+      let neighbour = { x: 2, y: 3 };
+      let board     = [ tile, neighbour ];
+
+      expect( findNeighbouringTiles(tile, board) ).to.deep.equal([neighbour]);
+    });
+
+    it('ignores diagonally-touching and faraway tiles', () => {
+      let tile      = { x: 3, y: 3 };
+      let neighbour = { x: 2, y: 3 };
+      let board     = [
+        tile, neighbour,
+        { x: 2, y: 2 },
+        { x: 8, y: 4 }
+      ];
+
+      expect( findNeighbouringTiles(tile, board) ).to.deep.equal([neighbour]);
+    });
+
+    it('finds all possible neighbours', () => {
+      let tile        = { x: 3, y: 3 };
+      let neighbours  = [
+        { x: 2, y: 3 },
+        { x: 3, y: 4 },
+        { x: 3, y: 2 },
+        { x: 4, y: 3 }
+      ];
+      let board = [ tile ].concat(neighbours);
+
+      expect( findNeighbouringTiles(tile, board) ).to.deep.equal(neighbours);
+    });
+  });
+
+
 
   describe('#findActiveAxis', () => {
     it('returns false if the tiles span both axes', () => {
-      const board = [
-        { x: 1, y: 1 },
-        { x: 5, y: 5 }
-      ];
-
+      const board = [ { x: 1, y: 1 }, { x: 5, y: 5 } ];
       expect( findActiveAxis(board) ).to.equal(false);
     });
 
+    it('returns false if there are no tentative tiles on the board', () => {
+      const board = [ { x: 1, y: 1, turnId: 0 }, { x: 1, y: 2, turnId: 0 } ];
+
+      expect( findActiveAxis(board) ).to.equal(false);
+    })
+
     it('returns `y` when all the tiles are on the x axis', () => {
       const board = [
-        { x: 3, y: 5 },
         { x: 3, y: 6 },
         { x: 3, y: 7 },
         { x: 3, y: 8 }
@@ -146,7 +191,6 @@ describe('Game Logic', () => {
 
     it('returns `x` when all the tiles are on the y axis', () => {
       const board = [
-        { x: 1, y: 7 },
         { x: 2, y: 7 },
         { x: 3, y: 7 },
         { x: 4, y: 7 }
@@ -157,7 +201,6 @@ describe('Game Logic', () => {
 
     it('ignores tiles from previous turns', () => {
       const board = [
-        { x: 1, y: 7 },
         { x: 2, y: 7 },
         { x: 3, y: 7 },
         { x: 6, y: 9, turnId: 0 }
@@ -167,9 +210,54 @@ describe('Game Logic', () => {
     });
 
     context('when only 1 new tile is on the board', () => {
-      xit('returns `x` when the tile extends a horizontal word');
-      xit('returns `y` when the tile extends a vertical word');
-      xit('returns `x` when the tile extends both');
+      it('returns false when it isn\'t connected to existing tiles', () => {
+        const board = [
+          { x: 1, y: 1, turnId: 0 },
+          { x: 1, y: 2, turnId: 0 },
+          { x: 6, y: 6 }
+        ]
+
+        expect( findActiveAxis(board) ).to.equal(false);
+      })
+      it('returns `x` when the tile extends a horizontal word', () => {
+        const board = [
+          { x: 2, y: 7, turnId: 0 },
+          { x: 3, y: 7, turnId: 0 },
+          { x: 4, y: 7 }
+        ]
+
+        expect( findActiveAxis(board) ).to.equal('x');
+      });
+
+      it('returns `y` when the tile extends a vertical word', () => {
+        const board = [
+          { x: 2, y: 3, turnId: 0 },
+          { x: 2, y: 4, turnId: 0 },
+          { x: 2, y: 5, turnId: 0 },
+          { x: 2, y: 6 }
+        ]
+
+        expect( findActiveAxis(board) ).to.equal('y');
+      });
+
+      it('returns `x` when the tile extends both', () => {
+        const board = [
+          { x: 1, y: 1, turnId: 0 },
+          { x: 1, y: 2, turnId: 0 },
+          { x: 2, y: 1, turnId: 0 },
+          { x: 2, y: 2 }
+        ]
+
+        expect( findActiveAxis(board) ).to.equal('x');
+      });
+
+      it('returns `x` when it\'s the first tile on the board', () => {
+        const board = [
+          { x: 2, y: 2 }
+        ]
+
+        expect( findActiveAxis(board) ).to.equal('x');
+      });
     });
   });
 
@@ -234,21 +322,30 @@ describe('Game Logic', () => {
         { letter: 'T', x: 5, y: 5 },
         { letter: 'H', x: 6, y: 5, turnId: 0 },
         { letter: 'I', x: 7, y: 5 },
-        { letter: 'N', x: 8, y: 5, turnId: 0},
-        { letter: 'G', x: 9, y: 5, turnId: 0}
+        { letter: 'N', x: 8, y: 5, turnId: 0 },
+        { letter: 'G', x: 9, y: 5, turnId: 0 }
       ];
       const tiles = findTentativeTiles(board);
       const activeAxis = findActiveAxis(board);
 
       const capturedWord = rewindAndCaptureWord({tiles, board, activeAxis});
 
-      expect( capturedWord ).to.deep.equal([
-        { letter: 'T', x: 5, y: 5 },
-        { letter: 'H', x: 6, y: 5, turnId: 0 },
-        { letter: 'I', x: 7, y: 5 },
+      expect( capturedWord ).to.deep.equal(board);
+    });
+
+    it('captures the word when only a single new tile is added', () => {
+      const board = [
+        { letter: 'B', x: 6, y: 5, turnId: 0 },
+        { letter: 'I', x: 7, y: 5, turnId: 0 },
         { letter: 'N', x: 8, y: 5, turnId: 0 },
-        { letter: 'G', x: 9, y: 5, turnId: 0 }
-      ]);
+        { letter: 'G', x: 9, y: 5 }
+      ];
+      const tiles = findTentativeTiles(board);
+      const activeAxis = findActiveAxis(board);
+
+      const capturedWord = rewindAndCaptureWord({tiles, board, activeAxis});
+
+      expect( capturedWord ).to.deep.equal(board);
     });
 
     it('returns null when there are gaps in the tiles', () => {
