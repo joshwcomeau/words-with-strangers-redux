@@ -9,12 +9,14 @@ import {
   SUBSCRIBE_TO_GAME,
   UNSUBSCRIBE_FROM_GAME,
   JOIN_GAME,
+  GAME_STATUS_CHANGED,
   UPDATE_GAME_STATE,
   SUBMIT_WORD,
   ADD_GAMES_TO_LIST,
   PUSH_PATH,
 } from '../../common/constants/actions.constants';
 
+import { GAME_STATUSES } from '../../common/constants/config.constants';
 
 export default function(mainIo) {
   let io = mainIo.of('/game');
@@ -85,7 +87,15 @@ function joinGame(io, socket, data) {
   }, (err, results) => {
     if ( err ) return console.error("Error joining game", err);
 
+    // Update the game state for players and spectators of this game
     broadcastGame(io, results.game);
+
+    // If the game's status has changed, let's update that as well
+    if ( results.game.status !== GAME_STATUSES.waiting ) {
+      io.emit(GAME_STATUS_CHANGED, {
+        game: results.game
+      })
+    }
   });
 }
 

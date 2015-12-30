@@ -1,18 +1,13 @@
 import {
-  REQUEST_GAMES_LIST,
   ADD_GAMES_TO_LIST,
+  GAME_STATUS_CHANGED,
+  REQUEST_GAMES_LIST,
   JOIN_GAME,
   CREATE_GAME
 } from '../constants/actions.constants';
 import { pushPath } from 'redux-simple-router';
 
-export function requestGamesList() {
-  return {
-    type: REQUEST_GAMES_LIST,
-    meta: { remote: '/game' }
-  }
-}
-
+// Local Actions
 export function addGamesToList(games) {
   if ( typeof games === 'string' ) games = [games];
   return {
@@ -20,6 +15,24 @@ export function addGamesToList(games) {
     games
   }
 }
+
+export function gameStatusChanged(game) {
+  return {
+    type: GAME_STATUS_CHANGED,
+    game
+  }
+}
+
+
+
+// Remote actions
+export function requestGamesList() {
+  return {
+    type: REQUEST_GAMES_LIST,
+    meta: { remote: '/game' }
+  }
+}
+
 
 export function joinGame(gameId) {
   return function(dispatch, getState) {

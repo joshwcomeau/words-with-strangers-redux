@@ -15,6 +15,7 @@ export const REQUEST_GAMES_LIST     = 'REQUEST_GAMES_LIST';
 export const ADD_GAMES_TO_LIST      = 'ADD_GAMES_TO_LIST';
 export const JOIN_GAME              = 'JOIN_GAME';
 export const CREATE_GAME            = 'CREATE_GAME';
+export const GAME_STATUS_CHANGED    = 'GAME_STATUS_CHANGED';
 
 // AUTH constants
 export const AUTHENTICATION_SUCCESS = 'AUTHENTICATION_SUCCESS';
