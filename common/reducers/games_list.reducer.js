@@ -17,10 +17,7 @@ export default function game(state = initialState, action) {
       // Find the index of the changed game
       let gameIndex = state.findIndex( game => game._id === action.game._id );
 
-      // Create our new game: current state props except action status
-      let newGame = state.get(gameIndex).set('status', action.game.status);
-
-      return state.set(gameIndex, newGame);
+      return state.mergeIn([gameIndex], action.game);
 
     default:
       return state

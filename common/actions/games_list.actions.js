@@ -16,10 +16,10 @@ export function addGamesToList(games) {
   }
 }
 
-export function gameStatusChanged(game) {
+export function gameStatusChanged(data) {
   return {
     type: GAME_STATUS_CHANGED,
-    game
+    game: data.game
   }
 }
 

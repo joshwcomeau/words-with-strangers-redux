@@ -54,14 +54,14 @@ describe('gamesListReducer', () => {
     ]);
     const action = {
       type: GAME_STATUS_CHANGED,
-      game: { _id: '789', status: 'in_progress' }
+      game: { _id: '789', status: 'in_progress', players: [1,2] }
     };
     const nextState = gamesListReducer(state, action);
 
     expect(nextState).to.equal(fromJS([
       { _id: '123', title: 'Wild Folly', status: 'waiting' },
       { _id: '456', title: 'A Fowl Day', status: 'in_progress' },
-      { _id: '789', title: 'Bird Baths', status: 'in_progress' }
+      { _id: '789', title: 'Bird Baths', status: 'in_progress', players: [1,2] }
     ]));
   });
 });

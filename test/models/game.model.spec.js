@@ -8,7 +8,8 @@ import Game from '../../server/models/game.model';
 
 import {
   GAME_STATUSES,
-  FULL_RACK_SIZE
+  FULL_RACK_SIZE,
+  MINUTES_TO_SHOW_GAME
 } from '../../common/constants/config.constants';
 
 
@@ -57,6 +58,55 @@ describe('Game model', () => {
 
     it('defaults to `waiting` status.', () => {
       expect(game.status).to.equal(GAME_STATUSES.waiting);
+    });
+  });
+
+  describe('.list', () => {
+    before ( done => {
+      const limit = MINUTES_TO_SHOW_GAME;
+      Game.remove({}, () => {
+        Game.create([
+          {
+            // Ideal game
+            status:     GAME_STATUSES.waiting,
+            title:      'YES',
+            createdAt:  moment().subtract(1, 'minutes').toDate(),
+            createdByUserId: mongoose.Types.ObjectId()
+          }, {
+            // Older, but still relevant
+            status:     GAME_STATUSES.waiting,
+            title:      'YES',
+            createdAt:  moment().subtract(limit/2, 'minutes').toDate(),
+            createdByUserId: mongoose.Types.ObjectId()
+          }, {
+            // Different status, but acceptable
+            status:     GAME_STATUSES.in_progress,
+            title:      'YES',
+            createdAt:  moment().subtract(limit/4, 'minutes').toDate(),
+            createdByUserId: mongoose.Types.ObjectId()
+          }, {
+            // Slightly over the limit
+            status:     GAME_STATUSES.waiting,
+            title:      'NO',
+            createdAt:  moment().subtract(limit+1, 'minutes').toDate(),
+            createdByUserId: mongoose.Types.ObjectId()
+          }, {
+            // Abandoned
+            status:     GAME_STATUSES.abandoned,
+            title:      'NO',
+            createdAt:  moment().subtract(1, 'minutes').toDate(),
+            createdByUserId: mongoose.Types.ObjectId()
+          }
+        ], done);
+      })
+    });
+
+    it('includes the right games', () => {
+      Game.list( (err, games) => {
+        expect( err ).not.to.exist;
+        expect( games.length ).to.equal(3);
+        expect( _.pluck(games, 'title') ).to.deep.equal(['YES','YES','YES']);
+      });
     });
   });
 

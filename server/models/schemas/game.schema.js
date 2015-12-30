@@ -1,5 +1,6 @@
-import _ from 'lodash';
+import _        from 'lodash';
 import mongoose from 'mongoose';
+import moment   from 'moment';
 
 import { createdAndUpdatedAt }  from '../plugins';
 import TileSchema               from './tile.schema';
@@ -9,7 +10,8 @@ import generateTiles            from '../../lib/tile_generator.lib';
 import {
   GAME_STATUSES,
   GAME_STATUSES_ENUM,
-  FULL_RACK_SIZE
+  FULL_RACK_SIZE,
+  MINUTES_TO_SHOW_GAME
 } from '../../../common/constants/config.constants';
 import { isTentative }          from '../../../common/lib/game_logic.lib';
 
@@ -155,9 +157,13 @@ GameSchema.methods.generateTitle = function() {
 //////////////////////////////////////////////////////////////
 // CLASS METHODS ////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
-GameSchema.statics.findWaiting = function(callback) {
+GameSchema.statics.list = function(callback) {
+  // For now, we want all non-abandoned games created in the last 5 days.
   return this.find({
-    status: GAME_STATUSES.waiting
+    status:     { $ne: GAME_STATUSES.abandoned },
+    createdAt:  {
+      $gte: moment().subtract(MINUTES_TO_SHOW_GAME, 'minutes').toDate()
+    }
   }, callback);
 }
 
