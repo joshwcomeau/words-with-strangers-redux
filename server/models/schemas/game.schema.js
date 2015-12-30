@@ -6,15 +6,25 @@ import TileSchema               from './tile.schema';
 import TurnSchema               from './turn.schema';
 
 import generateTiles            from '../../lib/tile_generator.lib';
-import { FULL_RACK_SIZE }       from '../../../common/constants/config.constants';
+import {
+  GAME_STATUSES,
+  FULL_RACK_SIZE
+} from '../../../common/constants/config.constants';
 import { isTentative }          from '../../../common/lib/game_logic.lib';
 
 const Schema = mongoose.Schema;
 
-
 const GameSchema = new Schema({
   title:            { type: String },
-  createdByUserId:  { type: Schema.Types.ObjectId, ref: 'User' },
+  status:           {
+    type:     String,
+    enum:     GAME_STATUSES,
+    default:  GAME_STATUSES[0]
+  },
+  createdByUserId:  {
+    required: true,
+    type: Schema.Types.ObjectId,
+    ref: 'User' },
   players:          { type: [], default: [] },
   board:            { type: [TileSchema] },
   rack:             { type: [TileSchema] },
@@ -29,11 +39,13 @@ GameSchema.plugin(createdAndUpdatedAt, { index: true });
 ////////////////////////////////////////////////////////////
 GameSchema.methods.join = function(player) {
   // Attach the player to the game
-  console.log("Adding", player, "to", this.players)
   this.players.push( player );
 
   // Give that player some starter tiles.
   this.replenishPlayerRack(player);
+
+  // If the game has at least 2 players, start the game!
+  if ( this.players.length > 1 ) this.status = GAME_STATUSES[1];
 
   // Return self, for chainability;
   return this;
@@ -161,7 +173,7 @@ GameSchema.pre('save', function(next) {
   if ( !this.isNew ) return next();
 
   // Give the game a random title!
-  this.generateTitle();
+  if ( !this.title ) this.generateTitle();
 
   return next();
 });
