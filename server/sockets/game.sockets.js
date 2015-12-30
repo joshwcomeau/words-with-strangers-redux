@@ -4,6 +4,7 @@ import async  from 'async';
 import Game from '../models/game.model';
 
 import {
+  REQUEST_GAMES_LIST,
   CREATE_GAME,
   SUBSCRIBE_TO_GAME,
   UNSUBSCRIBE_FROM_GAME,
@@ -14,19 +15,27 @@ import {
   PUSH_PATH,
 } from '../../common/constants/actions.constants';
 
+
 export default function(mainIo) {
   let io = mainIo.of('/game');
 
-  io.on('connection', (socket) => {
-    socket.on(CREATE_GAME,            createGame.bind(null, io, socket) );
-    socket.on(SUBSCRIBE_TO_GAME,      subscribeToGame.bind(null, io, socket) );
-    socket.on(JOIN_GAME,              joinGame.bind(null, io, socket) );
-    socket.on(SUBMIT_WORD,            submitWord.bind(null, io, socket) );
-    socket.on(UNSUBSCRIBE_FROM_GAME,  unsubscribeFromGame.bind(null, io, socket));
+  io.on('connection', (sock) => {
+    sock.on(REQUEST_GAMES_LIST,     requestGamesList.bind(null, io, sock));
+    sock.on(CREATE_GAME,            createGame.bind(null, io, sock));
+    sock.on(SUBSCRIBE_TO_GAME,      subscribeToGame.bind(null, io, sock));
+    sock.on(JOIN_GAME,              joinGame.bind(null, io, sock));
+    sock.on(SUBMIT_WORD,            submitWord.bind(null, io, sock));
+    sock.on(UNSUBSCRIBE_FROM_GAME,  unsubscribeFromGame.bind(null, io, sock));
   });
 }
 
 // PRIMARY SOCKET ACTIONS
+function requestGamesList(io, socket, data) {
+  Game.findWaiting( (err, games) => {
+    socket.emit(ADD_GAMES_TO_LIST, games);
+  });
+}
+
 function createGame(io, socket, data) {
   // TODO: Validations. Ensure user auth.
 
@@ -36,8 +45,6 @@ function createGame(io, socket, data) {
   let game = new Game({
     createdByUserId: user._id
   });
-
-  console.log("Game created!")
 
   game.join(user).save( (err) => {
     if ( err ) return console.error("Error creating game", err);
@@ -51,6 +58,8 @@ function createGame(io, socket, data) {
 
 }
 function subscribeToGame(io, socket, data) {
+  // TODO: Add this user (or anonymous user) to the 'spectators' array.
+
   // Attach our user data to this socket, so that it can be used when
   // broadcasting to the room
   if ( data.auth ) socket.auth_user = data.auth.user;
@@ -117,11 +126,18 @@ function findGame(gameId, callback) {
 }
 
 function broadcastGame(io, game) {
+  // Broadcast the new state to every user in the game.
+  // NOTE: I can't simply use io.to('game-ID') because every connected
+  // socket needs different data; they need their personalized view
+  // of the game (and not the rack tiles of their opponent).
+
   // Find all the sockets currently in this game
   let impactedSockets = io.sockets.filter( socket => {
     return _.includes(socket.rooms, game.roomName)
   });
 
+  // Emit an event to each one individually, letting the game model
+  // generate the correct JSON for that user.
   impactedSockets.forEach( (iteratedSocket) => {
     iteratedSocket.emit(
       UPDATE_GAME_STATE,

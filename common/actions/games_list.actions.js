@@ -9,7 +9,7 @@ import { pushPath } from 'redux-simple-router';
 export function requestGamesList() {
   return {
     type: REQUEST_GAMES_LIST,
-    meta: { remote: '/gamesList' }
+    meta: { remote: '/game' }
   }
 }
 
