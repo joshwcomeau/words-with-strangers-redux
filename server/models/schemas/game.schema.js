@@ -8,6 +8,7 @@ import TurnSchema               from './turn.schema';
 import generateTiles            from '../../lib/tile_generator.lib';
 import {
   GAME_STATUSES,
+  GAME_STATUSES_ENUM,
   FULL_RACK_SIZE
 } from '../../../common/constants/config.constants';
 import { isTentative }          from '../../../common/lib/game_logic.lib';
@@ -18,8 +19,8 @@ const GameSchema = new Schema({
   title:            { type: String },
   status:           {
     type:     String,
-    enum:     GAME_STATUSES,
-    default:  GAME_STATUSES[0]
+    enum:     GAME_STATUSES_ENUM,
+    default:  GAME_STATUSES.waiting
   },
   createdByUserId:  {
     required: true,
@@ -45,7 +46,7 @@ GameSchema.methods.join = function(player) {
   this.replenishPlayerRack(player);
 
   // If the game has at least 2 players, start the game!
-  if ( this.players.length > 1 ) this.status = GAME_STATUSES[1];
+  if ( this.players.length > 1 ) this.status = GAME_STATUSES.in_progress;
 
   // Return self, for chainability;
   return this;
@@ -156,7 +157,7 @@ GameSchema.methods.generateTitle = function() {
 ////////////////////////////////////////////////////////////
 GameSchema.statics.findWaiting = function(callback) {
   return this.find({
-    status: GAME_STATUSES[0]
+    status: GAME_STATUSES.waiting
   }, callback);
 }
 

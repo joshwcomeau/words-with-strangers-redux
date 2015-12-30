@@ -56,7 +56,7 @@ describe('Game model', () => {
     });
 
     it('defaults to `waiting` status.', () => {
-      expect(game.status).to.equal('waiting');
+      expect(game.status).to.equal(GAME_STATUSES.waiting);
     });
   });
 
@@ -104,7 +104,7 @@ describe('Game model', () => {
       });
 
       it('sets the game status as `in_progress`', () => {
-        expect(game.status).to.equal('in_progress');
+        expect(game.status).to.equal(GAME_STATUSES.in_progress);
       })
 
     });
