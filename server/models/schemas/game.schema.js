@@ -154,7 +154,11 @@ GameSchema.methods.generateTitle = function() {
 //////////////////////////////////////////////////////////////
 // CLASS METHODS ////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
-
+GameSchema.statics.findWaiting = function(callback) {
+  return this.find({
+    status: GAME_STATUSES[0]
+  }, callback);
+}
 
 
 //////////////////////////////////////////////////////////////
@@ -176,6 +180,11 @@ GameSchema.pre('save', function(next) {
   if ( !this.title ) this.generateTitle();
 
   return next();
+});
+
+GameSchema.post('save', function(game) {
+  // Announce the change to any subscribed clients
+
 });
 
 export default GameSchema;

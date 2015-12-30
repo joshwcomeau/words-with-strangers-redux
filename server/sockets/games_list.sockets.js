@@ -15,7 +15,7 @@ export default function(io) {
 
     socket.on(REQUEST_GAMES_LIST, (data) => {
       // Send the user the initial list of games
-      Game.find({}, (err, games) => {
+      Game.findWaiting( (err, games) => {
         socket.emit(ADD_GAMES_TO_LIST, games);
       });
     });
