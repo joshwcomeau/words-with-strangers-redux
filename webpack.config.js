@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  devtool: 'inline-source-map',
+  devtool: 'eval',
 
   entry: [
     'webpack-hot-middleware/client',
@@ -27,8 +27,7 @@ module.exports = {
       {
         test:     /\.jsx?$/,
         loader:   'react-hot!babel',
-        exclude:  /node_modules/,
-        include:  __dirname
+        include:  /(client|common)/
       },
       // SASS
       {
