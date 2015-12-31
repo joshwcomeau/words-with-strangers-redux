@@ -101,11 +101,12 @@ describe('Game model', () => {
       })
     });
 
-    it('includes the right games', () => {
+    it('includes the right games', (done) => {
       Game.list( (err, games) => {
         expect( err ).not.to.exist;
         expect( games.length ).to.equal(3);
         expect( _.pluck(games, 'title') ).to.deep.equal(['YES','YES','YES']);
+        done()
       });
     });
   });

@@ -9,7 +9,7 @@ export default function createdAndUpdatedAt(schema, { index = true }) {
     const currentDate = new Date();
 
     this.updatedAt = currentDate;
-    if ( this.isNew ) this.createdAt = currentDate;
+    if ( this.isNew && !this.createdAt ) this.createdAt = currentDate;
 
     return next();
   });
