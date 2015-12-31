@@ -10,7 +10,9 @@ import {
   findActiveAxis,
   rewindAndCaptureWord,
   isFirstTurn,
-  validatePlacement
+  validatePlacement,
+  calculatePoints,
+  calculatePointsForWord
 } from '../../common/lib/game_logic.lib';
 
 
@@ -522,7 +524,23 @@ describe('Game Logic', () => {
         expect( validatePlacement(board) ).to.equal(true);
       });
     });
-
-
   });
+
+
+  describe('#calculatePointsForWord', () => {
+    it('sums up the points value of all supplied tiles', () => {
+      let tiles = [
+        { letter: 'O', points: 2 },
+        { letter: 'B', points: 6, turnId: 0 },
+        { letter: 'O', points: 2 },
+        { letter: 'E', points: 1 }
+      ];
+      let points = calculatePointsForWord(tiles)
+
+      expect(points).to.equal(11);
+    });
+  });
+
+
+
 });

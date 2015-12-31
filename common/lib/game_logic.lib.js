@@ -87,11 +87,44 @@ export function validateWord(word) {
   return _.includes(words[firstLetter], word);
 }
 
-// Figure out how many points the set of supplied tiles are worth.
+
+// Figure out how many points this set of tiles is worth.
 // Simple for now, but will soon include special tiles, bonus squares, etc.
 // RETURNS: a Number
-export function calculatePoints(tiles) {
-  return _.sum( tiles, tile => tile.points );
+export function calculatePointsForWord(word, board) {
+  return _.sum( word, tile => tile.points );
+}
+
+// Figure out how many points this turn is worth.
+// Requires a subset of the board for it to use as its base 'turn' word.
+// It sums that word, as well as any orthogonally-connected words.
+// RETURNS: a Number
+export function calculatePoints(tiles, board) {
+  // We pass in the primary axis' word, so we can start by summing its points.
+  let points = calculatePointsForWord(tiles, board);
+
+  // That's not the whole story though! We need to consider orthogonal words.
+  // The way to do that is to iterate through each tentative tile, check the
+  // neighbouring tile on the inactive axis, and see if it makes up a word.
+  let tentativeTiles  = findTentativeTiles(tiles);
+  let inactiveAxis    = findInactiveAxis(tiles);
+
+  tentativeTiles.forEach( tile => {
+    let orthogonalTiles = rewindAndCaptureWord({
+      activeAxis: inactiveAxis,
+      tiles:      [tile],
+      board
+    });
+
+    // If there are any established tiles in this orthogonal word,
+    // we get the points for it as well!
+    let hasEstablishedTiles = _.any(orthogonalTiles, isEstablished );
+    if ( hasEstablishedTiles ) {
+      points += calculatePointsForWord(orthogonalTiles, board);
+    }
+  });
+
+  return points;
 }
 
 
@@ -180,6 +213,13 @@ export function findActiveAxis(board) {
   if ( deltaX && deltaY && !singleTentativeTile) return false;
 
   return deltaX ? 'x' : 'y';
+}
+
+export function findInactiveAxis(board) {
+  const activeAxis = findActiveAxis(board);
+  if ( !activeAxis ) return false;
+
+  return activeAxis === 'x' ? 'y' : 'x';
 }
 
 // Get the 0-4 neighbours that surround a specified tile.
