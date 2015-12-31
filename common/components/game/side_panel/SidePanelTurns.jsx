@@ -10,8 +10,7 @@ function findPlayerById(playerId, players) {
 }
 
 function renderTurns(players, turns) {
-  // Sort players by whoever's winning.
-  return turns.map( (turn) => (
+  return turns.reverse().map( (turn) => (
     <div className='side-panel-turn' key={turn._id}>
       <span className='turn-data turn-player-name'>
         {findPlayerById(turn.playerId, players).username}

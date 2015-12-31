@@ -9,11 +9,12 @@ const Controls = ({
     <div className="submit-word-container">
       <button
       className="button submit-word"
-      disabled={!isValidPlacement}
+      disabled={!isValidPlacement || !isMyTurn}
       onClick={submitWord}
       >
         Submit Word
       </button>
+
     </div>
     <div className="other-actions-container">
       <button onClick={shuffleRack}>

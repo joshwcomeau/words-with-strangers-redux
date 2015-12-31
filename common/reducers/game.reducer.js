@@ -10,6 +10,7 @@ import {
   SHUFFLE_RACK,
   RECALL_TILES_TO_RACK
 } from '../constants/actions.constants';
+import { calculatePoints }    from '../lib/game_logic.lib';
 
 // Initial state for the 'game' slice of the state.
 export const initialState = fromJS({
@@ -92,9 +93,34 @@ export default function game(state = initialState, action) {
 
       return state;
 
+
     case SHUFFLE_RACK:
       const rack = resetRackTilePosition( fromJS(action.tiles) );
       return state.set('rack', rack);
+
+
+    case SUBMIT_WORD:
+      // NOTE: This is just for optimistic rendering.
+      // The _real_ submission happens on the server, and if it succeeds,
+      // it sends an UPDATE_GAME_STATE event to the client.
+
+      // Figure out what word they're spelling
+      const word    = _.pluck( action.tiles, 'letter').join('');
+      const points  = calculatePoints( action.tiles );
+      console.log("Calculating points", points, action.tiles)
+      const player  = state.get('players').find( player => {
+        return player.get('currentUser');
+      });
+
+      // Create a new turn.
+      return state.set('turns', state.get('turns').push(Map({
+        word,
+        points,
+        _id: state.get('turns').size,
+        playerId: player.get('_id')
+      })));
+
+
 
     case RECALL_TILES_TO_RACK:
       // This is made tricky by the fact that we need to reset the tiles'

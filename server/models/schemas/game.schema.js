@@ -13,7 +13,10 @@ import {
   FULL_RACK_SIZE,
   MINUTES_TO_SHOW_GAME
 } from '../../../common/constants/config.constants';
-import { isTentative }          from '../../../common/lib/game_logic.lib';
+import {
+  isTentative,
+  calculatePoints
+} from '../../../common/lib/game_logic.lib';
 
 const Schema = mongoose.Schema;
 
@@ -60,7 +63,7 @@ GameSchema.methods.submitWord = function(tiles, user) {
 
   // 1. Create a new Turn
   const word    = _.pluck( tiles, 'letter' ).join('');
-  const points  = _.sum( tiles, tile => tile.points );
+  const points  = calculatePoints( tiles );
   const turnId  = this.turns.length;
 
   this.turns.push({
@@ -165,6 +168,7 @@ GameSchema.statics.list = function(callback) {
       $gte: moment().subtract(MINUTES_TO_SHOW_GAME, 'minutes').toDate()
     }
   }, callback);
+
 }
 
 

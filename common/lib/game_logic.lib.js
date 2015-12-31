@@ -87,6 +87,13 @@ export function validateWord(word) {
   return _.includes(words[firstLetter], word);
 }
 
+// Figure out how many points the set of supplied tiles are worth.
+// Simple for now, but will soon include special tiles, bonus squares, etc.
+// RETURNS: a Number
+export function calculatePoints(tiles) {
+  return _.sum( tiles, tile => tile.points );
+}
+
 
 
 
