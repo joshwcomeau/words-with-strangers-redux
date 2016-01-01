@@ -87,7 +87,7 @@ export function submitWord(type) {
       type: SUBMIT_WORD,
       meta: { remote: '/game' },
       tiles: wordTiles,
-      gameId: game._id
+      gameId: game.id
     });
   }
 }

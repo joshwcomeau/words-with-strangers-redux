@@ -33,7 +33,7 @@ export default function(mainIo) {
 
 // PRIMARY SOCKET ACTIONS
 function requestGamesList(io, socket, data) {
-  Game.findWaiting( (err, games) => {
+  Game.list( (err, games) => {
     socket.emit(ADD_GAMES_TO_LIST, games);
   });
 }
@@ -51,7 +51,7 @@ function createGame(io, socket, data) {
   game.join(user).save( (err) => {
     if ( err ) return console.error("Error creating game", err);
 
-    socket.emit(PUSH_PATH, `/games/${game._id}`);
+    socket.emit(PUSH_PATH, `/games/${game.id}`);
 
     // Dispatch an event to everyone else watching the games list,
     // so that they know there's a new game to join.

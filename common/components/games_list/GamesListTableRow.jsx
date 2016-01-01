@@ -4,7 +4,7 @@ import moment   from 'moment';
 
 const GamesListTableRow = React.createClass({
   joinGameClickHandler() {
-    this.props.joinGame(this.props.game._id);
+    this.props.joinGame(this.props.game.id);
   },
   generatePlayerCell() {
     return this.props.game.players.map( player => (
@@ -22,7 +22,7 @@ const GamesListTableRow = React.createClass({
       <tr>
         <td>
           <strong>
-            <Link to={`/games/${game._id}`}>{game.title}</Link>
+            <Link to={`/games/${game.id}`}>{game.title}</Link>
           </strong>
         </td>
         <td>{this.generatePlayerCell()}</td>

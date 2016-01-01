@@ -33,7 +33,7 @@ function generateList(games, joinGame) {
   }
 
   return games.map( (game) => (
-    <GamesListTableRow key={game._id} game={game} joinGame={joinGame} />
+    <GamesListTableRow key={game.id} game={game} joinGame={joinGame} />
   ));
 }
 

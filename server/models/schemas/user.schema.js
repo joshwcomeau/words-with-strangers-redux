@@ -2,7 +2,10 @@ import mongoose from 'mongoose';
 import bcrypt   from 'bcrypt';
 import jwt      from 'jsonwebtoken';
 
-import { createdAndUpdatedAt } from '../plugins';
+import {
+  createdAndUpdatedAt,
+  toJSON
+}  from '../plugins';
 
 
 const UserSchema = new mongoose.Schema({
@@ -16,6 +19,7 @@ UserSchema.methods.checkPassword = function(password, callback) {
 };
 
 UserSchema.plugin(createdAndUpdatedAt, { index: true });
+UserSchema.plugin(toJSON);
 
 
 UserSchema.pre('save', function(next) {

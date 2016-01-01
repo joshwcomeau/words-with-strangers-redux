@@ -26,12 +26,6 @@ export default function(app) {
   }));
 
 
-  app.get('/api/private_area', passport.authenticate('jwt', { session: false}),
-    function(req, res) {
-      res.json(req.user);
-    }
-  );
-
   app.post('/api/authenticate', (req, res) => {
     User.findOne({
       username: req.body.username
@@ -53,7 +47,7 @@ export default function(app) {
         }
 
         // TODO: Move this to middleware.
-        const userJson = _.pick(user, ['_id', 'username', 'profilePhoto']);
+        const userJson = _.pick(user.toJSON(), ['id', 'username', 'profilePhoto']);
 
         const token = jwt.sign(userJson, nconf.get('JWT_SECRET'));
 
@@ -84,7 +78,7 @@ export default function(app) {
       }
 
       // Generate a JWT for this new user, for use in subsequent requests.
-      const token = jwt.sign(user, nconf.get('JWT_SECRET'));
+      const token = jwt.sign(user.toJSON(), nconf.get('JWT_SECRET'));
 
       return res.json({ token });
     });

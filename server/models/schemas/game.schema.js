@@ -2,9 +2,12 @@ import _        from 'lodash';
 import mongoose from 'mongoose';
 import moment   from 'moment';
 
-import { createdAndUpdatedAt }  from '../plugins';
 import TileSchema               from './tile.schema';
 import TurnSchema               from './turn.schema';
+import {
+  createdAndUpdatedAt,
+  toJSON
+}  from '../plugins';
 
 import generateTiles            from '../../lib/tile_generator.lib';
 import {
@@ -38,6 +41,7 @@ const GameSchema = new Schema({
 });
 
 GameSchema.plugin(createdAndUpdatedAt, { index: true });
+GameSchema.plugin(toJSON);
 
 
 //////////////////////////////////////////////////////////////
@@ -63,7 +67,7 @@ GameSchema.methods.submitWord = function(tiles, user) {
 
   // 1. Create a new Turn
   const word    = _.pluck( tiles, 'letter' ).join('');
-  const points  = calculatePointsForTurn( tiles );
+  const points  = calculatePointsForTurn( tiles, this.board );
   const turnId  = this.turns.length;
 
   this.turns.push({
@@ -193,9 +197,5 @@ GameSchema.pre('save', function(next) {
   return next();
 });
 
-GameSchema.post('save', function(game) {
-  // Announce the change to any subscribed clients
-
-});
 
 export default GameSchema;

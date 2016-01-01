@@ -103,11 +103,15 @@ export function calculatePointsForTurn(tiles, board) {
   // We pass in the primary axis' word, so we can start by summing its points.
   let points = calculatePointsForWord(tiles);
 
+  console.log("Base word has", points, "points on board", board)
+
   // That's not the whole story though! We need to consider orthogonal words.
   // The way to do that is to iterate through each tentative tile, check the
   // neighbouring tile on the inactive axis, and see if it makes up a word.
   let tentativeTiles  = findTentativeTiles(tiles);
   let inactiveAxis    = findInactiveAxis(tiles);
+
+  console.log("tentative tiles:", tentativeTiles)
 
   tentativeTiles.forEach( tile => {
     let orthogonalTiles = rewindAndCaptureWord({
@@ -115,6 +119,8 @@ export function calculatePointsForTurn(tiles, board) {
       tiles:      [tile],
       board
     });
+
+    console.log("Rewound and captured", _.pluck(orthogonalTiles, 'letter').join(''))
 
     // If there are any established tiles in this orthogonal word,
     // we get the points for it as well!
@@ -345,7 +351,7 @@ export function rewindAndCaptureWord({ activeAxis, tiles, board}) {
   //     * *       *
 
   const wordContainsAllTiles = _.every(tiles, tile => {
-    return _.includes(wordTiles, tile);
+    return _.findWhere(wordTiles, { id: tile._id });
   });
   if ( !wordContainsAllTiles ) return null;
 

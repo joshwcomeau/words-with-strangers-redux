@@ -620,7 +620,7 @@ describe('Game Logic', () => {
       expect( calculatePointsForTurn(tiles, board) ).to.equal(12 + 0);
     });
 
-    it('runs alongside an existing word.', () => {
+    it('runs alongside an existing word, horizontally.', () => {
       /*
         _ _ l a b _
         _ _ O T A _
@@ -640,6 +640,26 @@ describe('Game Logic', () => {
 
       expect( calculatePointsForTurn(tiles, board) ).to.equal(3 + 3 + 5 + 7);
     });
+
+    it('runs alongside an existing word, vertically.', () => {
+      /*
+        _ r _
+        _ o K
+        _ p O
+      */
+      const tiles = [
+        { letter: 'K', points: 1, x: 2, y: 1 },
+        { letter: 'O', points: 1, x: 2, y: 0 }
+      ];
+      const board = tiles.concat([
+        { letter: 'r', points: 2, x: 1, y: 2, turnId: 0 },
+        { letter: 'o', points: 4, x: 1, y: 1, turnId: 0 },
+        { letter: 'p', points: 6, x: 1, y: 0, turnId: 0 }
+      ]);
+
+      expect( calculatePointsForTurn(tiles, board) ).to.equal(2 + 5 + 7);
+    });
+
 
     it('works with a single tentative tile', () => {
       /*

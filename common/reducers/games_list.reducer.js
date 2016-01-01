@@ -15,7 +15,7 @@ export default function game(state = initialState, action) {
 
     case GAME_STATUS_CHANGED:
       // Find the index of the changed game
-      let gameIndex = state.findIndex( game => game._id === action.game._id );
+      let gameIndex = state.findIndex( game => game.id === action.game.id );
 
       return state.mergeIn([gameIndex], action.game);
 
