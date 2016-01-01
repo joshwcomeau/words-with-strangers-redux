@@ -10,7 +10,7 @@ import {
   SHUFFLE_RACK,
   RECALL_TILES_TO_RACK
 } from '../constants/actions.constants';
-import { calculatePoints }    from '../lib/game_logic.lib';
+import { calculatePointsForTurn }    from '../lib/game_logic.lib';
 
 // Initial state for the 'game' slice of the state.
 export const initialState = fromJS({
@@ -106,7 +106,7 @@ export default function game(state = initialState, action) {
 
       // Figure out what word they're spelling
       const word    = _.pluck( action.tiles, 'letter').join('');
-      const points  = calculatePoints( action.tiles );
+      const points  = calculatePointsForTurn( action.tiles );
       console.log("Calculating points", points, action.tiles)
       const player  = state.get('players').find( player => {
         return player.get('currentUser');

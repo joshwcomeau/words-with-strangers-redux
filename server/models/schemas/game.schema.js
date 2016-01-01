@@ -15,7 +15,7 @@ import {
 } from '../../../common/constants/config.constants';
 import {
   isTentative,
-  calculatePoints
+  calculatePointsForTurn
 } from '../../../common/lib/game_logic.lib';
 
 const Schema = mongoose.Schema;
@@ -63,7 +63,7 @@ GameSchema.methods.submitWord = function(tiles, user) {
 
   // 1. Create a new Turn
   const word    = _.pluck( tiles, 'letter' ).join('');
-  const points  = calculatePoints( tiles );
+  const points  = calculatePointsForTurn( tiles );
   const turnId  = this.turns.length;
 
   this.turns.push({

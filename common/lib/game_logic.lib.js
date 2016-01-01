@@ -91,17 +91,17 @@ export function validateWord(word) {
 // Figure out how many points this set of tiles is worth.
 // Simple for now, but will soon include special tiles, bonus squares, etc.
 // RETURNS: a Number
-export function calculatePointsForWord(word, board) {
-  return _.sum( word, tile => tile.points );
+export function calculatePointsForWord(tiles) {
+  return _.sum( tiles, tile => tile.points );
 }
 
 // Figure out how many points this turn is worth.
 // Requires a subset of the board for it to use as its base 'turn' word.
 // It sums that word, as well as any orthogonally-connected words.
 // RETURNS: a Number
-export function calculatePoints(tiles, board) {
+export function calculatePointsForTurn(tiles, board) {
   // We pass in the primary axis' word, so we can start by summing its points.
-  let points = calculatePointsForWord(tiles, board);
+  let points = calculatePointsForWord(tiles);
 
   // That's not the whole story though! We need to consider orthogonal words.
   // The way to do that is to iterate through each tentative tile, check the
@@ -120,7 +120,7 @@ export function calculatePoints(tiles, board) {
     // we get the points for it as well!
     let hasEstablishedTiles = _.any(orthogonalTiles, isEstablished );
     if ( hasEstablishedTiles ) {
-      points += calculatePointsForWord(orthogonalTiles, board);
+      points += calculatePointsForWord(orthogonalTiles);
     }
   });
 

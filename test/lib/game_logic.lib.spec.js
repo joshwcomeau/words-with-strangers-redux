@@ -11,7 +11,7 @@ import {
   rewindAndCaptureWord,
   isFirstTurn,
   validatePlacement,
-  calculatePoints,
+  calculatePointsForTurn,
   calculatePointsForWord
 } from '../../common/lib/game_logic.lib';
 
@@ -529,18 +529,167 @@ describe('Game Logic', () => {
 
   describe('#calculatePointsForWord', () => {
     it('sums up the points value of all supplied tiles', () => {
-      let tiles = [
+      const tiles = [
         { letter: 'O', points: 2 },
         { letter: 'B', points: 6, turnId: 0 },
         { letter: 'O', points: 2 },
         { letter: 'E', points: 1 }
       ];
-      let points = calculatePointsForWord(tiles)
 
-      expect(points).to.equal(11);
+      expect( calculatePointsForWord(tiles) ).to.equal(11);
     });
   });
 
 
+  describe('#calculatePointsForTurn', () => {
+    it('captures standalone words, on the first turn', () => {
+      const board = [
+        { points: 2, x: 1, y: 1 },
+        { points: 4, x: 1, y: 2 },
+        { points: 6, x: 1, y: 3 },
+      ];
+      const tiles = board;
 
+      expect( calculatePointsForTurn(tiles, board) ).to.equal(12);
+    });
+
+    it('captures a vertical orth word that extends in 1 direction', () => {
+      /*
+        _ h _ _ _
+        A I O L I
+      */
+      const tiles = [
+        { letter: 'A', points: 2, x: 1, y: 1 },
+        { letter: 'I', points: 2, x: 2, y: 1 },
+        { letter: 'O', points: 2, x: 3, y: 1 },
+        { letter: 'L', points: 2, x: 4, y: 1 },
+        { letter: 'I', points: 2, x: 5, y: 1 }
+      ];
+      const board = tiles.concat([
+        { letter: 'h', points: 6, x: 2, y: 2, turnId: 0 }
+     // { letter: 'I', points: 2, x: 2, y: 1 } // in `tiles`
+      ]);
+
+      expect( calculatePointsForTurn(tiles, board) ).to.equal(10 + 8);
+    });
+
+    it('captures a vertical orth word that extends in both directions', () => {
+      /*
+        _ h _ _ _
+        A I O L I
+        _ g _ _ _
+        _ h _ _ _
+      */
+      const tiles = [
+        { letter: 'A', points: 2, x: 1, y: 2 },
+        { letter: 'I', points: 2, x: 2, y: 2 },
+        { letter: 'O', points: 2, x: 3, y: 2 },
+        { letter: 'L', points: 2, x: 4, y: 2 },
+        { letter: 'I', points: 2, x: 5, y: 2 }
+      ];
+      const board = tiles.concat([
+        { letter: 'h', points: 6, x: 2, y: 3, turnId: 0 },
+     // { letter: 'I', points: 2, x: 2, y: 2 } // in `tiles`
+        { letter: 'g', points: 4, x: 2, y: 1, turnId: 0 },
+        { letter: 'h', points: 6, x: 2, y: 0, turnId: 0 }
+      ]);
+
+      expect( calculatePointsForTurn(tiles, board) ).to.equal(10 + 18);
+    });
+
+    it('perpendicularly adds to a word, no tentative orth words.', () => {
+      /*
+        _ _ _ t a b
+        _ _ _ _ _ 0
+        _ _ _ _ _ 0
+        _ _ _ _ _ M
+      */
+      // Because we didn't place the B, we don't get credit for 'TAB'.
+      const tiles = [
+        { letter: 'b', points: 4, x: 5, y: 3, turnId: 0 },
+        { letter: 'O', points: 2, x: 5, y: 2 },
+        { letter: 'O', points: 2, x: 5, y: 1 },
+        { letter: 'M', points: 4, x: 5, y: 0 }
+      ];
+      const board = tiles.concat([
+        { letter: 't', points: 2, x: 3, y: 3, turnId: 0 },
+        { letter: 'a', points: 2, x: 4, y: 3, turnId: 0 },
+     // { letter: 'b', points: 4, x: 5, y: 3, turnId: 0 }
+      ]);
+
+      expect( calculatePointsForTurn(tiles, board) ).to.equal(12 + 0);
+    });
+
+    it('runs alongside an existing word.', () => {
+      /*
+        _ _ l a b _
+        _ _ O T A _
+      */
+      // We get credit for our original word OTA, as well as three orthogonal
+      // words: LO, AT and BA.
+      const tiles = [
+        { letter: 'O', points: 1, x: 2, y: 0 },
+        { letter: 'T', points: 1, x: 3, y: 0 },
+        { letter: 'A', points: 1, x: 4, y: 0 }
+      ];
+      const board = tiles.concat([
+        { letter: 'l', points: 2, x: 2, y: 1, turnId: 0 },
+        { letter: 'a', points: 4, x: 3, y: 1, turnId: 1 },
+        { letter: 'b', points: 6, x: 4, y: 1, turnId: 1 }
+      ]);
+
+      expect( calculatePointsForTurn(tiles, board) ).to.equal(3 + 3 + 5 + 7);
+    });
+
+    it('works with a single tentative tile', () => {
+      /*
+        _ b o a t
+        _ a T _ _
+        _ t _ _ _
+      */
+      const tiles = [
+        { letter: 'a', points: 2,  x: 1, y: 1, turnId: 2 },
+        { letter: 'T', points: 1, x: 2, y: 1 }
+      ];
+      const board = tiles.concat([
+        { letter: 'b', points: 10, x: 1, y: 2, turnId: 4 },
+        { letter: 'o', points: 2,  x: 2, y: 2, turnId: 4 },
+        { letter: 'a', points: 2,  x: 3, y: 2, turnId: 4 },
+        { letter: 't', points: 4,  x: 4, y: 2, turnId: 4 },
+     // { letter: 'a', points: 2,  x: 1, y: 1, turnId: 2 },
+        { letter: 't', points: 1,  x: 1, y: 0, turnId: 2 }
+      ]);
+
+      expect( calculatePointsForTurn(tiles, board) ).to.equal(3 + 3);
+    });
+
+    it('connects to three previous turns', () => {
+      /*
+        _ b _ _ p _
+        _ a _ _ a _
+        _ T O S S _
+        _ _ _ _ s o
+      */
+      const tiles = [
+        { letter: 'T', points: 2, x: 1, y: 1 },
+        { letter: 'O', points: 1, x: 2, y: 1 },
+        { letter: 'S', points: 2, x: 3, y: 1 },
+        { letter: 'S', points: 2, x: 4, y: 1 }
+      ];
+      const board = tiles.concat([
+        { letter: 'b', points: 10, x: 1, y: 3, turnId: 0 },
+        { letter: 'a', points: 2,  x: 1, y: 2, turnId: 0 },
+
+        { letter: 'p', points: 3,  x: 4, y: 3, turnId: 1 },
+        { letter: 'a', points: 1,  x: 4, y: 2, turnId: 1 },
+
+        { letter: 's', points: 1,  x: 4, y: 0, turnId: 2 },
+        { letter: '0', points: 2,  x: 5, y: 0, turnId: 2 }
+      ]);
+
+      expect( calculatePointsForTurn(tiles, board) ).to.equal(7 + 14 + 7);
+    })
+
+
+  });
 });
