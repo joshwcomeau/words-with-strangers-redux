@@ -27,6 +27,7 @@ module.exports = {
       {
         test:     /\.jsx?$/,
         loader:   'react-hot!babel',
+        exclude:  /node_modules/,
         include:  /(client|common)/
       },
       // SASS
