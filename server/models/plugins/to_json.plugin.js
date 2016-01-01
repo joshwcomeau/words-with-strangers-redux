@@ -1,22 +1,34 @@
 import _ from 'lodash';
+import mongoose from 'mongoose';
 
 export default function toJSON(schema) {
   schema.methods.toJSON = function() {
-    let json = this.toObject();
-    json.id = this.id;
-    delete json._id;
-    delete json.__v;
-    return json;
+    return recursivelyConvertIds( this.toObject() );
   }
 }
 
-function recursivelyConvertIds(json) {
-  for(key in json) {
-    if ( typeof json[key] === 'object' ) {
-      // This could be a regular object or an array.
-      // If it's an array, recursively call it on the children
-      // Otherwise, parse through properties, doing the _id -> id thing.
-      // If any of the values are also objects, recursively call it on them.
+export function recursivelyConvertIds(json) {
+  return _.reduce(json, (memo, val, key) => {
+    // If this field is our `_id` field, take the `id` instead.
+    if ( key === '_id' ) {
+      memo.id = val.id;
     }
-  }
+
+    // Don't include __v
+    else if ( key === '__v' ) {
+      // Do nothing
+    }
+
+    // Convert any other fields holding objectIds to strings.
+    else if ( val instanceof mongoose.Types.ObjectId ) {
+      memo[key] = val.toString();
+    }
+
+    // For all other values, just attach it as normal.
+    else {
+      memo[key] = val;
+    }
+
+    return memo;
+  }, {});
 }
