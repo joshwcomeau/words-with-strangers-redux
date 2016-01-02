@@ -31,37 +31,37 @@ describe('gamesListReducer', () => {
 
   it('handles ADD_GAMES_TO_LIST', () => {
     const state = fromJS([
-      { _id: '123', title: 'Wild Folly' },
-      { _id: '456', title: 'A Fowl Day' }
+      { id: '123', title: 'Wild Folly' },
+      { id: '456', title: 'A Fowl Day' }
     ]);
     const action = {
-      type: ADD_GAMES_TO_LIST, games: [{ _id: '789', title: 'Bird Baths' }]
+      type: ADD_GAMES_TO_LIST, games: [{ id: '789', title: 'Bird Baths' }]
     };
     const nextState = gamesListReducer(state, action);
 
     expect(nextState).to.equal(fromJS([
-      { _id: '123', title: 'Wild Folly' },
-      { _id: '456', title: 'A Fowl Day' },
-      { _id: '789', title: 'Bird Baths' }
+      { id: '123', title: 'Wild Folly' },
+      { id: '456', title: 'A Fowl Day' },
+      { id: '789', title: 'Bird Baths' }
     ]));
   });
 
   it('handles GAME_STATUS_CHANGED', () => {
     const state = fromJS([
-      { _id: '123', title: 'Wild Folly', status: 'waiting' },
-      { _id: '456', title: 'A Fowl Day', status: 'in_progress' },
-      { _id: '789', title: 'Bird Baths', status: 'waiting' }
+      { id: '123', title: 'Wild Folly', status: 'waiting' },
+      { id: '456', title: 'A Fowl Day', status: 'in_progress' },
+      { id: '789', title: 'Bird Baths', status: 'waiting' }
     ]);
     const action = {
       type: GAME_STATUS_CHANGED,
-      game: { _id: '789', status: 'in_progress', players: [1,2] }
+      game: { id: '789', status: 'in_progress', players: [1,2] }
     };
     const nextState = gamesListReducer(state, action);
 
     expect(nextState).to.equal(fromJS([
-      { _id: '123', title: 'Wild Folly', status: 'waiting' },
-      { _id: '456', title: 'A Fowl Day', status: 'in_progress' },
-      { _id: '789', title: 'Bird Baths', status: 'in_progress', players: [1,2] }
+      { id: '123', title: 'Wild Folly', status: 'waiting' },
+      { id: '456', title: 'A Fowl Day', status: 'in_progress' },
+      { id: '789', title: 'Bird Baths', status: 'in_progress', players: [1,2] }
     ]));
   });
 });

@@ -43,7 +43,6 @@ describe('#toJSON plugin', () => {
       .then( game => {
         gameObject  = game;
         gameJson    = game.toJSON();
-        console.log("HJSON", gameJson)
         return done();
       });
   });
@@ -86,8 +85,7 @@ describe('#toJSON plugin', () => {
     tiles.forEach( tile => {
       expect(tile._id).not.to.exist;
       expect(tile.id).to.be.a('string');
-    })
-
+    });
   });
 
   it('does not mutate the original embedded tile documents', () => {

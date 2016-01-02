@@ -116,8 +116,8 @@ export default function game(state = initialState, action) {
       return state.set('turns', state.get('turns').push(Map({
         word,
         points,
-        _id: state.get('turns').size,
-        playerId: player.get('_id')
+        id: state.get('turns').size,
+        playerId: player.get('id')
       })));
 
 
@@ -164,9 +164,8 @@ function resetRackTilePosition(rack) {
 }
 
 function getOriginalTileData(state, actionTile) {
-  // Helper used in iteration to find the tile by the actionTile's _id
   const tileFinder = tile => {
-    return tile.get('_id') === actionTile._id;
+    return tile.get('id') === actionTile.id;
   };
 
   // First, figure out whether the tile is located on the board, or the rack.

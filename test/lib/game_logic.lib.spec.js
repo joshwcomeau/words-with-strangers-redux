@@ -269,9 +269,9 @@ describe('Game Logic', () => {
   describe('#rewindAndCaptureWord', () => {
     it('returns the input tiles when there are no relevant additional tiles', () => {
       const board = [
-        { letter: 'H', x: 5, y: 5 },
-        { letter: 'I', x: 6, y: 5 },
-        { letter: 'Z', x: 8, y: 8, turnId: 'irrelevant'}
+        { id: 0, letter: 'H', x: 5, y: 5 },
+        { id: 1, letter: 'I', x: 6, y: 5 },
+        { id: 2, letter: 'Z', x: 8, y: 8, turnId: 'irrelevant'}
       ];
       const tiles = findTentativeTiles(board);
       const activeAxis = findActiveAxis(board);
@@ -283,10 +283,10 @@ describe('Game Logic', () => {
 
     it('attaches previous letters on the `x` axis', () => {
       const board = [
-        { letter: 'P', x: 5, y: 5, turnId: 1 },
-        { letter: 'H', x: 6, y: 5 },
-        { letter: 'I', x: 7, y: 5 },
-        { letter: 'Z', x: 8, y: 8, turnId: 0}
+        { id: 0, letter: 'P', x: 5, y: 5, turnId: 1 },
+        { id: 1, letter: 'H', x: 6, y: 5 },
+        { id: 2, letter: 'I', x: 7, y: 5 },
+        { id: 3, letter: 'Z', x: 8, y: 8, turnId: 0}
       ];
       const tiles = findTentativeTiles(board);
       const activeAxis = findActiveAxis(board);
@@ -294,18 +294,18 @@ describe('Game Logic', () => {
       const capturedWord = rewindAndCaptureWord({tiles, board, activeAxis});
 
       expect( capturedWord ).to.deep.equal([
-        { letter: 'P', x: 5, y: 5, turnId: 1 },
-        { letter: 'H', x: 6, y: 5 },
-        { letter: 'I', x: 7, y: 5 }
+        { id: 0, letter: 'P', x: 5, y: 5, turnId: 1 },
+        { id: 1, letter: 'H', x: 6, y: 5 },
+        { id: 2, letter: 'I', x: 7, y: 5 }
       ]);
     });
 
     it('attaches previous letters on the `y` axis', () => {
       const board = [
-        { letter: 'P', x: 5, y: 5, turnId: 0 },
-        { letter: 'H', x: 5, y: 6 },
-        { letter: 'I', x: 5, y: 7 },
-        { letter: 'Z', x: 5, y: 9, turnId: 0}
+        { id: 0, letter: 'P', x: 5, y: 5, turnId: 0 },
+        { id: 1, letter: 'H', x: 5, y: 6 },
+        { id: 2, letter: 'I', x: 5, y: 7 },
+        { id: 3, letter: 'Z', x: 5, y: 9, turnId: 0}
       ];
       const tiles = findTentativeTiles(board);
       const activeAxis = findActiveAxis(board);
@@ -313,19 +313,19 @@ describe('Game Logic', () => {
       const capturedWord = rewindAndCaptureWord({tiles, board, activeAxis});
 
       expect( capturedWord ).to.deep.equal([
-        { letter: 'P', x: 5, y: 5, turnId: 0 },
-        { letter: 'H', x: 5, y: 6 },
-        { letter: 'I', x: 5, y: 7 },
+        { id: 0, letter: 'P', x: 5, y: 5, turnId: 0 },
+        { id: 1, letter: 'H', x: 5, y: 6 },
+        { id: 2, letter: 'I', x: 5, y: 7 },
       ]);
     });
 
     it('attaches interspersed and subsequent letters', () => {
       const board = [
-        { letter: 'T', x: 5, y: 5 },
-        { letter: 'H', x: 6, y: 5, turnId: 0 },
-        { letter: 'I', x: 7, y: 5 },
-        { letter: 'N', x: 8, y: 5, turnId: 0 },
-        { letter: 'G', x: 9, y: 5, turnId: 0 }
+        { id: 0, letter: 'T', x: 5, y: 5 },
+        { id: 1, letter: 'H', x: 6, y: 5, turnId: 0 },
+        { id: 2, letter: 'I', x: 7, y: 5 },
+        { id: 3, letter: 'N', x: 8, y: 5, turnId: 0 },
+        { id: 4, letter: 'G', x: 9, y: 5, turnId: 0 }
       ];
       const tiles = findTentativeTiles(board);
       const activeAxis = findActiveAxis(board);
@@ -337,10 +337,10 @@ describe('Game Logic', () => {
 
     it('captures the word when only a single new tile is added', () => {
       const board = [
-        { letter: 'B', x: 6, y: 5, turnId: 0 },
-        { letter: 'I', x: 7, y: 5, turnId: 0 },
-        { letter: 'N', x: 8, y: 5, turnId: 0 },
-        { letter: 'G', x: 9, y: 5 }
+        { id: 0, letter: 'B', x: 6, y: 5, turnId: 0 },
+        { id: 1, letter: 'I', x: 7, y: 5, turnId: 0 },
+        { id: 2, letter: 'N', x: 8, y: 5, turnId: 0 },
+        { id: 3, letter: 'G', x: 9, y: 5 }
       ];
       const tiles = findTentativeTiles(board);
       const activeAxis = findActiveAxis(board);
@@ -360,14 +360,14 @@ describe('Game Logic', () => {
 
       // We want to make sure we return null, and not either of the words.
       const board = [
-        { letter: 'A', x: 1,  y: 1, turnId: 0 },
-        { letter: 'L', x: 2,  y: 1 },
-        { letter: 'L', x: 3,  y: 1 },
-        { letter: 'T', x: 6,  y: 1, turnId: 0 },
-        { letter: 'I', x: 7,  y: 1 },
-        { letter: 'L', x: 8,  y: 1, turnId: 0 },
-        { letter: 'E', x: 9,  y: 1, turnId: 0 },
-        { letter: 'S', x: 10, y: 1, turnId: 0 }
+        { id: 0, letter: 'A', x: 1,  y: 1, turnId: 0 },
+        { id: 1, letter: 'L', x: 2,  y: 1 },
+        { id: 2, letter: 'L', x: 3,  y: 1 },
+        { id: 3, letter: 'T', x: 6,  y: 1, turnId: 0 },
+        { id: 4, letter: 'I', x: 7,  y: 1 },
+        { id: 5, letter: 'L', x: 8,  y: 1, turnId: 0 },
+        { id: 6, letter: 'E', x: 9,  y: 1, turnId: 0 },
+        { id: 7, letter: 'S', x: 10, y: 1, turnId: 0 }
       ];
       const tiles = findTentativeTiles(board);
       const activeAxis = findActiveAxis(board);
@@ -414,8 +414,8 @@ describe('Game Logic', () => {
   describe('#validatePlacement', () => {
     it('returns false when tiles are not all on the same axis', () => {
       const board = [
-        { letter: 'N', x: 2, y: 2 },
-        { letter: 'O', x: 4, y: 4 }
+        { id: 0, letter: 'N', x: 2, y: 2 },
+        { id: 1, letter: 'O', x: 4, y: 4 }
       ];
 
       expect( validatePlacement(board) ).to.equal(false);
@@ -423,10 +423,10 @@ describe('Game Logic', () => {
 
     it('returns false when there is a gap in the tiles', () => {
       const board = [
-        { letter: 'N', x: 2, y: 2 },
-        { letter: 'O', x: 3, y: 2 },
-        { letter: 'P', x: 5, y: 2 },
-        { letter: 'E', x: 6, y: 2 }
+        { id: 0, letter: 'N', x: 2, y: 2 },
+        { id: 1, letter: 'O', x: 3, y: 2 },
+        { id: 2, letter: 'P', x: 5, y: 2 },
+        { id: 3, letter: 'E', x: 6, y: 2 }
       ];
 
       expect( validatePlacement(board) ).to.equal(false);
@@ -434,9 +434,9 @@ describe('Game Logic', () => {
 
     it('returns true when a previous turn\'s tile is first', () => {
       const board = [
-        { letter: 'Y', x: 2, y: 2, turnId: 0 },
-        { letter: 'E', x: 3, y: 2 },
-        { letter: 'P', x: 4, y: 2 },
+        { id: 0, letter: 'Y', x: 2, y: 2, turnId: 0 },
+        { id: 1, letter: 'E', x: 3, y: 2 },
+        { id: 2, letter: 'P', x: 4, y: 2 },
       ];
 
       expect( validatePlacement(board) ).to.equal(true);
@@ -444,9 +444,9 @@ describe('Game Logic', () => {
 
     it('returns true when a previous turn\'s tile is filling a gap', () => {
       const board = [
-        { letter: 'Y', x: 2, y: 2 },
-        { letter: 'E', x: 3, y: 2, turnId: 0 },
-        { letter: 'P', x: 4, y: 2 },
+        { id: 0, letter: 'Y', x: 2, y: 2 },
+        { id: 1, letter: 'E', x: 3, y: 2, turnId: 0 },
+        { id: 2, letter: 'P', x: 4, y: 2 },
       ];
 
       expect( validatePlacement(board) ).to.equal(true);
@@ -454,9 +454,9 @@ describe('Game Logic', () => {
 
     it('returns true when a previous turn\'s tile is last', () => {
       const board = [
-        { letter: 'Y', x: 2, y: 2 },
-        { letter: 'E', x: 3, y: 2 },
-        { letter: 'P', x: 4, y: 2, turnId: 0 },
+        { id: 0, letter: 'Y', x: 2, y: 2 },
+        { id: 1, letter: 'E', x: 3, y: 2 },
+        { id: 2, letter: 'P', x: 4, y: 2, turnId: 0 },
       ];
 
       expect( validatePlacement(board) ).to.equal(true);
@@ -466,8 +466,8 @@ describe('Game Logic', () => {
     context('on the first turn of the game', () => {
       it('returns true as long as they are in a single connected line', () => {
         const board = [
-          { letter: 'F', x: 6, y: 4 },
-          { letter: 'A', x: 6, y: 5 }
+          { id: 0, letter: 'F', x: 6, y: 4 },
+          { id: 1, letter: 'A', x: 6, y: 5 }
         ];
 
         expect( validatePlacement(board) ).to.equal(true);
@@ -477,18 +477,18 @@ describe('Game Logic', () => {
     context('not the game\'s first turn', () => {
       it('returns false when the tiles are not connected', () => {
         const board = [
-          { letter: 'A', x: 2, y: 2, turnId: 0 },
-          { letter: 'G', x: 4, y: 5 },
-          { letter: 'H', x: 5, y: 5 }
+          { id: 0, letter: 'A', x: 2, y: 2, turnId: 0 },
+          { id: 1, letter: 'G', x: 4, y: 5 },
+          { id: 2, letter: 'H', x: 5, y: 5 }
         ];
         expect( validatePlacement(board) ).to.equal(false);
       });
 
       it('returns true if there are established tiles within the word', () => {
         const board = [
-          { letter: 'A', x: 4, y: 4, turnId: 0 },
-          { letter: 'T', x: 4, y: 5, turnId: 0 },
-          { letter: 'E', x: 4, y: 6 }
+          { id: 0, letter: 'A', x: 4, y: 4, turnId: 0 },
+          { id: 1, letter: 'T', x: 4, y: 5, turnId: 0 },
+          { id: 2, letter: 'E', x: 4, y: 6 }
         ];
         expect( validatePlacement(board) ).to.equal(true);
       });
@@ -500,11 +500,11 @@ describe('Game Logic', () => {
         _ _ T H E < Tentative 'THE'
         */
         const board = [
-          { letter: 'G', x: 2, y: 2, turnId: 0 },
-          { letter: '0', x: 2, y: 1, turnId: 0 },
-          { letter: 'T', x: 2, y: 0 },
-          { letter: 'H', x: 3, y: 0 },
-          { letter: 'E', x: 4, y: 0 }
+          { id: 0, letter: 'G', x: 2, y: 2, turnId: 0 },
+          { id: 1, letter: '0', x: 2, y: 1, turnId: 0 },
+          { id: 2, letter: 'T', x: 2, y: 0 },
+          { id: 3, letter: 'H', x: 3, y: 0 },
+          { id: 4, letter: 'E', x: 4, y: 0 }
         ];
         expect( validatePlacement(board) ).to.equal(true);
       });
@@ -516,10 +516,10 @@ describe('Game Logic', () => {
         _ _ _ O _ < Tentative '0'
         */
         const board = [
-          { letter: 'B', x: 2, y: 2, turnId: 0 },
-          { letter: 'A', x: 2, y: 1, turnId: 0 },
-          { letter: 'T', x: 3, y: 1 },
-          { letter: 'O', x: 3, y: 0 }
+          { id: 0, letter: 'B', x: 2, y: 2, turnId: 0 },
+          { id: 1, letter: 'A', x: 2, y: 1, turnId: 0 },
+          { id: 2, letter: 'T', x: 3, y: 1 },
+          { id: 3, letter: 'O', x: 3, y: 0 }
         ];
         expect( validatePlacement(board) ).to.equal(true);
       });
@@ -530,10 +530,10 @@ describe('Game Logic', () => {
   describe('#calculatePointsForWord', () => {
     it('sums up the points value of all supplied tiles', () => {
       const tiles = [
-        { letter: 'O', points: 2 },
-        { letter: 'B', points: 6, turnId: 0 },
-        { letter: 'O', points: 2 },
-        { letter: 'E', points: 1 }
+        { id: 0, letter: 'O', points: 2 },
+        { id: 1, letter: 'B', points: 6, turnId: 0 },
+        { id: 2, letter: 'O', points: 2 },
+        { id: 3, letter: 'E', points: 1 }
       ];
 
       expect( calculatePointsForWord(tiles) ).to.equal(11);
@@ -544,9 +544,9 @@ describe('Game Logic', () => {
   describe('#calculatePointsForTurn', () => {
     it('captures standalone words, on the first turn', () => {
       const board = [
-        { points: 2, x: 1, y: 1 },
-        { points: 4, x: 1, y: 2 },
-        { points: 6, x: 1, y: 3 },
+        { id: 0, points: 2, x: 1, y: 1 },
+        { id: 1, points: 4, x: 1, y: 2 },
+        { id: 2, points: 6, x: 1, y: 3 },
       ];
       const tiles = board;
 
@@ -559,15 +559,15 @@ describe('Game Logic', () => {
         A I O L I
       */
       const tiles = [
-        { letter: 'A', points: 2, x: 1, y: 1 },
-        { letter: 'I', points: 2, x: 2, y: 1 },
-        { letter: 'O', points: 2, x: 3, y: 1 },
-        { letter: 'L', points: 2, x: 4, y: 1 },
-        { letter: 'I', points: 2, x: 5, y: 1 }
+        { id: 0, letter: 'A', points: 2, x: 1, y: 1 },
+        { id: 1, letter: 'I', points: 2, x: 2, y: 1 },
+        { id: 2, letter: 'O', points: 2, x: 3, y: 1 },
+        { id: 3, letter: 'L', points: 2, x: 4, y: 1 },
+        { id: 4, letter: 'I', points: 2, x: 5, y: 1 }
       ];
       const board = tiles.concat([
-        { letter: 'h', points: 6, x: 2, y: 2, turnId: 0 }
-     // { letter: 'I', points: 2, x: 2, y: 1 } // in `tiles`
+        { id: 5, letter: 'h', points: 6, x: 2, y: 2, turnId: 0 }
+     // { id: 1, letter: 'I', points: 2, x: 2, y: 1 } // in `tiles`
       ]);
 
       expect( calculatePointsForTurn(tiles, board) ).to.equal(10 + 8);
@@ -581,17 +581,17 @@ describe('Game Logic', () => {
         _ h _ _ _
       */
       const tiles = [
-        { letter: 'A', points: 2, x: 1, y: 2 },
-        { letter: 'I', points: 2, x: 2, y: 2 },
-        { letter: 'O', points: 2, x: 3, y: 2 },
-        { letter: 'L', points: 2, x: 4, y: 2 },
-        { letter: 'I', points: 2, x: 5, y: 2 }
+        { id: 0, letter: 'A', points: 2, x: 1, y: 2 },
+        { id: 1, letter: 'I', points: 2, x: 2, y: 2 },
+        { id: 2, letter: 'O', points: 2, x: 3, y: 2 },
+        { id: 3, letter: 'L', points: 2, x: 4, y: 2 },
+        { id: 4, letter: 'I', points: 2, x: 5, y: 2 }
       ];
       const board = tiles.concat([
-        { letter: 'h', points: 6, x: 2, y: 3, turnId: 0 },
-     // { letter: 'I', points: 2, x: 2, y: 2 } // in `tiles`
-        { letter: 'g', points: 4, x: 2, y: 1, turnId: 0 },
-        { letter: 'h', points: 6, x: 2, y: 0, turnId: 0 }
+        { id: 5, letter: 'h', points: 6, x: 2, y: 3, turnId: 0 },
+     // { id: 1, letter: 'I', points: 2, x: 2, y: 2 } // in `tiles`
+        { id: 6, letter: 'g', points: 4, x: 2, y: 1, turnId: 0 },
+        { id: 7, letter: 'h', points: 6, x: 2, y: 0, turnId: 0 }
       ]);
 
       expect( calculatePointsForTurn(tiles, board) ).to.equal(10 + 18);
@@ -606,15 +606,15 @@ describe('Game Logic', () => {
       */
       // Because we didn't place the B, we don't get credit for 'TAB'.
       const tiles = [
-        { letter: 'b', points: 4, x: 5, y: 3, turnId: 0 },
-        { letter: 'O', points: 2, x: 5, y: 2 },
-        { letter: 'O', points: 2, x: 5, y: 1 },
-        { letter: 'M', points: 4, x: 5, y: 0 }
+        { id: 0, letter: 'b', points: 4, x: 5, y: 3, turnId: 0 },
+        { id: 1, letter: 'O', points: 2, x: 5, y: 2 },
+        { id: 2, letter: 'O', points: 2, x: 5, y: 1 },
+        { id: 3, letter: 'M', points: 4, x: 5, y: 0 }
       ];
       const board = tiles.concat([
-        { letter: 't', points: 2, x: 3, y: 3, turnId: 0 },
-        { letter: 'a', points: 2, x: 4, y: 3, turnId: 0 },
-     // { letter: 'b', points: 4, x: 5, y: 3, turnId: 0 }
+        { id: 4, letter: 't', points: 2, x: 3, y: 3, turnId: 0 },
+        { id: 5, letter: 'a', points: 2, x: 4, y: 3, turnId: 0 },
+     // { id: 0, letter: 'b', points: 4, x: 5, y: 3, turnId: 0 }
       ]);
 
       expect( calculatePointsForTurn(tiles, board) ).to.equal(12 + 0);
@@ -628,14 +628,14 @@ describe('Game Logic', () => {
       // We get credit for our original word OTA, as well as three orthogonal
       // words: LO, AT and BA.
       const tiles = [
-        { letter: 'O', points: 1, x: 2, y: 0 },
-        { letter: 'T', points: 1, x: 3, y: 0 },
-        { letter: 'A', points: 1, x: 4, y: 0 }
+        { id: 0, letter: 'O', points: 1, x: 2, y: 0 },
+        { id: 1, letter: 'T', points: 1, x: 3, y: 0 },
+        { id: 2, letter: 'A', points: 1, x: 4, y: 0 }
       ];
       const board = tiles.concat([
-        { letter: 'l', points: 2, x: 2, y: 1, turnId: 0 },
-        { letter: 'a', points: 4, x: 3, y: 1, turnId: 1 },
-        { letter: 'b', points: 6, x: 4, y: 1, turnId: 1 }
+        { id: 3, letter: 'l', points: 2, x: 2, y: 1, turnId: 0 },
+        { id: 4, letter: 'a', points: 4, x: 3, y: 1, turnId: 1 },
+        { id: 5, letter: 'b', points: 6, x: 4, y: 1, turnId: 1 }
       ]);
 
       expect( calculatePointsForTurn(tiles, board) ).to.equal(3 + 3 + 5 + 7);
@@ -648,13 +648,13 @@ describe('Game Logic', () => {
         _ p O
       */
       const tiles = [
-        { letter: 'K', points: 1, x: 2, y: 1 },
-        { letter: 'O', points: 1, x: 2, y: 0 }
+        { id: 0, letter: 'K', points: 1, x: 2, y: 1 },
+        { id: 1, letter: 'O', points: 1, x: 2, y: 0 }
       ];
       const board = tiles.concat([
-        { letter: 'r', points: 2, x: 1, y: 2, turnId: 0 },
-        { letter: 'o', points: 4, x: 1, y: 1, turnId: 0 },
-        { letter: 'p', points: 6, x: 1, y: 0, turnId: 0 }
+        { id: 2, letter: 'r', points: 2, x: 1, y: 2, turnId: 0 },
+        { id: 3, letter: 'o', points: 4, x: 1, y: 1, turnId: 0 },
+        { id: 4, letter: 'p', points: 6, x: 1, y: 0, turnId: 0 }
       ]);
 
       expect( calculatePointsForTurn(tiles, board) ).to.equal(2 + 5 + 7);
@@ -668,16 +668,16 @@ describe('Game Logic', () => {
         _ t _ _ _
       */
       const tiles = [
-        { letter: 'a', points: 2,  x: 1, y: 1, turnId: 2 },
-        { letter: 'T', points: 1, x: 2, y: 1 }
+        { id: 0, letter: 'a', points: 2,  x: 1, y: 1, turnId: 2 },
+        { id: 1, letter: 'T', points: 1, x: 2, y: 1 }
       ];
       const board = tiles.concat([
-        { letter: 'b', points: 10, x: 1, y: 2, turnId: 4 },
-        { letter: 'o', points: 2,  x: 2, y: 2, turnId: 4 },
-        { letter: 'a', points: 2,  x: 3, y: 2, turnId: 4 },
-        { letter: 't', points: 4,  x: 4, y: 2, turnId: 4 },
-     // { letter: 'a', points: 2,  x: 1, y: 1, turnId: 2 },
-        { letter: 't', points: 1,  x: 1, y: 0, turnId: 2 }
+        { id: 2, letter: 'b', points: 10, x: 1, y: 2, turnId: 4 },
+        { id: 3, letter: 'o', points: 2,  x: 2, y: 2, turnId: 4 },
+        { id: 4, letter: 'a', points: 2,  x: 3, y: 2, turnId: 4 },
+        { id: 5, letter: 't', points: 4,  x: 4, y: 2, turnId: 4 },
+     // { id: 0, letter: 'a', points: 2,  x: 1, y: 1, turnId: 2 },
+        { id: 6, letter: 't', points: 1,  x: 1, y: 0, turnId: 2 }
       ]);
 
       expect( calculatePointsForTurn(tiles, board) ).to.equal(3 + 3);
@@ -691,20 +691,20 @@ describe('Game Logic', () => {
         _ _ _ _ s o
       */
       const tiles = [
-        { letter: 'T', points: 2, x: 1, y: 1 },
-        { letter: 'O', points: 1, x: 2, y: 1 },
-        { letter: 'S', points: 2, x: 3, y: 1 },
-        { letter: 'S', points: 2, x: 4, y: 1 }
+        { id: 0, letter: 'T', points: 2, x: 1, y: 1 },
+        { id: 1, letter: 'O', points: 1, x: 2, y: 1 },
+        { id: 2, letter: 'S', points: 2, x: 3, y: 1 },
+        { id: 3, letter: 'S', points: 2, x: 4, y: 1 }
       ];
       const board = tiles.concat([
-        { letter: 'b', points: 10, x: 1, y: 3, turnId: 0 },
-        { letter: 'a', points: 2,  x: 1, y: 2, turnId: 0 },
+        { id: 4, letter: 'b', points: 10, x: 1, y: 3, turnId: 0 },
+        { id: 5, letter: 'a', points: 2,  x: 1, y: 2, turnId: 0 },
+     // { id: 0, letter: 'T', points: 2, x: 1, y: 1 },
 
-        { letter: 'p', points: 3,  x: 4, y: 3, turnId: 1 },
-        { letter: 'a', points: 1,  x: 4, y: 2, turnId: 1 },
-
-        { letter: 's', points: 1,  x: 4, y: 0, turnId: 2 },
-        { letter: '0', points: 2,  x: 5, y: 0, turnId: 2 }
+        { id: 6, letter: 'p', points: 3,  x: 4, y: 3, turnId: 1 },
+        { id: 7, letter: 'a', points: 1,  x: 4, y: 2, turnId: 1 },
+        { id: 8, letter: 's', points: 1,  x: 4, y: 0, turnId: 2 },
+        { id: 9, letter: 'o', points: 2,  x: 5, y: 0, turnId: 2 }
       ]);
 
       expect( calculatePointsForTurn(tiles, board) ).to.equal(7 + 14 + 7);

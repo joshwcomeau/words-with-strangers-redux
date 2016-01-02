@@ -53,12 +53,12 @@ describe('gameReducer', () => {
     it('restores the initial state', () => {
       const state = fromJS({
         board: [
-          { _id: '1', letter: 'A', x: 1, y: 4, turnId: 0 },
-          { _id: '2', letter: 'Z', x: 2, y: 4, turnId: 0 }
+          { id: '1', letter: 'A', x: 1, y: 4, turnId: 0 },
+          { id: '2', letter: 'Z', x: 2, y: 4, turnId: 0 }
         ],
-        rack:  [ { _id: '3', letter: 'C' } ],
+        rack:  [ { id: '3', letter: 'C' } ],
         turns: [
-          { _id: 0, word: 'AZ'}
+          { id: 0, word: 'AZ'}
         ]
       });
       const action = {
@@ -79,12 +79,12 @@ describe('gameReducer', () => {
     it('handles PLACE_TILE from rack to board', () => {
       const state = fromJS({
         board: [],
-        rack: [ {_id: '1', letter: 'A'}, { _id: '2', letter: 'Z' } ]
+        rack: [ {id: '1', letter: 'A'}, { id: '2', letter: 'Z' } ]
       });
       const action = {
         type: PLACE_TILE,
         tile: {
-          _id: '2',
+          id: '2',
           location: 'board',
           x: 2,
           y: 4
@@ -93,8 +93,8 @@ describe('gameReducer', () => {
       const nextState = gameReducer(state, action);
 
       expect(nextState).to.equal(fromJS({
-        board: [ { _id: '2', letter: 'Z', x: 2, y: 4 } ],
-        rack:  [ { _id: '1', letter: 'A' } ]
+        board: [ { id: '2', letter: 'Z', x: 2, y: 4 } ],
+        rack:  [ { id: '1', letter: 'A' } ]
       }));
     });
 
@@ -103,23 +103,23 @@ describe('gameReducer', () => {
       // end of the rack.
       const state = fromJS({
         board: [
-          { _id: '1', letter: 'A', x: 4, y: 6 },
-          { _id: '2', letter: 'Z', x: 5, y: 6 }
+          { id: '1', letter: 'A', x: 4, y: 6 },
+          { id: '2', letter: 'Z', x: 5, y: 6 }
         ],
-        rack:  [ { _id: '3', letter: 'J', x: 0 } ]
+        rack:  [ { id: '3', letter: 'J', x: 0 } ]
       });
       const action = {
         type: PLACE_TILE,
         tile: {
-          _id: '1',
+          id: '1',
           location: 'rack'
         }
       };
       const nextState = gameReducer(state, action);
 
       expect(nextState).to.equal(fromJS({
-        board: [ { _id: '2', letter: 'Z', x: 5, y: 6 } ],
-        rack:  [ { _id: '3', letter: 'J', x: 0 }, { _id: '1', letter: 'A', x: 1 } ]
+        board: [ { id: '2', letter: 'Z', x: 5, y: 6 } ],
+        rack:  [ { id: '3', letter: 'J', x: 0 }, { id: '1', letter: 'A', x: 1 } ]
       }));
     });
 
@@ -127,17 +127,17 @@ describe('gameReducer', () => {
     // Not too concerned.
     xit('handles PLACE_TILE from board to rack, with a specified `x`', () => {
       const state = fromJS({
-        board: [ { _id: '1', letter: 'O', x: 4, y: 6 } ],
+        board: [ { id: '1', letter: 'O', x: 4, y: 6 } ],
         rack:  [
-          { _id: '2', letter: 'J', x: 0 },
-          { _id: '3', letter: 'S', x: 1 },
-          { _id: '4', letter: 'H', x: 2 }
+          { id: '2', letter: 'J', x: 0 },
+          { id: '3', letter: 'S', x: 1 },
+          { id: '4', letter: 'H', x: 2 }
         ]
       });
       const action = {
         type: PLACE_TILE,
         tile: {
-          _id: '1',
+          id: '1',
           location: 'rack',
           x: 1
         }
@@ -145,12 +145,12 @@ describe('gameReducer', () => {
       const nextState = gameReducer(state, action);
 
       expect(nextState).to.equal(fromJS({
-        board: [ { _id: '2', letter: 'Z', x: 5, y: 6 } ],
+        board: [ { id: '2', letter: 'Z', x: 5, y: 6 } ],
         rack:  [
-          { _id: '2', letter: 'J', x: 0 },
-          { _id: '1', letter: 'O', x: 1 },
-          { _id: '3', letter: 'S', x: 2 },
-          { _id: '4', letter: 'H', x: 3 }
+          { id: '2', letter: 'J', x: 0 },
+          { id: '1', letter: 'O', x: 1 },
+          { id: '3', letter: 'S', x: 2 },
+          { id: '4', letter: 'H', x: 3 }
         ]
       }));
     });
@@ -158,15 +158,15 @@ describe('gameReducer', () => {
     it('handles PLACE_TILE from board to board', () => {
       const state = fromJS({
         board: [
-          { _id: '1', letter: 'O', x: 4, y: 6 },
-          { _id: '2', letter: 'J', x: 5, y: 6 },
+          { id: '1', letter: 'O', x: 4, y: 6 },
+          { id: '2', letter: 'J', x: 5, y: 6 },
         ],
         rack: []
       });
       const action = {
         type: PLACE_TILE,
         tile: {
-          _id: '2',
+          id: '2',
           location: 'board',
           x: 8,
           y: 8
@@ -176,8 +176,8 @@ describe('gameReducer', () => {
 
       expect(nextState).to.equal(fromJS({
         board: [
-          { _id: '1', letter: 'O', x: 4, y: 6 },
-          { _id: '2', letter: 'J', x: 8, y: 8 },
+          { id: '1', letter: 'O', x: 4, y: 6 },
+          { id: '2', letter: 'J', x: 8, y: 8 },
         ],
         rack: []
       }));
@@ -189,16 +189,16 @@ describe('gameReducer', () => {
   describe('SHUFFLE_RACK', () => {
     it('copies the new tile ordering to the rack', () => {
       const state = fromJS({
-        rack: [ { _id: '2', x: 0}, { _id: '5', x: 1 } ]
+        rack: [ { id: '2', x: 0}, { id: '5', x: 1 } ]
       });
       const action = {
         type: SHUFFLE_RACK,
-        tiles: [ { _id: '5', x: 1}, { _id: '2', x: 0 } ]
+        tiles: [ { id: '5', x: 1}, { id: '2', x: 0 } ]
       }
       const nextState = gameReducer(state, action);
 
       expect(nextState).to.equal(fromJS({
-        rack: [ { _id: '5', x: 0}, { _id: '2', x: 1 } ]
+        rack: [ { id: '5', x: 0}, { id: '2', x: 1 } ]
       }));
     });
   });
