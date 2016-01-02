@@ -2,7 +2,7 @@
 
 // VARIABLES
 
-$square-size: 40px;
+$square-size: 42px;
 $num-of-squares: 13;
 $gutter-width: 8px;
 $tile-board-size: 42px;
@@ -18,9 +18,24 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
   height: $size;
   background: $yellow;
   cursor:default;
-  border-radius: 3px;
-  border-right: 3px solid #BDA259;
-  border-bottom: 3px solid #BDA259;
+  -webkit-box-shadow:
+    0.5px 0.5px 0px $fadedyellow,
+    1px 1px 0px $fadedyellow,
+    1.5px 1.5px 0px $fadedyellow,
+    2px 2px 0px $fadedyellow,
+    2.5px 2.5px 0px $fadedyellow,
+    3px 3px 0px $fadedyellow,
+  ;
+  box-shadow:
+    0.5px 0.5px 0px $fadedyellow,
+    1px 1px 0px $fadedyellow,
+    1.5px 1.5px 0px $fadedyellow,
+    2px 2px 0px $fadedyellow,
+    2.5px 2.5px 0px $fadedyellow,
+    3px 3px 0px $fadedyellow,
+  ;
+  border-right: 3px solid transparent;
+  border-bottom: 3px solid transparent;
 
   &.draggable { cursor: move; }
 
@@ -97,8 +112,8 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
 
     .tile {
       position: absolute;
-      top:  ($square-size - $tile-board-size) / 2 - 1px;
-      left: ($square-size - $tile-board-size) / 2 - 1px;
+      top:  ($square-size - $tile-board-size) / 2 - 3px;
+      left: ($square-size - $tile-board-size) / 2 - 3px;
       @include tile($tile-board-size);
     }
   }
