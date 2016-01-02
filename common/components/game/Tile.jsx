@@ -2,6 +2,8 @@ import React, { Component, PropTypes }  from 'react';
 import { DragSource, DropTarget }       from 'react-dnd';
 import classNames                       from 'classnames';
 
+import { isEstablished } from '../../lib/game_logic.lib';
+
 const tileSource = {
   beginDrag(props) {
     return props.tile;
@@ -57,12 +59,11 @@ export default class Tile extends Component {
     } = this.props;
 
     const classes = classNames({
-      'tile': true,
-      'draggable': draggable,
-      'is-dragging': isDragging
+      'tile':           true,
+      'draggable':      draggable,
+      'is-dragging':    isDragging,
+      'is-established': isEstablished(tile)
     });
-
-    // style={{ opacity: isDragging ? 0 : 1 }}
 
     const tileNode = (
       <div className={classes}>

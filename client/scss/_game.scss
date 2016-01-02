@@ -26,6 +26,10 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
 
   &.is-dragging { opacity: 0; }
 
+  &.is-established {
+    background: lighten($yellow, 15%);
+  }
+
   .tile-letter {
     position: absolute;
     top: 0;
@@ -48,7 +52,6 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
     line-height: $size * 0.4;
     text-align: center;
     font-size: $size * 0.25;
-
   }
 }
 
