@@ -18,6 +18,7 @@ import {
 } from '../../../common/constants/config.constants';
 import {
   isTentative,
+  isEstablished,
   calculatePointsForTurn
 } from '../../../common/lib/game_logic.lib';
 
@@ -52,7 +53,6 @@ GameSchema.methods.join = function(player) {
   this.players.push( player );
 
   // Give that player some starter tiles.
-  console.log("Joining game with player", player)
   this.replenishPlayerRack(player);
 
   // If the game has at least 2 players, start the game!
@@ -66,7 +66,25 @@ GameSchema.methods.submitWord = function(tiles, user) {
   // TODO: Validations.
   // For now, we're just going to trust the client.
 
-  // 1. Create a new Turn
+  // 1. Add to board.
+  // Find all tentative tiles (not part of a previous turn),
+  // push those tiles into the game.board.
+  let tentativeTiles = tiles.filter( isTentative );
+  tentativeTiles.forEach( tile => {
+    // When we sent the tiles to the client, we stripped Mongo's native
+    // ObjectId on the `_id` key. Now that we're modifying Mongo's doc,
+    // we need to re-add it, so that Mongo doesn't create a brand new
+    // ID.
+
+    // Create a working copy
+    let tileCopy = _.clone(tile);
+    // Add the converted ID
+    tileCopy._id = mongoose.Types.ObjectId(tile.id);
+
+    this.board.push(tileCopy)
+  });
+
+  // 2. Calculate points, and create a new turn
   const word    = _.pluck( tiles, 'letter' ).join('');
   const points  = calculatePointsForTurn( tiles, this.board );
   const turnId  = this.turns.length;
@@ -78,17 +96,11 @@ GameSchema.methods.submitWord = function(tiles, user) {
     playerId: user.id
   });
 
-  // 2. add to board.
-  // Find all tentative tiles (not part of a previous turn),
-  // add the new turnId to each new tile
-  // push those tiles into the game.board.
-  let tentativeTiles = tiles.filter( isTentative );
-  tentativeTiles = tentativeTiles.map( tile => {
-    tile.turnId = turnId;
+  // 3. Add the turn ID to the tentative tiles.
+  this.board = this.board.map( tile => {
+    if ( isTentative(tile) ) tile.turnId = turnId;
     return tile;
-  });
-
-  tentativeTiles.forEach( tile => this.board.push(tile) );
+  })
 
   // 3. remove from rack
   // This is also pretty easy. We just need to delete these tiles

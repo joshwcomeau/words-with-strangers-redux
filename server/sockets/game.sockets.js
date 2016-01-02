@@ -32,12 +32,14 @@ export default function(mainIo) {
   });
 }
 
+
 // PRIMARY SOCKET ACTIONS
 function requestGamesList(io, socket, data) {
   Game.list( (err, games) => {
     socket.emit(ADD_GAMES_TO_LIST, games);
   });
 }
+
 
 function createGame(io, socket, data) {
   // TODO: Validations. Ensure user auth.
@@ -58,8 +60,9 @@ function createGame(io, socket, data) {
     // so that they know there's a new game to join.
     socket.broadcast.emit(ADD_GAMES_TO_LIST, [game]);
   });
-
 }
+
+
 function subscribeToGame(io, socket, data) {
   // TODO: Add this user (or anonymous user) to the 'spectators' array.
 
@@ -78,6 +81,7 @@ function subscribeToGame(io, socket, data) {
     broadcastGame(io, results.game);
   });
 }
+
 
 function joinGame(io, socket, data) {
   async.auto({
@@ -100,8 +104,8 @@ function joinGame(io, socket, data) {
   });
 }
 
-function submitWord(io, socket, data) {
 
+function submitWord(io, socket, data) {
   async.auto({
     game: findGame.bind(null, data.gameId),
     submit: ['game', (step, r) => {
@@ -113,6 +117,7 @@ function submitWord(io, socket, data) {
     broadcastGame(io, results.game);
   });
 }
+
 
 function unsubscribeFromGame(io, socket, data) {
   async.auto({
