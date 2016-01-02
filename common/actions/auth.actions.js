@@ -10,7 +10,7 @@ import {
 } from '../constants/actions.constants';
 import {
   closeMenu,
-  setAndDisplayFlash
+  updateFlashMessage
 } from './ui.actions';
 import { pushPath } from 'redux-simple-router';
 
@@ -55,9 +55,10 @@ export function login(credentials) {
       .then( response => {
         dispatch(authenticationSuccess(response.token));
         dispatch(closeMenu());
-        dispatch(setAndDisplayFlash('notice', "Successfully logged in"));
+        dispatch(updateFlashMessage("Successfully logged in", 'notice'));
       })
       .catch( err => {
+        console.log("LOGIN ERROR", err)
         dispatch(authenticationFailure(err));
       });
   }

@@ -11,7 +11,7 @@ function renderPlayers(players) {
 
   return players.map( (player) => {
     return (
-      <div className="side-panel-player" key={player._id}>
+      <div className="side-panel-player" key={player.id}>
         <div className="avatar" style={{backgroundImage: `url('${player.profilePhoto}')`}}></div>
         <div className="username">{player.username}</div>
         <div className="points">{player.points}</div>

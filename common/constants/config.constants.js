@@ -6,7 +6,7 @@ export const BOARD_SIZE             = 13;
 export const FULL_RACK_SIZE         = 8;
 
 // How many milliseconds should a default flash message display for?
-export const FLASH_MESSAGE_TIMEOUT  = 6000;
+export const FLASH_MESSAGE_TIMEOUT  = 3000;
 
 // When should we remove a game from the games list?
 // This sets the number of hours it will persist for.

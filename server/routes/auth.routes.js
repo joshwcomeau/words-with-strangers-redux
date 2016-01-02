@@ -18,7 +18,7 @@ export default function(app) {
   const jwtOptions    = { secretOrKey: nconf.get('JWT_SECRET') };
 
   passport.use(new JwtStrategy(jwtOptions, (jwtPayload, done) => {
-    User.findById(jwtPayload._id, (err, user) => {
+    User.findById(jwtPayload.id, (err, user) => {
       if (err)    return done(err, false);
       if (!user)  return done(null, false);
       else        return done(null, user);

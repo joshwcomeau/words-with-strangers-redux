@@ -9,7 +9,7 @@ const TileRack = React.createClass({
   renderTiles() {
     let tiles = _.sortBy(this.props.tiles, 'x');
     return tiles.map( tile => (
-      <Tile key={tile._id}
+      <Tile key={tile.id}
       tile={tile}
       switchTilePositions={this.props.switchTilePositions}
       isMyTurn={this.props.isMyTurn}
@@ -42,7 +42,7 @@ const rackTarget = {
 
     const tileData = {
       location: 'rack',
-      _id:      tile._id
+      id:      tile.id
     };
 
     // Invoke the action.

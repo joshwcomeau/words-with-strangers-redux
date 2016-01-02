@@ -8,7 +8,7 @@ const GamesListTableRow = React.createClass({
   },
   generatePlayerCell() {
     return this.props.game.players.map( player => (
-      <a href="#" className="game-list-player clearfix" key={player._id}>
+      <a href="#" className="game-list-player clearfix" key={player.id}>
         <div className="player-avatar" style={{
           backgroundImage: `url('${player.profilePhoto}')`
         }}></div>

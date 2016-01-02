@@ -48,7 +48,7 @@ const playersSelector         = state => {
   let turnsByPlayers = _.groupBy(state.game.turns, 'playerId');
 
   return state.game.players.map( player => {
-    player.points = _.sum( turnsByPlayers[player._id], 'points');
+    player.points = _.sum( turnsByPlayers[player.id], 'points');
     return player;
   });
 }

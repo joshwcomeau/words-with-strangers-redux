@@ -52,6 +52,7 @@ GameSchema.methods.join = function(player) {
   this.players.push( player );
 
   // Give that player some starter tiles.
+  console.log("Joining game with player", player)
   this.replenishPlayerRack(player);
 
   // If the game has at least 2 players, start the game!
@@ -73,8 +74,8 @@ GameSchema.methods.submitWord = function(tiles, user) {
   this.turns.push({
     word,
     points,
-    _id: turnId,
-    playerId: user._id
+    id: turnId,
+    playerId: user.id
   });
 
   // 2. add to board.
@@ -93,7 +94,7 @@ GameSchema.methods.submitWord = function(tiles, user) {
   // This is also pretty easy. We just need to delete these tiles
   // from the rack.
   tentativeTiles.forEach( tile => {
-    this.rack.id(tile._id).remove()
+    this.rack.id(tile.id).remove()
   });
 
   // 4. Make sure the player gets some new tiles.
@@ -117,17 +118,17 @@ GameSchema.methods.asSeenByUser = function(user = {}) {
   let game = this.toJSON();
 
   game.rack = game.rack.filter( tile => (
-    tile.playerId.toString() === user._id
+    tile.playerId === user.id
   ));
 
   game.players = game.players.map( player => {
-    if ( player._id.toString() === user._id ) player.currentUser = true;
+    if ( player.id === user.id ) player.currentUser = true;
     return player;
   });
 
   game.rack = game.rack.map( tile => _.extend(tile, { belongsToCurrentUser: true }));
   game.board = game.board.map( tile => {
-    if ( tile.playerId.toString() === user._id ) {
+    if ( tile.playerId === user.id ) {
       tile.belongsToCurrentUser = true;
     }
     return tile;
@@ -137,11 +138,12 @@ GameSchema.methods.asSeenByUser = function(user = {}) {
 }
 
 GameSchema.methods.replenishPlayerRack = function(player) {
-  const playerId = mongoose.Types.ObjectId(player._id);
-  const numOfRackTiles = _.filter(this.rack, { playerId }).length;
+  const numOfRackTiles = _.filter(this.rack, {
+    playerId: player.id
+  }).length;
   const numToRefill = FULL_RACK_SIZE - numOfRackTiles;
 
-  this.rack = this.rack.concat( generateTiles(playerId, numToRefill) );
+  this.rack = this.rack.concat( generateTiles(player.id, numToRefill) );
 }
 
 GameSchema.methods.generateTitle = function() {
@@ -180,7 +182,7 @@ GameSchema.statics.list = function(callback) {
 // VIRTUAL PROPERTIES ///////////////////////////////////////
 ////////////////////////////////////////////////////////////
 GameSchema.virtual('roomName').get( function() {
-  return `game_${this._id}`;
+  return `game_${this.id}`;
 });
 
 

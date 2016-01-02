@@ -1,5 +1,6 @@
-import * as _ from 'lodash';
-import async  from 'async';
+import * as _   from 'lodash';
+import async    from 'async';
+import mongoose from 'mongoose';
 
 import Game from '../models/game.model';
 
@@ -45,7 +46,7 @@ function createGame(io, socket, data) {
 
   // Create a game in the DB.
   let game = new Game({
-    createdByUserId: user._id
+    createdByUserId: mongoose.Types.ObjectId(user.id)
   });
 
   game.join(user).save( (err) => {

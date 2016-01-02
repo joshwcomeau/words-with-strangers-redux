@@ -12,9 +12,9 @@ import gameSelector, {
 
 describe('Game Selector', () => {
   describe('#calculateCurrentTurnPlayer', () => {
-    const creator = { name: 'Josh',     _id: 4 };
-    const player2 = { name: 'Dorothy',  _id: 2 };
-    const player3 = { name: 'Janice',   _id: 8 };
+    const creator = { name: 'Josh',    id: 4 };
+    const player2 = { name: 'Dorothy', id: 2 };
+    const player3 = { name: 'Janice',  id: 8 };
     const players = [ creator, player2, player3 ];
 
     it('returns the first player when there are no turns', () => {

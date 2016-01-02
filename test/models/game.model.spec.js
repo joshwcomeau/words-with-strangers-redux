@@ -14,13 +14,18 @@ import {
 
 
 let game;
+
+// Users have 'id' strings because they are sent from the client.
+// All models are converted to plain JSON, with a switch from
+// Mongo's ObjectId at `_id` to a string representation at `id`.
+// See to_json.plugin for more info.
 let player = {
-  _id: mongoose.Types.ObjectId(),
+  id: mongoose.Types.ObjectId().toString(),
   username: 'Main man'
 };
 
 let opponent = {
-  _id: mongoose.Types.ObjectId(),
+  id: mongoose.Types.ObjectId().toString(),
   username: 'Fierce Competitor'
 };
 
@@ -42,7 +47,7 @@ describe('Game model', () => {
   describe('initialization', () => {
     before( (done) => {
       game = new Game({
-        createdByUserId: player._id
+        createdByUserId: player.id
       });
       game.save( done );
     });
@@ -114,7 +119,7 @@ describe('Game model', () => {
   describe('#join', () => {
     before( done => {
       game = new Game({
-        createdByUserId: player._id
+        createdByUserId: player.id
       });
 
       game.join(player).save( done );
@@ -132,7 +137,7 @@ describe('Game model', () => {
 
       it('sets those tiles as belonging to the player', () => {
         _.every(game.rack, tile => {
-          expect(tile.playerId).to.equal(player._id);
+          expect(tile.playerId).to.equal(player.id);
         })
       })
     });
@@ -150,7 +155,7 @@ describe('Game model', () => {
       });
 
       it('sets those tiles as belonging to the opponent', () => {
-        let tiles = game.rack.filter( tile => tile.playerId === opponent._id);
+        let tiles = game.rack.filter( tile => tile.playerId === opponent.id);
         expect(tiles).to.have.length(FULL_RACK_SIZE);
       });
 

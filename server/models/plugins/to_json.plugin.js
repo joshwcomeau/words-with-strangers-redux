@@ -32,9 +32,14 @@ export function recursivelyConvertIds(json) {
       });
     }
 
+    // Don't fuck with Date objects.
+    else if ( val instanceof Date ) {
+      memo[key] = val;
+    }
+
     // If it's an embedded document, we need to process it as well
     else if ( typeof val === 'object' ) {
-      return recursivelyConvertIds(val);
+      memo[key] = recursivelyConvertIds(val);
     }
 
     // For all other values, just attach it as normal.

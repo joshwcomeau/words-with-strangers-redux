@@ -6,12 +6,12 @@ const SidePanelTurns = ({players, turns}) => (
 );
 
 function findPlayerById(playerId, players) {
-  return _.find(players, {_id: playerId})
+  return _.find(players, {id: playerId})
 }
 
 function renderTurns(players, turns) {
   return turns.reverse().map( (turn) => (
-    <div className='side-panel-turn' key={turn._id}>
+    <div className='side-panel-turn' key={turn.id}>
       <span className='turn-data turn-player-name'>
         {findPlayerById(turn.playerId, players).username}
       </span>

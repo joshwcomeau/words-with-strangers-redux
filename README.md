@@ -22,7 +22,7 @@ Socket.io offers namespaces, which allow separate parts of your app to behave in
   * '/game'         Used for actions within a game (submitting words)
   * '/gamesList'    Used for the 'list of games' view.
 
-Within each namespace, you can also have 'rooms'. Clients will only be connected to 1 game at a time but the server will have to deal with multiple simultaneous games. To differentiate between them, each socket in the '/game' namespace will join its own room, based off of the game's \_id.
+Within each namespace, you can also have 'rooms'. Clients will only be connected to 1 game at a time but the server will have to deal with multiple simultaneous games. To differentiate between them, each socket in the '/game' namespace will join its own room, based off of the game's id.
 
 
 #### Client and server actions

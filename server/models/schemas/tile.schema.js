@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 
 
 const TileSchema = new Schema({
-  playerId: { type: Schema.Types.ObjectId, required: true },
+  playerId: { type: String, required: true },
   turnId:   { type: Number },
   letter:   { type: String, required: true },
   points:   { type: Number, min: 1, max: 10, required: true },

@@ -54,9 +54,9 @@ const squareTarget = {
 
     const tileData = {
       location: 'board',
-      _id: tile._id,
-      x: props.x,
-      y: props.y
+      id:       tile.id,
+      x:        props.x,
+      y:        props.y
     };
 
     // Invoke the action.
