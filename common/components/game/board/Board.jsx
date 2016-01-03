@@ -3,6 +3,12 @@ import * as _ from 'lodash';
 
 import BoardSquare from './BoardSquare.jsx';
 
+import {
+  findTile,
+  findBonusSquare
+}  from '../../../lib/game_logic.lib';
+
+
 const BOARD_SIZE = 13;
 
 const Board = React.createClass({
@@ -24,9 +30,9 @@ const Board = React.createClass({
         placeTile={this.props.placeTile}
         switchTilePositions={this.props.switchTilePositions}
         isMyTurn={this.props.isMyTurn}
-      >
-        {this.findTileAtCoords(x,y)}
-      </BoardSquare>
+        tile={findTile({x,y}, this.props.tiles)}
+        bonusSquare={findBonusSquare({x,y}, this.props.bonusSquares)}
+      />
     );
 
   },

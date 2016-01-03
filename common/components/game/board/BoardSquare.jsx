@@ -4,6 +4,7 @@ import * as _               from 'lodash';
 import classNames           from 'classnames';
 
 import Tile                 from '../Tile.jsx';
+import BonusSquare          from './BonusSquare.jsx';
 
 const BoardSquare = React.createClass({
   propTypes: {
@@ -15,11 +16,15 @@ const BoardSquare = React.createClass({
   renderTile() {
     return (
       <Tile
-        tile={this.props.children}
+        tile={this.props.tile}
         switchTilePositions={this.props.switchTilePositions}
         isMyTurn={this.props.isMyTurn}
       />
     );
+  },
+
+  renderBonusSquare() {
+    return <BonusSquare square={this.props.bonusSquare} />;
   },
 
   renderSquare() {
@@ -30,14 +35,16 @@ const BoardSquare = React.createClass({
 
     return (
       <div className={classes}>
-        { this.props.children ? this.renderTile() : null }
+        { this.props.tile ? this.renderTile() : null }
+        { this.props.bonusSquare ? this.renderBonusSquare() : null }
         { this.props.isOver ? <div className='square-overlay'></div> : null }
       </div>
     );
   },
 
   render() {
-    if ( this.props.children ) {
+    console.log(this.props)
+    if ( this.props.tile ) {
       // If this square already has a tile in it, we don't want to allow drops.
       return this.renderSquare();
     } else {

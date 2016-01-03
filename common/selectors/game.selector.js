@@ -42,6 +42,7 @@ const rackSelector            = state => (
 );
 const titleSelector           = state => state.game.title;
 const turnsSelector           = state => state.game.turns;
+const bonusSquaresSelector    = state => state.game.bonusSquares;
 const playersSelector         = state => {
   // We also want to store the points that each player has earned in this
   // game so far, on the players object.
@@ -60,14 +61,16 @@ const gameSelector = createSelector(
   boardSelector,
   rackSelector,
   turnsSelector,
+  bonusSquaresSelector,
   playersSelector,
   createdByUserIdSelector,
-  (title, board, rack, turns, players, createdByUserId) => {
+  (title, board, rack, turns, bonusSquares, players, createdByUserId) => {
     return {
       title,
       board,
       rack,
       turns,
+      bonusSquares,
       players,
       createdByUserId,
       computed: {

@@ -14,10 +14,11 @@ import { calculatePointsForTurn }    from '../lib/game_logic.lib';
 
 // Initial state for the 'game' slice of the state.
 export const initialState = fromJS({
-  board:    [],
-  rack:     [],
-  turns:    [],
-  players:  []
+  board:        [],
+  rack:         [],
+  turns:        [],
+  players:      [],
+  bonusSquares: []
 });
 
 export default function game(state = initialState, action) {
