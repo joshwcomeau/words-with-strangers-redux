@@ -95,7 +95,7 @@ export function calculatePointsForWord(tiles, bonusSquares) {
     // We only apply bonuses to tentative tiles.
     if ( isEstablished(tile) ) return memo;
 
-    bonusSquare = findBonusSquare(tile, bonusSquares);
+    let bonusSquare = findBonusSquare(tile, bonusSquares);
 
     if ( !bonusSquare ) return memo;
 
@@ -199,7 +199,7 @@ export function pruneBonuses(bonusSquares) {
 // RETURNS: a Number
 export function calculatePointsForTurn(tiles, board, bonusSquares = []) {
   // We pass in the primary axis' word, so we can start by summing its points.
-  let points = calculatePointsForWord(tiles);
+  let points = calculatePointsForWord(tiles, bonusSquares);
 
   // That's not the whole story though! We need to consider orthogonal words.
   // The way to do that is to iterate through each tentative tile, check the

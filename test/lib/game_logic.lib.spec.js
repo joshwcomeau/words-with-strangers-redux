@@ -309,6 +309,117 @@ describe('Game Logic', () => {
       expect( calculatePointsForTurn(tiles, board) ).to.equal(7 + 14 + 7);
     });
 
+    context('with bonus squares', () => {
+      // I'm not going to test this too thoroughly, because individual
+      // words with bonuses have already been tested in game_logic_helpers.
+      it('factors in a bonus tile multiplier', () => {
+        const tiles = [
+          { id: 0, letter: 'B', points: 2, x: 1, y: 1 },
+          { id: 1, letter: 'O', points: 1, x: 2, y: 1 },
+          { id: 2, letter: 'O', points: 2, x: 3, y: 1 },
+          { id: 3, letter: 'M', points: 2, x: 4, y: 1 }
+        ];
+        const board = tiles;
+        const bonuses = [
+          { x: 1, y: 1, effect: { tileMultiplier: 2 } }
+        ]
 
+        const points = calculatePointsForTurn(tiles, board, bonuses);
+        expect( points ).to.equal( 2*2 + 1 + 2 + 2 );
+      });
+
+      it('factors in a bonus word multiplier', () => {
+        const tiles = [
+          { id: 0, letter: 'B', points: 2, x: 1, y: 1 },
+          { id: 1, letter: 'O', points: 1, x: 2, y: 1 },
+          { id: 2, letter: 'O', points: 2, x: 3, y: 1 },
+          { id: 3, letter: 'M', points: 2, x: 4, y: 1 }
+        ];
+        const board = tiles;
+        const bonuses = [
+          { x: 1, y: 1, effect: { wordMultiplier: 2 } }
+        ]
+
+        const points = calculatePointsForTurn(tiles, board, bonuses);
+        expect( points ).to.equal( (2 + 1 + 2 + 2) * 2 );
+      });
+
+      it('factors in both word and tile bonus multipliers', () => {
+        const tiles = [
+          { id: 0, letter: 'B', points: 2, x: 1, y: 1 },
+          { id: 1, letter: 'O', points: 1, x: 2, y: 1 },
+          { id: 2, letter: 'O', points: 2, x: 3, y: 1 },
+          { id: 3, letter: 'M', points: 2, x: 4, y: 1 }
+        ];
+        const board = tiles;
+        const bonuses = [
+          { x: 1, y: 1, effect: { wordMultiplier: 2 } },
+          { x: 2, y: 1, effect: { tileMultiplier: 3 } }
+        ]
+
+        const points = calculatePointsForTurn(tiles, board, bonuses);
+        expect( points ).to.equal( (2 + 1*3 + 2 + 2) * 2 );
+      });
+
+      it('does not re-apply word bonuses on established tiles', () => {
+        const tiles = [
+          { id: 0, letter: 'B', points: 2, x: 1, y: 1 },
+          { id: 1, letter: 'O', points: 1, x: 2, y: 1 },
+          { id: 2, letter: 'O', points: 2, x: 3, y: 1 },
+          { id: 3, letter: 'm', points: 2, x: 4, y: 1, turnId: 0 }
+        ];
+        const board = tiles.concat([
+       // { id: 3, letter: 'm', points: 2, x: 4, y: 1, turnId: 0 },
+          { id: 3, letter: 'e', points: 2, x: 4, y: 2, turnId: 0 }
+        ]);
+        const bonuses = [
+          { x: 4, y: 1, effect: { wordMultiplier: 2 } }
+        ]
+
+        const points = calculatePointsForTurn(tiles, board, bonuses);
+        expect( points ).to.equal( 2 + 1 + 2 + 2 );
+      });
+
+      it('does not re-apply tile bonuses on established tiles', () => {
+        const tiles = [
+          { id: 0, letter: 'B', points: 2, x: 1, y: 1 },
+          { id: 1, letter: 'O', points: 1, x: 2, y: 1 },
+          { id: 2, letter: 'O', points: 2, x: 3, y: 1 },
+          { id: 3, letter: 'm', points: 2, x: 4, y: 1, turnId: 0 }
+        ];
+        const board = tiles.concat([
+       // { id: 3, letter: 'm', points: 2, x: 4, y: 1, turnId: 0 },
+          { id: 3, letter: 'e', points: 2, x: 4, y: 2, turnId: 0 }
+        ]);
+        const bonuses = [
+          { x: 4, y: 1, effect: { tileMultiplier: 2 } }
+        ]
+
+        const points = calculatePointsForTurn(tiles, board, bonuses);
+        expect( points ).to.equal( 2 + 1 + 2 + 2 );
+      });
+
+      it('does not re-apply multi-bonuses on established tiles', () => {
+        const tiles = [
+          { id: 0, letter: 'B', points: 2, x: 1, y: 1 },
+          { id: 1, letter: 'O', points: 1, x: 2, y: 1 },
+          { id: 2, letter: 'O', points: 2, x: 3, y: 1 },
+          { id: 3, letter: 'm', points: 2, x: 4, y: 1, turnId: 0 }
+        ];
+        const board = tiles.concat([
+       // { id: 3, letter: 'm', points: 2, x: 4, y: 1, turnId: 0 },
+          { id: 3, letter: 'e', points: 2, x: 4, y: 2, turnId: 0 }
+        ]);
+        const bonuses = [
+          { x: 4, y: 1, effect: {
+            tileMultiplier: 2,
+            wordMultiplier: 3
+          } }
+        ]
+
+        const points = calculatePointsForTurn(tiles, board, bonuses);
+        expect( points ).to.equal( 2 + 1 + 2 + 2 );
+      });
+    });
   });
 });

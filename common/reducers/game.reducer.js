@@ -107,7 +107,11 @@ export default function game(state = initialState, action) {
 
       // Figure out what word they're spelling
       const word    = _.pluck( action.tiles, 'letter').join('');
-      const points  = calculatePointsForTurn( action.tiles, state.get('board').toJS() );
+      const points  = calculatePointsForTurn(
+        action.tiles,
+        state.get('board').toJS(),
+        state.get('bonusSquares').toJS()
+      );
       const player  = state.get('players').find( player => {
         return player.get('currentUser');
       });
