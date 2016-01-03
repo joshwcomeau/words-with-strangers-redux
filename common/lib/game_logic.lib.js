@@ -112,9 +112,41 @@ export function calculatePointsForWord(tiles, bonusSquares) {
 
 
 
+// Find the total sum of the word, factoring in all bonuses.
+// RETURNS: a Number.
+export function applyBonuses(tiles, bonuses) {
+  // Because we like big numbers, we're going to apply tile bonuses _before_
+  // word bonuses. This means that a 3x Tile bonus with a 3x Word bonus will
+  // yield 9 times that tile's point value.
+
+  const scoreWithTileBonuses = _.reduce(tiles, (memo, tile) => {
+    const tileBonus = findBonusSquare(tile, bonuses);
+    const tileMultiplier = getBonusMultiplier(tileBonus, 'tileMultiplier');
+
+    return memo + tile.points * tileMultiplier;
+  }, 0);
+
+  const wordBonus = _.find(bonuses, bonus => bonus.effect.wordMultiplier);
+  const wordMultiplier = getBonusMultiplier(wordBonus, 'wordMultiplier');
+
+  return scoreWithTileBonuses * wordMultiplier;
+}
+
+
+
+// Tiny little helper that always returns a number, when working with bonuses.
+// RETURNS: a Number.
+export function getBonusMultiplier(bonus, type) {
+  if ( _.isEmpty(bonus) ) return 1;
+  if ( !bonus.effect ) return 1;
+  return bonus.effect[type] || 1;
+}
+
+
+
 // Weed out any unusable bonuses.
 // For example, only one word multiplier may be used, and we want the highest.
-// RETURNS: An array of bonusSquare objects.
+// RETURNS: an Array of bonusSquare objects.
 export function pruneBonuses(bonusSquares) {
   let highestWordMultiplier = 1;
   let numOfWordMultipliers = 0;

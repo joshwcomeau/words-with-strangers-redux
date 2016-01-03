@@ -11,7 +11,9 @@ import {
   findActiveAxis,
   rewindAndCaptureWord,
   isFirstTurn,
-  pruneBonuses
+  pruneBonuses,
+  getBonusMultiplier,
+  applyBonuses
 } from '../../common/lib/game_logic.lib';
 
 
@@ -434,81 +436,81 @@ describe('Game Logic Helpers', () => {
 
   describe('#pruneBonuses', () => {
     it('does not touch a list including no word bonus', () => {
-      let bonuses = [
+      const bonuses = [
         { effect: { tileMultiplier: 2 } },
         { effect: { tileMultiplier: 3 } },
         { effect: { tileMultiplier: 2 } }
       ];
-      let prunedBonuses = pruneBonuses(bonuses);
+      const prunedBonuses = pruneBonuses(bonuses);
 
       expect(prunedBonuses).to.deep.equal(bonuses);
     });
 
     it('does not touch a list including only 1 word bonus', () => {
-      let bonuses = [
+      const bonuses = [
         { effect: { tileMultiplier: 2 } },
         { effect: { tileMultiplier: 3 } },
         { effect: { tileMultiplier: 2 } },
         { effect: { wordMultiplier: 2 } }
       ];
-      let prunedBonuses = pruneBonuses(bonuses);
+      const prunedBonuses = pruneBonuses(bonuses);
 
       expect(prunedBonuses).to.deep.equal(bonuses);
     });
 
     it('removes one of two identical word bonuses', () => {
-      let bonuses = [
+      const bonuses = [
         { effect: { tileMultiplier: 2 } },
         { effect: { tileMultiplier: 3 } },
         { effect: { wordMultiplier: 2 } },
         { effect: { wordMultiplier: 2 } }
       ];
-      let prunedBonuses = pruneBonuses(bonuses);
+      const prunedBonuses = pruneBonuses(bonuses);
 
       expect(prunedBonuses).to.deep.equal(bonuses.slice(0, 3));
     });
 
     it('takes the higher option, when duplicates are found', () => {
-      let bonuses = [
+      const bonuses = [
         { effect: { tileMultiplier: 2 } },
         { effect: { tileMultiplier: 3 } },
         { effect: { wordMultiplier: 2 } },
         { effect: { wordMultiplier: 3 } }   // <--
       ];
-      let prunedBonuses = pruneBonuses(bonuses);
+      const prunedBonuses = pruneBonuses(bonuses);
 
       // Keep the first two, and the last one
-      let expectedBonuses = [ bonuses[0], bonuses[1], bonuses[3] ];
+      const expectedBonuses = [ bonuses[0], bonuses[1], bonuses[3] ];
       expect(prunedBonuses).to.deep.equal(expectedBonuses);
     });
 
     it('takes the higher option, when the higher value is seen first', () => {
-      let bonuses = [
+      const bonuses = [
         { effect: { tileMultiplier: 2 } },
         { effect: { wordMultiplier: 3 } },  // <--
         { effect: { tileMultiplier: 3 } },
         { effect: { wordMultiplier: 2 } }
       ];
-      let prunedBonuses = pruneBonuses(bonuses);
+      const prunedBonuses = pruneBonuses(bonuses);
 
-      let expectedBonuses = [ bonuses[0], bonuses[2], bonuses[1] ];
+      const expectedBonuses = [ bonuses[0], bonuses[2], bonuses[1] ];
       expect(prunedBonuses).to.deep.equal(expectedBonuses);
     });
 
     it('removes multiple duplicates', () => {
-      let bonuses = [
+      const bonuses = [
         { effect: { wordMultiplier: 2 } },
         { effect: { wordMultiplier: 3 } },
         { effect: { wordMultiplier: 2 } },
         { effect: { wordMultiplier: 3 } }
       ];
-      let prunedBonuses = pruneBonuses(bonuses);
+      const prunedBonuses = pruneBonuses(bonuses);
 
       expect(prunedBonuses).to.deep.equal([ bonuses[1] ]);
     });
 
     it('keeps the highest word multiplier with an additional effect', () => {
-      let bonuses = [
+      const bonuses = [
         { effect: { tileMultiplier: 2 } },
         { effect: { wordMultiplier: 3 } },
         { effect: {
@@ -520,9 +522,177 @@ describe('Game Logic Helpers', () => {
       // The idea here is that even though the second bonus has a 3x word
       // multiplier, we're taking the third option (with only a 2x multiplier)
       // because it has an additional effect (a tile multiplier as well).
-      let prunedBonuses = pruneBonuses(bonuses);
+      const prunedBonuses = pruneBonuses(bonuses);
 
       expect(prunedBonuses).to.deep.equal([ bonuses[0], bonuses[2] ]);
+    });
+  });
+
+  describe('#getBonusMultiplier', () => {
+    it('returns 1 when no bonus is provided', () => {
+      expect( getBonusMultiplier(null, 'wordMultiplier') ).to.equal(1);
+    });
+
+    it('returns 1 when the bonus has no effect', () => {
+      const bonus = {
+        label: 'hi there!', x: 3, y: 7
+      };
+
+      expect( getBonusMultiplier(bonus, 'wordMultiplier') ).to.equal(1);
+    });
+
+    it('returns 1 when the bonus does not have the requested effect', () => {
+      const bonus = {
+        effect: { tileMultiplier: 2 }
+      };
+
+      expect( getBonusMultiplier(bonus, 'wordMultiplier') ).to.equal(1);
+    });
+
+    it('returns the value of the effect', () => {
+      const bonus = {
+        effect: { wordMultiplier: 2 }
+      };
+
+      expect( getBonusMultiplier(bonus, 'wordMultiplier') ).to.equal(2);
+    });
+
+    it('returns the value of the effect when it has multiple props', () => {
+      const bonus = {
+        effect: { wordMultiplier: 2, tileMultiplier: 3}
+      };
+
+      expect( getBonusMultiplier(bonus, 'tileMultiplier') ).to.equal(3);
+    });
+  });
+
+  describe('#applyBonuses', () => {
+    it('returns the base points value when no bonuses are provided', () => {
+      const tiles = [
+        { x: 4, y: 4, points: 1 },
+        { x: 4, y: 5, points: 1 },
+        { x: 4, y: 6, points: 1 }
+      ];
+
+      expect( applyBonuses(tiles, []) ).to.equal(1+1+1);
+    });
+
+    it('adds in a double letter', () => {
+      const tiles = [
+        { x: 4, y: 4, points: 3 },
+        { x: 4, y: 5, points: 2 },
+        { x: 4, y: 6, points: 1 }
+      ];
+      const bonuses = [
+        { x: 4, y: 4, effect: { tileMultiplier: 2 }}
+      ];
+
+      const points = applyBonuses(tiles, bonuses);
+      expect( points ).to.equal(3*2 + 2 + 1);
+    });
+
+    it('adds in a triple letter', () => {
+      const tiles = [
+        { x: 4, y: 4, points: 3 },
+        { x: 4, y: 5, points: 2 },
+        { x: 4, y: 6, points: 1 }
+      ];
+      const bonuses = [
+        { x: 4, y: 6, effect: { tileMultiplier: 3 }}
+      ];
+
+      const points = applyBonuses(tiles, bonuses);
+      expect( points ).to.equal(3 + 2 + 1*3);
+    });
+
+    it('adds in a double word', () => {
+      const tiles = [
+        { x: 4, y: 4, points: 3 },
+        { x: 4, y: 5, points: 2 },
+        { x: 4, y: 6, points: 1 }
+      ];
+      const bonuses = [
+        { x: 4, y: 6, effect: { wordMultiplier: 2 }}
+      ];
+
+      const points = applyBonuses(tiles, bonuses);
+      expect( points ).to.equal( (3+2+1) * 2 );
+    });
+
+    it('adds in a triple word', () => {
+      const tiles = [
+        { x: 4, y: 4, points: 3 },
+        { x: 4, y: 5, points: 4 },
+        { x: 4, y: 6, points: 5 }
+      ];
+      const bonuses = [
+        { x: 4, y: 6, effect: { wordMultiplier: 3 }}
+      ];
+
+      const points = applyBonuses(tiles, bonuses);
+      expect( points ).to.equal( (3+4+5) * 3 );
+    });
+
+    it('doubles a word with a zero tile', () => {
+      const tiles = [
+        { x: 4, y: 4, points: 0 },
+        { x: 4, y: 5, points: 1 },
+        { x: 4, y: 6, points: 2 }
+      ];
+      const bonuses = [
+        { x: 4, y: 6, effect: { wordMultiplier: 2 }}
+      ];
+
+      const points = applyBonuses(tiles, bonuses);
+      expect( points ).to.equal( (0+1+2) * 2 );
+    });
+
+    it('handles a double word and a double letter', () => {
+      const tiles = [
+        { x: 4, y: 4, points: 4 },
+        { x: 4, y: 5, points: 3 },
+        { x: 4, y: 6, points: 2 }
+      ];
+      const bonuses = [
+        { x: 4, y: 4, effect: { tileMultiplier: 2 }},
+        { x: 4, y: 6, effect: { wordMultiplier: 2 }}
+      ];
+
+      const points = applyBonuses(tiles, bonuses);
+      expect( points ).to.equal( ( (4*2)+3+2) * 2 );
+    });
+
+    it('handles multiple letter bonuses and a word bonus', () => {
+      const tiles = [
+        { x: 4, y: 4, points: 4 },
+        { x: 4, y: 5, points: 3 },
+        { x: 4, y: 6, points: 2 }
+      ];
+      const bonuses = [
+        { x: 4, y: 4, effect: { tileMultiplier: 2 }},
+        { x: 4, y: 5, effect: { tileMultiplier: 3 }},
+        { x: 4, y: 6, effect: { wordMultiplier: 3 }}
+      ];
+
+      const points = applyBonuses(tiles, bonuses);
+      expect( points ).to.equal( ( (4*2)+(3*3)+2) * 3 );
+    });
+
+    it('handles a single bonus that doubles both letter and word', () => {
+      const tiles = [
+        { x: 4, y: 4, points: 4 },
+        { x: 4, y: 5, points: 3 },
+        { x: 4, y: 6, points: 2 }
+      ];
+      const bonuses = [
+        { x: 4, y: 4, effect: {
+          wordMultiplier: 3,
+          tileMultiplier: 2
+        }}
+      ];
+
+      const points = applyBonuses(tiles, bonuses);
+      expect( points ).to.equal( ( (4*2)+3+2) * 3 );
     });
   });
 });
