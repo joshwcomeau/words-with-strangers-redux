@@ -34,8 +34,6 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
     2.5px 2.5px 0px $fadedyellow,
     3px 3px 0px $fadedyellow,
   ;
-  border-right: 3px solid transparent;
-  border-bottom: 3px solid transparent;
 
   &.draggable { cursor: move; }
 

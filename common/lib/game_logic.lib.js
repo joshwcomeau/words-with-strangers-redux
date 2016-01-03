@@ -162,6 +162,12 @@ export function findTile({x, y}, board) {
   return _.find( board, tile => (tile.x === x && tile.y === y) );
 }
 
+export function findBonusSquare(tile, bonusSquares) {
+  // The functionality of this is identical to `findTile`, just with different
+  // language. Going to keep the separate for now in case the logic changes.
+  return findTile(tile, bonusSquares);
+}
+
 
 // Compute whether there have been any finished turns yet
 // RETURNS: Boolean.

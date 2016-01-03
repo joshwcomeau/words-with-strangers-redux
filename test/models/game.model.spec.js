@@ -5,11 +5,14 @@ import mongoose   from 'mongoose';
 import bcrypt     from 'bcrypt';
 
 import Game from '../../server/models/game.model';
+import BonusSquareSchema from '../../server/models/schemas/bonus_square.schema'
 
 import {
+  BOARD_SIZE,
   GAME_STATUSES,
   FULL_RACK_SIZE,
-  MINUTES_TO_SHOW_GAME
+  MINUTES_TO_SHOW_GAME,
+  BONUS_SQUARE_PERCENTAGES
 } from '../../common/constants/config.constants';
 
 
@@ -161,9 +164,75 @@ describe('Game model', () => {
 
       it('sets the game status as `in_progress`', () => {
         expect(game.status).to.equal(GAME_STATUSES.in_progress);
-      })
+      });
+    });
+  });
 
+  describe('#assignBonusSquares', () => {
+    let game;
+
+    before( (done) => {
+      Game.create({
+        createdByUserId: player.id
+      }, (err, savedGame) => {
+        if (err) throw err;
+        game = savedGame;
+        return done();
+      });
     });
 
+    it('should have created an appropriate number', () => {
+      const [minPerc, maxPerc] = BONUS_SQUARE_PERCENTAGES;
+      const min = Math.floor(Math.pow(BOARD_SIZE, 2) * minPerc / 100);
+      const max = Math.ceil(Math.pow(BOARD_SIZE, 2) * maxPerc / 100);
+
+      expect(game.bonusSquares).to.have.length.of.at.least(min);
+      expect(game.bonusSquares).to.have.length.of.at.most(max);
+    });
+
+    it('should assure that all coordinates are unique', () => {
+      const coords = game.bonusSquares.reduce( (memo, bonus) => {
+        // Create a string representation of each co-ordinate pair
+        // As long as the coords are different, the string will be unique!
+        memo.push(`${bonus.x}-${bonus.y}`);
+        return memo;
+      }, []);
+
+      // By comparing the original array to one with duplicates removed,
+      // we'll know if each bonus square is alone in its space.
+      expect(coords).to.deep.equal(_.uniq(coords));
+    });
+
+    it('should assure that all coordinates are valid', () => {
+      const coords = [].concat(
+        _.pluck(game.bonusSquares, 'x'),
+        _.pluck(game.bonusSquares, 'y')
+      );
+
+      coords.forEach( coord => {
+        expect(coord).to.be.at.least(0);
+        expect(coord).to.be.at.most(BOARD_SIZE-1)
+      });
+    });
+
+    it('should include a valid effect', () => {
+      // Because each tile is generated the same way, it seems like a safe
+      // assumption to just test the first one, rather than all 50+.
+      const bonusSquare   = _.first(game.bonusSquares);
+
+      const validEffects = _.pluck(BonusSquareSchema.statics.validEffects, 'effect');
+      const applicableEffect = _.find(validEffects, (validEffect) => {
+        const validEffectKey  = _.keys(validEffect)[0];
+        const validEffectVal  = _.values(validEffect)[0];
+        const effectKey       = _.keys(bonusSquare.effect)[0];
+        const effectVal       = _.values(bonusSquare.effect)[0];
+
+        return (validEffectKey === effectKey && validEffectVal === effectVal);
+      });
+      expect(applicableEffect).to.be.ok;
+
+      const labels = _.pluck(BonusSquareSchema.statics.validEffects, 'label');
+      expect(labels).to.include(bonusSquare.label);
+    });
   });
 });

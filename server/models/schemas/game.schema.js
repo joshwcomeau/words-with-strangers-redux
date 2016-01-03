@@ -4,6 +4,7 @@ import moment   from 'moment';
 
 import TileSchema               from './tile.schema';
 import TurnSchema               from './turn.schema';
+import BonusSquareSchema        from './bonus_square.schema';
 import {
   createdAndUpdatedAt,
   toJSON
@@ -11,10 +12,12 @@ import {
 
 import generateTiles            from '../../lib/tile_generator.lib';
 import {
+  BOARD_SIZE,
   GAME_STATUSES,
   GAME_STATUSES_ENUM,
   FULL_RACK_SIZE,
-  MINUTES_TO_SHOW_GAME
+  MINUTES_TO_SHOW_GAME,
+  BONUS_SQUARE_PERCENTAGES
 } from '../../../common/constants/config.constants';
 import {
   isTentative,
@@ -38,7 +41,8 @@ const GameSchema = new Schema({
   players:          { type: [], default: [] },
   board:            { type: [TileSchema] },
   rack:             { type: [TileSchema] },
-  turns:            { type: [TurnSchema] }
+  turns:            { type: [TurnSchema] },
+  bonusSquares:     { type: [BonusSquareSchema] }
 });
 
 GameSchema.plugin(createdAndUpdatedAt, { index: true });
@@ -149,6 +153,7 @@ GameSchema.methods.asSeenByUser = function(user = {}) {
   return game;
 }
 
+
 GameSchema.methods.replenishPlayerRack = function(player) {
   const numOfRackTiles = _.filter(this.rack, {
     playerId: player.id
@@ -158,7 +163,8 @@ GameSchema.methods.replenishPlayerRack = function(player) {
   this.rack = this.rack.concat( generateTiles(player.id, numToRefill) );
 }
 
-GameSchema.methods.generateTitle = function() {
+
+GameSchema.methods.assignTitle = function() {
   // titles consist of a wordy adjective followed by a competitive noun.
   const adjectives = [
     'wordy', 'verbose', 'gabby', 'rhetorical', 'crackerjack', 'sagacious',
@@ -174,6 +180,23 @@ GameSchema.methods.generateTitle = function() {
 
   this.title = [_.sample(adjectives), _.sample(nouns)].join(' ');
 }
+
+
+GameSchema.methods.assignBonusSquares = function() {
+  // First, figure out how many bonus squares this game will receive.
+  // Should be 25-35% of the total squares.
+  const [minPercentage, maxPercentage] = BONUS_SQUARE_PERCENTAGES;
+  const percentage = _.random(minPercentage, maxPercentage);
+  const numOfTiles = Math.round( Math.pow(BOARD_SIZE, 2) * (percentage / 100) );
+
+  let square;
+  _.times(numOfTiles, () => {
+    square = BonusSquareSchema.statics.generateBonusSquare(this);
+    this.bonusSquares.push(square);
+  });
+}
+
+
 
 //////////////////////////////////////////////////////////////
 // CLASS METHODS ////////////////////////////////////////////
@@ -205,8 +228,9 @@ GameSchema.virtual('roomName').get( function() {
 GameSchema.pre('save', function(next) {
   if ( !this.isNew ) return next();
 
-  // Give the game a random title!
-  if ( !this.title ) this.generateTitle();
+  if ( !this.title ) this.assignTitle();
+
+  this.assignBonusSquares();
 
   return next();
 });
