@@ -103,16 +103,35 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
       // Only the bottom row should have a bottom border.
       // Math = width * width - width + 1.
       // eg.      13  *  13   - 12
-      &:nth-child(n+#{$num-of-squares * $num-of-squares + $num-of-squares + 1}) {
+      &:nth-child(n+#{$num-of-squares * $num-of-squares - $num-of-squares + 1}) {
         border-bottom: 1px solid #CCC;
       }
     }
 
     .tile {
       position: absolute;
+      z-index: 2;
       top:  ($square-size - $tile-board-size) / 2 - 3px;
       left: ($square-size - $tile-board-size) / 2 - 3px;
       @include tile($tile-board-size);
+    }
+
+    .bonus-square {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      color: $white;
+      text-align: center;
+      line-height: $square-size;
+      font-weight: bold;
+
+      &.dl { background: $fadedteal; }
+      &.tl { background: $teal; }
+      &.dw { background: $red; }
+      &.tw { background: $fadedyellow; }
     }
   }
 
