@@ -89,17 +89,83 @@ export function validateWord(word) {
 
 
 // Figure out how many points this set of tiles is worth.
-// Simple for now, but will soon include special tiles, bonus squares, etc.
 // RETURNS: a Number
-export function calculatePointsForWord(tiles) {
-  return _.sum( tiles, tile => tile.points );
+export function calculatePointsForWord(tiles, bonusSquares) {
+  let bonuses = _.reduce( tiles, (memo, tile) => {
+    // We only apply bonuses to tentative tiles.
+    if ( isEstablished(tile) ) return memo;
+
+    bonusSquare = findBonusSquare(tile, bonusSquares);
+
+    if ( !bonusSquare ) return memo;
+
+    // If we found a proper bonus, we'll push it to a bonuses array.
+    // After this reduce, we can deal with applying them.
+    memo.push(bonusSquare);
+    return memo;
+  }, []);
+
+  let prunedBonuses = pruneBonuses(bonuses);
+
+  return applyBonuses(tiles, bonuses);
+}
+
+
+
+// Weed out any unusable bonuses.
+// For example, only one word multiplier may be used, and we want the highest.
+// RETURNS: An array of bonusSquare objects.
+export function pruneBonuses(bonusSquares) {
+  let highestWordMultiplier = 1;
+  let numOfWordMultipliers = 0;
+
+  // Strategy: Partition the bonuses into two lists: One which contains word
+  // bonuses, one that does not. Then, just select the best word option,
+  // and concat the two lists back together.
+  let [wordBonuses, otherBonuses] = _.partition(bonusSquares, bonus => {
+    let bonusNames = _.keys(bonus.effect);
+    return _.includes(bonusNames, 'wordMultiplier');
+  });
+
+  // If we have 0 or 1 word bonuses, we're done!
+  if ( wordBonuses.length <= 1) return bonusSquares;
+
+  // Let's sort the word bonuses by desirability
+  // Here's our ideal sort result, in ascending order:
+  /*
+  [
+    {
+      wordMultiplier: 2
+    }, {
+      wordMultiplier: 3
+    }, {
+      wordMultiplier: 2, someOtherBonus: 10
+    }, {
+      wordMultiplier: 3, someOtherBonus: 2      <-- Bingo!
+    },
+  ]
+  */
+  let sortedWordBonuses = _.sortBy(wordBonuses, bonus => {
+    // To prioritize bonuses with multiple properties, we're factoring in
+    // the number of values > 1, and 'weighing' them at far greater a value
+    // than the word multiplier itself.
+    // For example, this would weigh the above values:
+    // [ 13, 12, 3, 2]
+    let wordMultiplier = bonus.effect.wordMultiplier;
+    let length = _.values(bonus.effect).length - 1; // Ignore single-value bonuses
+
+    return wordMultiplier + ( length * 10 );
+  });
+
+  return otherBonuses.concat( _.last(sortedWordBonuses) )
+
 }
 
 // Figure out how many points this turn is worth.
 // Requires a subset of the board for it to use as its base 'turn' word.
 // It sums that word, as well as any orthogonally-connected words.
 // RETURNS: a Number
-export function calculatePointsForTurn(tiles, board) {
+export function calculatePointsForTurn(tiles, board, bonusSquares = []) {
   // We pass in the primary axis' word, so we can start by summing its points.
   let points = calculatePointsForWord(tiles);
 
