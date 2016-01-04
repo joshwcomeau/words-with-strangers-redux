@@ -3,15 +3,16 @@
 require('babel-core/register');
 require('./server/initialize');
 
-const plan  = require('flightplan');
-const _     = require('lodash');
-const nconf = require('nconf');
+const plan    = require('flightplan');
+const _       = require('lodash');
+const nconf   = require('nconf');
+const moment  = require('moment');
 
 const privateKey    = process.env.HOME + "/.ssh/id_rsa";
 
 const user          = 'deploy';
 const appName       = 'wordswithstrangers';
-const newDirectory  = 'wws_' + new Date().getTime();
+const newDirectory  = 'wws_' + moment().format('DD-MM-YYYY_hh[h]mm[m]ss[s]');
 
 const sourceDest    = `/tmp/${newDirectory}`;
 const targetDest    = `/home/${user}/${appName}/${newDirectory}`;
@@ -21,19 +22,21 @@ const linkedDest    = `/home/${user}/${appName}/current`;
 plan.target('production', {
   host:       nconf.get('SERVER_HOST'),
   username:   nconf.get('SERVER_USER'),
-  privateKey: privateKey
+  agent: process.env.SSH_AUTH_SOCK
 });
 
 plan.local( local => {
+  local.log(`Deployment started! Deploying to ${newDirectory}`)
   local.log('Webpacking everything up');
   local.exec('webpack -p --config webpack.config.prod.js');
 
   // Yay working with filesystems. How I miss regex.
   local.log('Copying files to remote')
-  const dist    = local.find('dist', {silent: true}).stdout.split('\n');
-  const common  = local.find('common', {silent: true}).stdout.split('\n');
-  const server  = local.find('server', {silent: true}).stdout.split('\n');
-  const files   = [].concat(dist, common, server);
+  const dist      = local.find('dist', {silent: true}).stdout.split('\n');
+  const common    = local.find('common', {silent: true}).stdout.split('\n');
+  const server    = local.find('server', {silent: true}).stdout.split('\n');
+  const packjson  = local.find('package.json', {silent: true}).stdout.split('\n');
+  const files     = [].concat(dist, common, server, packjson);
   local.transfer(files, `/tmp/${newDirectory}`);
 });
 

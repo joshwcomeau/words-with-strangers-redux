@@ -23,9 +23,7 @@ const PRIVATE_CONFIG  = './server/config/private.json';
 // That said, nconf doesn't seem to complain about missing files,
 // so the PRIVATE_CONFIG line just won't do anything in production.
 
-// let ENV_CONFIG = process.env.NODE_ENV === 'production' ? '/home/deploy/config/wws/production.json' : `./server/config/${process.env.NODE_ENV}.json`;
-
-let ENV_CONFIG = `./server/config/${process.env.NODE_ENV}.json`;
+let ENV_CONFIG = process.env.NODE_ENV === 'production' ? '/home/deploy/config/wws/production.json' : `./server/config/${process.env.NODE_ENV}.json`;
 
 // Setup nconf to use (in-order):
 //   1. Command-line arguments
