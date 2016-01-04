@@ -3,8 +3,8 @@ require('babel-core/register');
 
 var nconf = require('nconf');
 
-var env         = process.env.NODE_ENV;
-var fileSuffix  = env === 'development' ? '.dev' : '.prod';
+// Boot up the server that corresponds to the environment.
+var fileSuffix  = process.env.NODE_ENV === 'development' ? '.dev' : '.prod';
 var fileName    = './server'+fileSuffix; // eg. ./server.dev
 
 require(fileName);
