@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=development nodemon server/index.js",
-    "test": "NODE_ENV=test mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive"
+    "test": "NODE_ENV=test mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive",
+    "deploy": "NODE_ENV=production fly production"
   },
   "keywords": [],
   "author": "",
@@ -62,6 +63,7 @@
     "chai": "^3.4.1",
     "chai-immutable": "^1.5.3",
     "css-loader": "^0.23.0",
+    "extract-text-webpack-plugin": "^1.0.0",
     "faker": "^3.0.1",
     "flightplan": "^0.6.8",
     "mocha": "^2.3.4",
@@ -76,7 +78,8 @@
     "supertest": "^1.1.0",
     "webpack": "^1.12.9",
     "webpack-dev-middleware": "^1.2.0",
-    "webpack-hot-middleware": "^2.2.0"
+    "webpack-hot-middleware": "^2.2.0",
+    "webpack-sources": "^0.1.0"
   },
   "babel": {
     "plugins": [

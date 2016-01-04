@@ -16,19 +16,19 @@ const port  = nconf.get('PORT');
 const http  = require('http').Server(app);
 
 
-console.log("Starting in ", nconf.get('NODE_ENV'), "with JWT", nconf.get('JWT_SECRET'))
-
-
 
   ////////////////////////////
  /////// MIDDLEWARES ////////
 ////////////////////////////
 // use body parser so we can get info from POST and/or URL parameters
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use( bodyParser.urlencoded({ extended: false }) );
+app.use( bodyParser.json() );
 
 // use morgan to log requests to the console
-app.use(morgan('dev'));
+app.use( morgan('dev') );
+
+// Allow static files in the /static directory
+app.use( '/static', Express.static('dist') )
 
   ////////////////////////////
  ///////// DATABASE /////////
@@ -50,8 +50,8 @@ sockets(http);
 
 http.listen(port, (error) => {
   if (error) {
-    console.error(error)
+    console.error(error);
   } else {
-    console.info(`==> 🌎  Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`)
+    console.info(`==> 🌎  Listening on port ${port}.`);
   }
 });
