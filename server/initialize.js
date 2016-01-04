@@ -11,9 +11,21 @@ if ( typeof process.env.NODE_ENV === 'undefined' ) {
 }
 
 const DEFAULT_CONFIG  = './server/config/defaults.json';
-const ENV_CONFIG      = `./server/config/${process.env.NODE_ENV}.json`
 const PRIVATE_CONFIG  = './server/config/private.json';
 
+// The whole config thing is a little confusing when it comes to deployment.
+// Locally, we'll run `development.json`. We also have a `private.json`,
+// for stuff we don't want to store in Git.
+//
+// In production, we don't need both a `production.json` and a `private.json`,
+// because the server's `production.json` IS private.
+//
+// That said, nconf doesn't seem to complain about missing files,
+// so the PRIVATE_CONFIG line just won't do anything in production.
+
+// let ENV_CONFIG = process.env.NODE_ENV === 'production' ? '/home/deploy/config/wws/production.json' : `./server/config/${process.env.NODE_ENV}.json`;
+
+let ENV_CONFIG = `./server/config/${process.env.NODE_ENV}.json`;
 
 // Setup nconf to use (in-order):
 //   1. Command-line arguments

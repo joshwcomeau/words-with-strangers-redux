@@ -5,11 +5,6 @@ import Express                    from 'express';
 import mongoose                   from 'mongoose';
 import bodyParser                 from 'body-parser';
 
-import webpack                    from 'webpack';
-import webpackDevMiddleware       from 'webpack-dev-middleware';
-import webpackHotMiddleware       from 'webpack-hot-middleware';
-import webpackConfig              from '../webpack.config.js';
-
 import routes                     from './routes';
 import sockets                    from './sockets';
 
@@ -19,6 +14,9 @@ const app   = new Express();
 const port  = nconf.get('PORT');
 
 const http  = require('http').Server(app);
+
+
+console.log("Starting in ", nconf.get('NODE_ENV'), "with JWT", nconf.get('JWT_SECRET'))
 
 
 
@@ -35,21 +33,8 @@ app.use(morgan('dev'));
   ////////////////////////////
  ///////// DATABASE /////////
 ////////////////////////////
-// TODO: Use a cloud mongo provider.
 mongoose.connect( nconf.get('DB_URL') + nconf.get('DB_NAME') );
 
-
-
-  ////////////////////////////
- ///////// WEBPACK //////////
-////////////////////////////
-// TODO: Figure out a production strategy
-const compiler = webpack(webpackConfig);
-app.use( webpackDevMiddleware(compiler, {
-  noInfo: true,
-  publicPath: webpackConfig.output.publicPath
-}) );
-app.use( webpackHotMiddleware(compiler) );
 
 
   ////////////////////////////

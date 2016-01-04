@@ -2,5 +2,4 @@
   "DB_URL": "mongodb://localhost/",
   "DB_NAME": "wordswithstrangers",
   "JWT_SECRET": "68835cd3-9f22-4576-a9a1-c8d6ba5fbb4c"
-
 }
