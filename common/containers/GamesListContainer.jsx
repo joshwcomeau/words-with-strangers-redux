@@ -1,4 +1,4 @@
-import * as _                 from 'lodash';
+import _                      from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect }            from 'react-redux';
 import GamesList              from '../components/games_list/GamesList.jsx';

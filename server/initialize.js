@@ -10,6 +10,8 @@ if ( typeof process.env.NODE_ENV === 'undefined' ) {
   process.env.NODE_ENV = 'development'
 }
 
+process.env.UNIVERSAL_ENV = 'server';
+
 const DEFAULT_CONFIG  = './server/config/defaults.json';
 const PRIVATE_CONFIG  = './server/config/private.json';
 

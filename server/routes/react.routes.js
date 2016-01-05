@@ -8,7 +8,7 @@ import { Provider }               from 'react-redux';
 import createLocation             from 'history/lib/createLocation';
 
 import clientRoutes               from '../../common/routes';
-import configureStore             from '../../common/store/configureStore.server';
+import configureStore             from '../../common/store';
 
 export default function(app) {
 
@@ -27,7 +27,7 @@ export default function(app) {
       if ( !renderProps ) return res.status(404).end('Not found.');
 
       const store = configureStore();
-      const state = store.getState();
+      const initialState = store.getState().toJS();
 
       const InitialComponent = (
         <Provider store={store}>
@@ -36,7 +36,7 @@ export default function(app) {
       );
       const componentHTML = renderToString(InitialComponent);
 
-      res.send( renderFullPage(componentHTML, state) );
+      res.send( renderFullPage(componentHTML, initialState) );
     });
   }
 

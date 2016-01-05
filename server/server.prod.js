@@ -5,10 +5,12 @@ import Express                    from 'express';
 import mongoose                   from 'mongoose';
 import bodyParser                 from 'body-parser';
 
+import './initialize';
+
 import routes                     from './routes';
 import sockets                    from './sockets';
 
-import './initialize';
+
 
 const app   = new Express();
 const port  = nconf.get('PORT');

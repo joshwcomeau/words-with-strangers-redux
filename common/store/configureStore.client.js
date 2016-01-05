@@ -10,7 +10,7 @@ import {
 } from '../middleware';
 
 
-export default function configureStore(initialState, sockets) {
+export default function configureStore(initialState, sockets = []) {
   // On the client, we pass in an array of sockets.
   // We will create one middleware step for each one.
   // When actions are dispatched, each middleware will check its middleware.

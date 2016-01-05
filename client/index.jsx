@@ -11,7 +11,7 @@ import createBrowserHistory     from 'history/lib/createBrowserHistory';
 import { syncReduxAndRouter }   from 'redux-simple-router'
 
 import routes                   from '../common/routes.jsx';
-import configureStore           from '../common/store/configureStore.client';
+import configureStore           from '../common/store';
 import { authenticationSuccess} from '../common/actions/auth.actions';
 
 import * as _                   from 'lodash';

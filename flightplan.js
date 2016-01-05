@@ -58,3 +58,6 @@ plan.remote( remote => {
   remote.log('Reloading application');
   // TODO
 });
+
+// Original start command:
+// NODE_ENV=production pm2 start server/index.js

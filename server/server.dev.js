@@ -8,12 +8,14 @@ import bodyParser                 from 'body-parser';
 import webpack                    from 'webpack';
 import webpackDevMiddleware       from 'webpack-dev-middleware';
 import webpackHotMiddleware       from 'webpack-hot-middleware';
-import webpackConfig              from '../webpack.config.dev.js';
 
+import './initialize';
+
+import webpackConfig              from '../webpack.config.dev.js';
 import routes                     from './routes';
 import sockets                    from './sockets';
 
-import './initialize';
+
 
 const app   = new Express();
 const port  = nconf.get('PORT');
