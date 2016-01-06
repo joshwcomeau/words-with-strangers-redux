@@ -1,7 +1,7 @@
 import * as _                 from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect }            from 'react-redux';
-import Layout                 from '../components/layout/Layout.jsx';
+import Layout                 from '../components/layout';
 import * as AuthActions       from '../actions/auth.actions';
 import * as UiActions         from '../actions/ui.actions';
 

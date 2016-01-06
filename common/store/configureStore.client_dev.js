@@ -23,7 +23,6 @@ export default function configureStore(initialState, sockets = []) {
   sockets.forEach( (socket) => middlewares.push( socketMiddleware(socket) ) );
 
   // Add in our misc middleware:
-  // middlewares.push( loggerMiddleware );
   middlewares.push( thunk );
 
   const createStoreWithMiddleware = compose(
@@ -43,9 +42,7 @@ export default function configureStore(initialState, sockets = []) {
     });
   }
 
-  // For testing purposes, attach the store to the window
-  // (only on the client, obviously);
-  if ( typeof window !== 'undefined' ) window.__store = store;
+  window.__store = store;
 
   return store
 }

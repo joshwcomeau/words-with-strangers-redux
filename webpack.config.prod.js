@@ -18,8 +18,10 @@ module.exports = {
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
-    new ExtractTextPlugin('styles.css')
-
+    new ExtractTextPlugin('styles.css'),
+    new webpack.ProvidePlugin({
+      'NODE_ENV': 'production'
+    })
   ],
 
   module: {

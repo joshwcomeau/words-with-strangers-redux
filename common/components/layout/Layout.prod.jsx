@@ -4,11 +4,8 @@ import ReactCSSTransitionGroup  from 'react-addons-css-transition-group';
 import Header       from '../../components/layout/header/Header.jsx';
 import FlashMessage from '../../components/layout/FlashMessage.jsx';
 
-// TODO: Remove DevTools from production environment.
-import DevTools from '../../containers/DevTools.jsx';
 
-
-export default class AppView extends React.Component {
+export default class Layout extends React.Component {
   render() {
     return (
       <div id="app-view">
@@ -33,7 +30,6 @@ export default class AppView extends React.Component {
         </ReactCSSTransitionGroup>
 
         {this.props.children}
-        <DevTools />
       </div>
     );
   }

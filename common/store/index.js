@@ -3,10 +3,10 @@
 //    2) On the client, in development (with DevTools/hot-reloading, etc)
 //    3) On the client, in production
 
-console.log("UNIVERSAL ENV IS", process.env.UNIVERSAL_ENV)
-
 if ( process.env.UNIVERSAL_ENV === 'server' ) {
-  module.exports = require('./configureStore.client');
+  module.exports = require('./configureStore.server');
+} else if ( process.env.NODE_ENV === 'production' ) {
+  module.exports = require('./configureStore.client_prod');
 } else {
-  module.exports = require('./configureStore.client');
+  module.exports = require('./configureStore.client_dev');
 }
