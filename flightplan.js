@@ -1,3 +1,5 @@
+// Flightplan - Deployment and Server Administration
+
 'use strict';
 
 require('babel-core/register');
@@ -18,14 +20,18 @@ const sourceDest    = `/tmp/${newDirectory}`;
 const targetDest    = `/home/${user}/${appName}/${newDirectory}`;
 const linkedDest    = `/home/${user}/${appName}/current`;
 
+// Acceptable arguments:
+//   --skip-webpack         If I've recently bundled, I can skip the bundling.
+//   --fresh-dependencies   Don't copy cached NPM module dependencies.
+const skipWebpack = plan.runtime.options['skip-webpack']
 
 plan.target('production', {
   host:       nconf.get('SERVER_HOST'),
   username:   nconf.get('SERVER_USER'),
-  agent: process.env.SSH_AUTH_SOCK
+  agent:      process.env.SSH_AUTH_SOCK
 });
 
-plan.local( local => {
+plan.local( 'deploy', local => {
   local.log(`Deployment started! Deploying to ${newDirectory}`)
   local.log('Webpacking everything up');
   local.exec('webpack -p --config webpack.config.prod.js');
@@ -40,7 +46,7 @@ plan.local( local => {
   local.transfer(files, `/tmp/${newDirectory}`);
 });
 
-plan.remote( remote => {
+plan.remote( 'deploy', remote => {
   remote.log('Move folder to web root')
   remote.sudo(`cp -R ${sourceDest} ${targetDest}`, { user });
   remote.rm(`-rf ${sourceDest}`); // clean up after ourselves
@@ -58,6 +64,3 @@ plan.remote( remote => {
   remote.log('Reloading application');
   // TODO
 });
-
-// Original start command:
-// NODE_ENV=production pm2 start server/index.js
