@@ -1,5 +1,3 @@
 {
-  "DB_URL": "mongodb://localhost/",
-  "DB_NAME": "words_test",
-  "PORT": 3000
+  "DB_NAME": "words_test"
 }

@@ -1,4 +1,5 @@
 {
+  "DB_URL": "mongodb://localhost/",
   "DB_NAME": "wordswithstrangers",
   "TZ": "America/New_York",
   "PORT": 3000
