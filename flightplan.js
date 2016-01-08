@@ -26,6 +26,7 @@ const projectDir        = `/home/${user}/${appName}`;
 const newDirectory      = `${projectDir}/${newDirectoryName}`;
 const linkedDirectory   = `${projectDir}/current`;
 
+const MAX_SAVED_DEPLOYS = 3
 
 plan.target('production', {
   host:       nconf.get('SERVER_HOST'),
@@ -74,5 +75,11 @@ plan.remote( 'deploy', remote => {
   remote.sudo(`ln -snf ${newDirectory} ${linkedDirectory}`, { user });
 
   remote.log('Reloading application');
-  // TODO
+  // TODO: Find a way to do this (reboot the selected file without
+  // affecting any of the other pm2 processes.)
+  remote.exec('pm2 reload all');
+
+  remote.log('Removing oldest copies of deploy');
+  remote.exec(`cd ${projectDir} && rm -rf \`ls -td wws_20* | awk 'NR>${MAX_SAVED_DEPLOYS}'\``);
+
 });
