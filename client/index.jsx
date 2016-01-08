@@ -20,11 +20,11 @@ import {
   ADD_GAMES_TO_LIST
 } from '../common/constants/actions.constants';
 
-
+const baseUrl = window.location.protocol + '//' + window.location.host;
 const sockets = [
   io(),
-  io('http://localhost:3000/game'),
-  io('http://localhost:3000/gamesList')
+  io(`${baseUrl}/game`),
+  io(`${baseUrl}/gamesList`)
 ]
 const store         = configureStore(initialState, sockets);
 
