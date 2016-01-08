@@ -1,4 +1,8 @@
 // Flightplan - Deployment and Server Administration
+//
+// Acceptable arguments:
+//   --skip-webpack         If I've recently bundled, I can skip the bundling.
+//   --fresh-dependencies   Don't copy cached NPM module dependencies.
 
 'use strict';
 
@@ -10,20 +14,18 @@ const _       = require('lodash');
 const nconf   = require('nconf');
 const moment  = require('moment');
 
-const privateKey    = process.env.HOME + "/.ssh/id_rsa";
+const privateKey        = process.env.HOME + "/.ssh/id_rsa";
 
-const user          = 'deploy';
-const appName       = 'wordswithstrangers';
-const newDirectory  = 'wws_' + moment().format('DD-MM-YYYY_hh[h]mm[m]ss[s]');
+const user              = 'deploy';
+const appName           = 'wordswithstrangers';
+const newDirectoryName  = 'wws_' + moment().format('DD-MM-YYYY_hh[h]mm[m]ss[s]');
 
-const sourceDest    = `/tmp/${newDirectory}`;
-const targetDest    = `/home/${user}/${appName}/${newDirectory}`;
-const linkedDest    = `/home/${user}/${appName}/current`;
+const tempDir           = `/tmp/${newDirectoryName}`;
+const projectDir        = `/home/${user}/${appName}`;
 
-// Acceptable arguments:
-//   --skip-webpack         If I've recently bundled, I can skip the bundling.
-//   --fresh-dependencies   Don't copy cached NPM module dependencies.
-const skipWebpack = plan.runtime.options['skip-webpack']
+const newDirectory      = `${projectDir}/${newDirectoryName}`;
+const linkedDirectory   = `${projectDir}/current`;
+
 
 plan.target('production', {
   host:       nconf.get('SERVER_HOST'),
@@ -32,9 +34,14 @@ plan.target('production', {
 });
 
 plan.local( 'deploy', local => {
-  local.log(`Deployment started! Deploying to ${newDirectory}`)
-  local.log('Webpacking everything up');
-  local.exec('webpack -p --config webpack.config.prod.js');
+  local.log(`Deployment started! Deploying to ${newDirectoryName}`);
+
+  if ( !plan.runtime.options['skip-webpack'] ) {
+    local.log('Webpacking everything up.');
+    local.exec('webpack -p --config webpack.config.prod.js');
+  } else {
+    local.log('Skipping webpack bundle.')
+  }
 
   // Yay working with filesystems. How I miss regex.
   local.log('Copying files to remote')
@@ -43,23 +50,28 @@ plan.local( 'deploy', local => {
   const server    = local.find('server', {silent: true}).stdout.split('\n');
   const packjson  = local.find('package.json', {silent: true}).stdout.split('\n');
   const files     = [].concat(dist, common, server, packjson);
-  local.transfer(files, `/tmp/${newDirectory}`);
+  local.transfer(files, `/tmp/${newDirectoryName}`);
 });
 
 plan.remote( 'deploy', remote => {
   remote.log('Move folder to web root')
-  remote.sudo(`cp -R ${sourceDest} ${targetDest}`, { user });
-  remote.rm(`-rf ${sourceDest}`); // clean up after ourselves
+  remote.sudo(`cp -R ${tempDir} ${newDirectory}`, { user });
+  remote.rm(`-rf ${tempDir}`); // clean up after ourselves
+
+  if ( !plan.runtime.options['fresh-dependencies'] ) {
+    remote.log('Copying dependencies from last deploy');
+    remote.exec(`cp -R ${linkedDirectory}/node_modules ${newDirectory}/node_modules`)
+  }
 
   remote.log('Installing dependencies');
-  // TODO: Dependency caching.
   remote.sudo(
-    `npm --production --prefix ${targetDest} install ${targetDest}`,
+    `npm --production --prefix ${newDirectory} install ${newDirectory}`,
     { user }
   );
 
+
   remote.log('Creating symlink');
-  remote.sudo(`ln -snf ${targetDest} ${linkedDest}`, { user });
+  remote.sudo(`ln -snf ${newDirectory} ${linkedDirectory}`, { user });
 
   remote.log('Reloading application');
   // TODO

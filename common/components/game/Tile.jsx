@@ -39,7 +39,7 @@ export default class Tile extends Component {
     connectDragSource:  PropTypes.func.isRequired,
     connectDropTarget:  PropTypes.func.isRequired,
     isDragging:         PropTypes.bool.isRequired
-  }
+  };
 
   canBeDragged() {
     const isMyTurn = this.props.isMyTurn;
