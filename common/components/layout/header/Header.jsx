@@ -1,5 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router';
+import React      from 'react';
+import { Link }   from 'react-router';
+import classNames from 'classnames';
 
 import HeaderAccount        from './HeaderAccount.jsx';
 import HeaderAuthentication from './HeaderAuthentication.jsx';
@@ -7,8 +8,12 @@ import HeaderAuthentication from './HeaderAuthentication.jsx';
 
 const Header = React.createClass({
   render() {
+    let classes = classNames({
+      'wrapped-for-devtools': process.env.NODE_ENV !== 'production'
+    });
+
     return (
-      <header id="main-layout-header">
+      <header id="main-layout-header" className={classes}>
         <Link to="/" id="main-layout-logo">Words with Strangers</Link>
         <nav>
           { this.props.authenticated ?

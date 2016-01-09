@@ -1,5 +1,6 @@
 import React                    from 'react';
 import ReactCSSTransitionGroup  from 'react-addons-css-transition-group';
+import classNames               from 'classnames';
 
 import Header       from '../../components/layout/header/Header.jsx';
 import FlashMessage from '../../components/layout/FlashMessage.jsx';
@@ -38,8 +39,12 @@ export default function createLayout(DevTools = null) {
     }
 
     render() {
+      let classes = classNames({
+        'wrapped-for-devtools': process.env.NODE_ENV !== 'production'
+      });
+
       return (
-        <div id="layout">
+        <div id="layout" className={classes}>
           { this.renderHeader() }
           { this.renderHeaderSpacer() }
           { this.renderFlashMessage() }

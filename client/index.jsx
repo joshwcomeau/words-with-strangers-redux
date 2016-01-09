@@ -28,9 +28,6 @@ const sockets = [
 ]
 const store         = configureStore(initialState, sockets);
 
-// TODO: Figure out how to tell this stuff on the client.
-console.log("\n\n\n\n\nConfigureStore thinks that we're in", process.env.NODE_ENV, "on the", process.env.UNIVERSAL_ENV);
-
 
 // The server may emit events to the client over any of the sockets.
 // We don't really care, in _this_ direction, which socket gets used,

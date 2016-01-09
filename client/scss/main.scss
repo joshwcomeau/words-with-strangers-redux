@@ -43,7 +43,9 @@ strong {
   flex: 1;
 }
 
-// TEMP. Just to make life better in development.
-#layout, #main-layout-header, #flash-message {
+// DevTools take up 30% of the width.
+// To avoid overlap, we're setting the width of all main components to
+// 70%. This class is only added in development environments.
+.wrapped-for-devtools {
   width: 70%;
 }
