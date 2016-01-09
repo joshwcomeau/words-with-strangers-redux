@@ -1,5 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
+var autoprefixer = require('autoprefixer');
+
 
 module.exports = {
   devtool: 'eval',
@@ -39,9 +41,13 @@ module.exports = {
       // SASS
       {
         test: /\.scss$/,
-        loaders: ['style', 'css', 'sass']
+        loaders: ['style', 'css', 'postcss', 'sass']
       }
     ]
+  },
+
+  postcss: function () {
+    return [autoprefixer];
   },
 
   resolve: {
@@ -49,3 +55,6 @@ module.exports = {
     modulesDirectories: ['src', 'node_modules']
   }
 }
+
+
+// loader: 'style-loader!css-loader!postcss-loader!sass-loader'

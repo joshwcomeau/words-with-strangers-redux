@@ -83,6 +83,7 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
     display: flex;
     flex-wrap: wrap;
     background: $lightgray;
+    user-select: none;
 
     .board-square {
       position: relative;
@@ -129,6 +130,7 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
       font-weight: 700;
       font-size: 0.75rem;
       text-transform: uppercase;
+      cursor: default;
 
       &.dl {
         background: $tile-dl;
@@ -247,6 +249,7 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
     background: $white;
     padding: $gutter-width;
     text-align: center;
+    user-select: none;
 
     &.moused-over {
       box-shadow: 1px 1px 3px rgba(0,0,0,0.35);
