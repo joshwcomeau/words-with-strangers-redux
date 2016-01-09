@@ -9,7 +9,7 @@ let BonusSquare = ({square}) => (
 );
 
 BonusSquare.propTypes = {
-  bonusSquare: PropTypes.object.isRequired
+  square: PropTypes.object.isRequired
 };
 
 export default BonusSquare;

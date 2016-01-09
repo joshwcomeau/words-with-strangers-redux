@@ -145,10 +145,12 @@ function broadcastGame(io, game) {
   // Broadcast the new state to every user in the game.
   // NOTE: I can't simply use io.to('game-ID') because every connected
   // socket needs different data; they need their personalized view
-  // of the game (and not the rack tiles of their opponent).
+  // of the game (and not, for example, the rack tiles of their opponent).
+
+  let sockets = _.values(io.sockets);
 
   // Find all the sockets currently in this game
-  let impactedSockets = io.sockets.filter( socket => {
+  let impactedSockets = sockets.filter( socket => {
     return _.includes(socket.rooms, game.roomName)
   });
 

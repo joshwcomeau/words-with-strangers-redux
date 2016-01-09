@@ -18,7 +18,7 @@ export default function configureStore(initialState, sockets = []) {
   // Add in our misc middleware:
   middlewares.push( thunk );
 
-  const createStoreWithMiddleware = applyMiddleware(middlewares)(createStore);
+  const createStoreWithMiddleware = applyMiddleware.apply(null, middlewares)(createStore);
 
   const store = createStoreWithMiddleware(rootReducer, initialState);
 

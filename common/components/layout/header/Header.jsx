@@ -8,6 +8,7 @@ import HeaderAuthentication from './HeaderAuthentication.jsx';
 
 const Header = React.createClass({
   render() {
+    console.log("Header thinks node env is",process.env.NODE_ENV )
     let classes = classNames({
       'wrapped-for-devtools': process.env.NODE_ENV !== 'production'
     });

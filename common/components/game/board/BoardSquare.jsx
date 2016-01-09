@@ -43,7 +43,6 @@ const BoardSquare = React.createClass({
   },
 
   render() {
-    console.log(this.props)
     if ( this.props.tile ) {
       // If this square already has a tile in it, we don't want to allow drops.
       return this.renderSquare();
