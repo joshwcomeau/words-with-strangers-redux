@@ -19,8 +19,11 @@ module.exports = {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
-    new webpack.ProvidePlugin({
-      'NODE_ENV': 'development'
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV:       JSON.stringify('development'),
+        UNIVERSAL_ENV:  JSON.stringify('client')
+      }
     })
   ],
 

@@ -19,8 +19,11 @@ module.exports = {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
     new ExtractTextPlugin('styles.css'),
-    new webpack.ProvidePlugin({
-      'NODE_ENV': 'production'
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV:       JSON.stringify('production'),
+        UNIVERSAL_ENV:  JSON.stringify('client')
+      }
     })
   ],
 
