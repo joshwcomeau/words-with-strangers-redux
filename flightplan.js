@@ -18,7 +18,7 @@ const privateKey        = process.env.HOME + "/.ssh/id_rsa";
 
 const user              = 'deploy';
 const appName           = 'wordswithstrangers';
-const newDirectoryName  = 'wws_' + moment().format('DD-MM-YYYY_hh[h]mm[m]ss[s]');
+const newDirectoryName  = 'wws_' + moment().format('YYYY-MM-DD_hh[h]mm[m]ss[s]');
 
 const tempDir           = `/tmp/${newDirectoryName}`;
 const projectDir        = `/home/${user}/${appName}`;
@@ -80,6 +80,6 @@ plan.remote( 'deploy', remote => {
   remote.exec('pm2 reload all');
 
   remote.log('Removing oldest copies of deploy');
-  remote.exec(`cd ${projectDir} && rm -rf \`ls -td wws_20* | awk 'NR>${MAX_SAVED_DEPLOYS}'\``);
+  remote.exec(`cd ${projectDir} && rm -rf \`ls -td wws_* | awk 'NR>${MAX_SAVED_DEPLOYS}'\``);
 
 });
