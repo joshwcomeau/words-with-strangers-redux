@@ -74,10 +74,18 @@ plan.remote( 'deploy', remote => {
   remote.log('Creating symlink');
   remote.sudo(`ln -snf ${newDirectory} ${linkedDirectory}`, { user });
 
-  remote.log('Reloading application');
-  // TODO: Find a way to do this (reboot the selected file without
-  // affecting any of the other pm2 processes.)
-  remote.exec('pm2 reload all');
+  // Start/Restart the application
+  // First, figure out if the app is already running
+  let appDetails = remote.exec(`pm2 show ${appName}`, {failsafe: true});
+  let appNotRunning = !!appDetails.stderr;
+
+  if ( appNotRunning ) {
+    remote.log("App is not already running. Starting it fresh")
+    remote.exec(`pm2 start ${linkedDirectory}/server --name="${appName}"`)
+  } else {
+    remote.log("Restarting app")
+    remote.exec(`pm2 restart ${appName}`)
+  }
 
   remote.log('Removing oldest copies of deploy');
   remote.exec(`cd ${projectDir} && rm -rf \`ls -td wws_* | awk 'NR>${MAX_SAVED_DEPLOYS}'\``);
