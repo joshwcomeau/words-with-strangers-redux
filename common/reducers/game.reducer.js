@@ -92,19 +92,12 @@ export default function game(state = initialState, action) {
 
       // We aren't actually just moving the tile from one area to another.
       // We'll delete the original tile, and then place a new tile.
-      state = state.deleteIn( [originalTileLocation, originalTileIndex] )
-      state = state.set( newTileLocation, state.get(newTileLocation).push(newTile) );
-
-      // Remove any `turnPoints` instances from previous moves.
-      state = removeTurnPointsFromBoard(state);
-
-      // If we're moving a tile to the board, we want to sum up the points
-      // of the current turn.
-      // This will live on the placed tile.
-
-      if ( newTileLocation === 'board' ) {
-        state = addTurnPointsToEndOfWord(state);
-      }
+      state = state.deleteIn( [originalTileLocation, originalTileIndex] );
+      // TODO: use state.update
+      state = state.set(
+        newTileLocation,
+        state.get(newTileLocation).push(newTile)
+      );
 
       return state;
 
@@ -191,47 +184,6 @@ function getOriginalTileData(state, actionTile) {
   const [ tileIndex, tile ] = state.get(tileLocation).findEntry(tileFinder);
 
   return [ tile, tileIndex, tileLocation ];
-}
-
-function removeTurnPointsFromBoard(state) {
-  return state.update('board', board => {
-    return board.map( tile => tile.delete('turnPoints'));
-  });
-}
-
-function addTurnPointsToEndOfWord(state) {
-  const board = state.get('board').toJS();
-  const wordTiles = getPlacedWord(board);
-
-  // If this isn't a valid placed word, wordTiles will be null.
-  // In that case, our work is done.
-  // We don't want to speculate points on an invalid word.
-  if ( !wordTiles ) return state;
-
-
-  const points = calculatePointsForTurn(
-    wordTiles,
-    board,
-    state.get('bonusSquares').toJS()
-  );
-
-  let newTile = _.clone(_.last(wordTiles));
-  newTile.turnPoints = points;
-  state = updateTile(state, 'board', newTile);
-
-  return state;
-}
-
-// Normally, I convert to JS before working with data.
-// I'd use the findTile method from game_logic.
-// This time, though, I need to update a tile in place, and this seems easier.
-function updateTile(state, location, newTile) {
-  // Start by finding the tile's index
-  let [ tileIndex ] = state.get(location).findEntry(tile => {
-    return tile.get('id') === newTile.id;
-  });
-
-  return state.setIn( ['board', tileIndex], fromJS(newTile) );
 }
 
 function createCopyOfTile(state, action, originalTile) {
