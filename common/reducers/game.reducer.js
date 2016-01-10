@@ -31,12 +31,12 @@ export default function game(state = initialState, action) {
       // (eg. a move gets placed, which involves moving a bunch of tiles,
       // creating a word, etc.)
 
+      let game = fromJS(action.game);
+
       // On the server, tiles in the rack don't have an 'x' coordinate.
       // On the client, though, we want tiles to be sortable based on this
       // value.
-      let game = fromJS(action.game);
-
-      game = game.set('rack', resetRackTilePosition( game.get('rack') ));
+      game = game.update('rack', resetRackTilePosition);
 
       return state.mergeDeep( game );
 
@@ -49,7 +49,7 @@ export default function game(state = initialState, action) {
     case ADD_TILES_TO_RACK:
       // convert tiles to Immutable
       const tiles = fromJS(action.tiles);
-      return state.set( 'rack', state.get('rack').concat(tiles) );
+      return state.update( 'rack', rack => rack.concat(tiles) );
 
     case SWITCH_TILE_POSITIONS:
       // We can simply drag a tile onto another tile to swap positions with it.
@@ -93,11 +93,7 @@ export default function game(state = initialState, action) {
       // We aren't actually just moving the tile from one area to another.
       // We'll delete the original tile, and then place a new tile.
       state = state.deleteIn( [originalTileLocation, originalTileIndex] );
-      // TODO: use state.update
-      state = state.set(
-        newTileLocation,
-        state.get(newTileLocation).push(newTile)
-      );
+      state = state.update( newTileLocation, tiles => tiles.push(newTile) );
 
       return state;
 
@@ -167,8 +163,9 @@ export default function game(state = initialState, action) {
 }
 
 
-// HELPER FUNCTIONS
-// Should these be here? Not entirely sure how best to structure this.
+  //////////////////////////
+ //// Helper Functions ////
+//////////////////////////
 
 function resetRackTilePosition(rack) {
   return rack.map( (tile, index) => tile.set('x', index) );

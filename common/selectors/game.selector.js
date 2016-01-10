@@ -87,6 +87,7 @@ export function isMyTurn(turns, players) {
   return !!player.currentUser;
 }
 
+// RETURNS: Boolean
 export function isValidPlacement(board) {
   return validatePlacement(board);
 }

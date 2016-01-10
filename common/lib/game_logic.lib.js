@@ -229,7 +229,9 @@ export function calculatePointsForTurn(tiles, board, bonusSquares = []) {
 
 
 
-// HELPER FUNCTIONS
+  //////////////////////////
+ //// Helper Functions ////
+//////////////////////////
 // Exposed primarily so they can be tested, although they're generic enough
 // that they can be called from the outside if needed.
 
