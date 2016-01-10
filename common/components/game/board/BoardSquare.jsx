@@ -13,6 +13,16 @@ const BoardSquare = React.createClass({
     isOver: PropTypes.bool.isRequired
   },
 
+  renderPoints() {
+    if ( !this.props.tile || !this.props.tile.turnPoints ) return null;
+
+    return (
+      <div className="turn-points">
+        { this.props.tile.turnPoints }
+      </div>
+    )
+  },
+
   renderTile() {
     return (
       <Tile
@@ -35,6 +45,7 @@ const BoardSquare = React.createClass({
 
     return (
       <div className={classes}>
+        { this.renderPoints() }
         { this.props.tile ? this.renderTile() : null }
         { this.props.bonusSquare ? this.renderBonusSquare() : null }
         { this.props.isOver ? <div className='square-overlay'></div> : null }
