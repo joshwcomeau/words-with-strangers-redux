@@ -2,13 +2,13 @@ import * as _ from 'lodash';
 
 import {
   PLACE_TILE,
-  SWITCH_TILE_POSITIONS,
+  RECALL_TILES_TO_RACK,
+  SHUFFLE_RACK,
   SUBMIT_WORD,
   SUBSCRIBE_TO_GAME,
+  SWITCH_TILE_POSITIONS,
   UNSUBSCRIBE_FROM_GAME,
-  UPDATE_GAME_STATE,
-  SHUFFLE_RACK,
-  RECALL_TILES_TO_RACK
+  UPDATE_GAME_STATE
 } from '../constants/actions.constants';
 import { FULL_RACK_SIZE } from '../constants/config.constants';
 import { updateFlashMessage } from './ui.actions';
@@ -36,6 +36,14 @@ export function switchTilePositions(tile1, tile2) {
 export function subscribeToGame(gameId) {
   return {
     type: SUBSCRIBE_TO_GAME,
+    meta: { remote: '/game' },
+    gameId
+  }
+}
+
+export function passTurn(gameId) {
+  return {
+    type: PASS_TURN,
     meta: { remote: '/game' },
     gameId
   }

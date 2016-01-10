@@ -4,12 +4,13 @@ import { List, Map, fromJS }  from 'immutable';
 import gameReducer, {initialState} from '../../common/reducers/game.reducer';
 
 import {
-  UNSUBSCRIBE_FROM_GAME,
   ADD_TILES_TO_RACK,
+  PASS_TURN,
   PLACE_TILE,
-  SUBMIT_WORD,
+  RECALL_TILES_TO_RACK,
   SHUFFLE_RACK,
-  RECALL_TILES_TO_RACK
+  SUBMIT_WORD,
+  UNSUBSCRIBE_FROM_GAME
 }   from '../../common/constants/actions.constants';
 
 
@@ -70,6 +71,43 @@ describe('gameReducer', () => {
 
       expect(nextState).to.equal(initialState);
 
+    });
+  });
+
+
+
+  describe('PASS_TURN', () => {
+    it('adds a blank turn to the turns array', () => {
+      const state = fromJS({
+        players: [
+          { id: '123', username: 'Jimbo' },
+          { id: '789', username: 'Julia', currentUser: true }
+        ],
+        turns: [
+          { playerId: '123', word: 'YAHOO', points: 25 },
+          { playerId: '789', word: 'BOOM', points: 16 },
+          { playerId: '123', word: 'ELEPHANT', points: 57 }
+        ]
+      });
+      const action = {
+        type: PASS_TURN,
+        meta: { remote: '/game' },
+        gameId: 1
+      };
+      const nextState = gameReducer(state, action);
+
+      expect(nextState).to.equal(fromJS({
+        players: [
+          { id: '123', username: 'Jimbo' },
+          { id: '789', username: 'Julia', currentUser: true }
+        ],
+        turns: [
+          { playerId: '123', word: 'YAHOO', points: 25 },
+          { playerId: '789', word: 'BOOM', points: 16 },
+          { playerId: '123', word: 'ELEPHANT', points: 57 },
+          { playerId: '789', points: 0, pass: true }
+        ]
+      }));
     });
   });
 

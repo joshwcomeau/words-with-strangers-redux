@@ -2,13 +2,14 @@ import * as _                 from 'lodash';
 import { List, Map, fromJS }  from 'immutable';
 import {
   ADD_TILES_TO_RACK,
+  PASS_TURN,
   PLACE_TILE,
-  SWITCH_TILE_POSITIONS,
-  SUBMIT_WORD,
-  UPDATE_GAME_STATE,
-  UNSUBSCRIBE_FROM_GAME,
+  RECALL_TILES_TO_RACK,
   SHUFFLE_RACK,
-  RECALL_TILES_TO_RACK
+  SUBMIT_WORD,
+  SWITCH_TILE_POSITIONS,
+  UNSUBSCRIBE_FROM_GAME,
+  UPDATE_GAME_STATE
 } from '../constants/actions.constants';
 import {
   getPlacedWord,
@@ -26,57 +27,22 @@ export const initialState = fromJS({
 
 export default function game(state = initialState, action) {
   switch (action.type) {
-    case UPDATE_GAME_STATE:
-      // The server sends this after the game state changes in a major way
-      // (eg. a move gets placed, which involves moving a bunch of tiles,
-      // creating a word, etc.)
-
-      let game = fromJS(action.game);
-
-      // On the server, tiles in the rack don't have an 'x' coordinate.
-      // On the client, though, we want tiles to be sortable based on this
-      // value.
-      game = game.update('rack', resetRackTilePosition);
-
-      return state.mergeDeep( game );
-
-    case UNSUBSCRIBE_FROM_GAME:
-      // this is called when the component unmounts. We can simply restore
-      // the state to its default condition, so that it doesn't interfere
-      // when we subscribe to new games.
-      return initialState;
-
     case ADD_TILES_TO_RACK:
       // convert tiles to Immutable
       const tiles = fromJS(action.tiles);
       return state.update( 'rack', rack => rack.concat(tiles) );
 
-    case SWITCH_TILE_POSITIONS:
-      // We can simply drag a tile onto another tile to swap positions with it.
 
-      // We need to find both tiles' original data
-      const [
-        tile1Props, tile1Index, tile1Location
-      ] = getOriginalTileData(state, action.tile1);
-      const [
-        tile2Props, tile2Index, tile2Location
-      ] = getOriginalTileData(state, action.tile2);
-
-      const newTile1Coords = {
-        x: tile2Props.get('x'),
-        y: tile2Props.get('y')
-      }
-      const newTile2Coords = {
-        x: tile1Props.get('x'),
-        y: tile1Props.get('y')
-      }
-
-      state = state.setIn( [tile2Location, tile2Index], tile2Props.merge(newTile2Coords));
-
-      state = state.setIn( [tile1Location, tile1Index], tile1Props.merge(newTile1Coords));
-
-
-      return state;
+    case PASS_TURN:
+      // NOTE: This is just for optimistic rendering.
+      // The _real_ submission happens on the server, and if it succeeds,
+      // it sends an UPDATE_GAME_STATE event to the client.
+      const newTurn = fromJS({
+        playerId: getCurrentPlayer(state).get('id'),
+        points: 0,
+        pass: true
+      })
+      return state.update( 'turns', turns => turns.push(newTurn) );
 
 
     case PLACE_TILE:
@@ -96,37 +62,6 @@ export default function game(state = initialState, action) {
       state = state.update( newTileLocation, tiles => tiles.push(newTile) );
 
       return state;
-
-
-    case SHUFFLE_RACK:
-      const rack = resetRackTilePosition( fromJS(action.tiles) );
-      return state.set('rack', rack);
-
-
-    case SUBMIT_WORD:
-      // NOTE: This is just for optimistic rendering.
-      // The _real_ submission happens on the server, and if it succeeds,
-      // it sends an UPDATE_GAME_STATE event to the client.
-
-      // Figure out what word they're spelling
-      const word    = _.pluck( action.tiles, 'letter').join('');
-      const points  = calculatePointsForTurn(
-        action.tiles,
-        state.get('board').toJS(),
-        state.get('bonusSquares').toJS()
-      );
-      const player  = state.get('players').find( player => {
-        return player.get('currentUser');
-      });
-
-      // Create a new turn.
-      return state.set('turns', state.get('turns').push(Map({
-        word,
-        points,
-        id: state.get('turns').size,
-        playerId: player.get('id')
-      })));
-
 
 
     case RECALL_TILES_TO_RACK:
@@ -157,6 +92,86 @@ export default function game(state = initialState, action) {
       return state;
 
 
+    case SHUFFLE_RACK:
+      const rack = resetRackTilePosition( fromJS(action.tiles) );
+      return state.set('rack', rack);
+
+
+    case SUBMIT_WORD:
+      // NOTE: This is just for optimistic rendering.
+      // The _real_ submission happens on the server, and if it succeeds,
+      // it sends an UPDATE_GAME_STATE event to the client.
+
+      // Figure out what word they're spelling
+      const word    = _.pluck( action.tiles, 'letter').join('');
+      const points  = calculatePointsForTurn(
+        action.tiles,
+        state.get('board').toJS(),
+        state.get('bonusSquares').toJS()
+      );
+      const player  = getCurrentPlayer(state);
+
+      // Create a new turn.
+      return state.update( 'turns', turns => turns.push(newTurn) );
+
+      return state.update('turns', turns => turns.push(Map({
+        word,
+        points,
+        id: state.get('turns').size,
+        playerId: player.get('id')
+      })));
+
+
+    case SWITCH_TILE_POSITIONS:
+      // We can simply drag a tile onto another tile to swap positions with it.
+
+      // We need to find both tiles' original data
+      const [
+        tile1Props, tile1Index, tile1Location
+      ] = getOriginalTileData(state, action.tile1);
+      const [
+        tile2Props, tile2Index, tile2Location
+      ] = getOriginalTileData(state, action.tile2);
+
+      const newTile1Coords = {
+        x: tile2Props.get('x'),
+        y: tile2Props.get('y')
+      }
+      const newTile2Coords = {
+        x: tile1Props.get('x'),
+        y: tile1Props.get('y')
+      }
+
+      state = state.setIn( [tile2Location, tile2Index], tile2Props.merge(newTile2Coords));
+
+      state = state.setIn( [tile1Location, tile1Index], tile1Props.merge(newTile1Coords));
+
+      return state;
+
+
+    case UNSUBSCRIBE_FROM_GAME:
+      // this is called when the component unmounts. We can simply restore
+      // the state to its default condition, so that it doesn't interfere
+      // when we subscribe to new games.
+      return initialState;
+
+
+    case UPDATE_GAME_STATE:
+      // The server sends this after the game state changes in a major way
+      // (eg. a move gets placed, which involves moving a bunch of tiles,
+      // creating a word, etc.)
+
+      let game = fromJS(action.game);
+
+      // On the server, tiles in the rack don't have an 'x' coordinate.
+      // On the client, though, we want tiles to be sortable based on this
+      // value.
+      game = game.update('rack', resetRackTilePosition);
+
+      return state.mergeDeep( game );
+
+
+
     default:
       return state
   }
@@ -169,6 +184,12 @@ export default function game(state = initialState, action) {
 
 function resetRackTilePosition(rack) {
   return rack.map( (tile, index) => tile.set('x', index) );
+}
+
+function getCurrentPlayer(state) {
+  return state.get('players').find( player => {
+    return player.get('currentUser');
+  });
 }
 
 function getOriginalTileData(state, actionTile) {
