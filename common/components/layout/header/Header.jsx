@@ -8,7 +8,6 @@ import HeaderAuthentication from './HeaderAuthentication.jsx';
 
 const Header = React.createClass({
   render() {
-    console.log("Header thinks node env is",process.env.NODE_ENV )
     let classes = classNames({
       'wrapped-for-devtools': process.env.NODE_ENV !== 'production'
     });
@@ -33,8 +32,6 @@ const Header = React.createClass({
               closeMenu={this.props.closeMenu}
             />
           }
-          <Link to='/leaderboards' className="nav-link">Leaderboard</Link>
-          <Link to='/games' className="nav-link" >Games</Link>
 
 
         </nav>
