@@ -4,7 +4,7 @@
 
 
 
-After building a Scrabble clone with React and Meteor, I decided to take the training wheels off and give it a try with a home-grown stack, with Redux as my state manager (both on the server _and_ the client), React as my presentation layer, and Socket.io to handle most communication across the app.
+After building a Scrabble clone with React and Meteor, I decided to take the training wheels off and give it a try with a home-grown stack, with Redux as my state manager (primarily on the client, but it sets up initial state on the server), React as my presentation layer, and Socket.io to handle most communication across the app.
 
 There have been a lot of hard problems along the way, and certain areas are in dire need of some cleanup, but I've learned a lot and I'm hoping some of the solutions found can help others working with a similar stack.
 
@@ -115,3 +115,15 @@ switch (action.type) {
 
     NOTE: Real-world complications
     There may be client-only data we DO want to preserve, such as the order of the tiles in a player's rack. I'm choosing not to worry about these details for now, but if/when I decide that's important, I'd have to write custom merge functions for dealing with such conflicts. Thankfully, Immutable.js provides a `mergeDeepWith` method that should be able to help.
+
+
+
+----------------
+
+## Testing
+
+This app has so-so coverage of reducers, custom game logic, and server models. Uses mocha as a test runner and Chai for assertions (using Expect).
+
+Tests can be run with NPM: `npm test`.
+
+Specific files can be tested by passing in filenames: `npm test **/game.reducer*`. Or, you can use `describe.only` and `describe.except`.
