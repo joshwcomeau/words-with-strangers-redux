@@ -116,6 +116,7 @@
   background: $fadedteal;
   font-weight: 500;
   transition: background 0.5s;
+  cursor: pointer;
 
   &:disabled {
     background: $mediumgray;

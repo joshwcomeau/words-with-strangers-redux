@@ -49,6 +49,16 @@
       border-bottom: 1px solid $lightgray;
     }
 
+    th:last-of-type, td:last-of-type {
+      text-align: right;
+    }
+
+    .button {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      background: $green;
+    }
+
     .game-list-player {
       display: block;
       line-height: 1.5rem;

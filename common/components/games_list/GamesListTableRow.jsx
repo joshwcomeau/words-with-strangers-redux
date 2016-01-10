@@ -1,8 +1,13 @@
 import React    from 'react';
+import _        from 'lodash';
 import { Link } from 'react-router';
 import moment   from 'moment';
 
 const GamesListTableRow = React.createClass({
+  formatStatus() {
+    let status = this.props.game.status;
+    return status.split('_').map(_.capitalize).join(' ');
+  },
   joinGameClickHandler() {
     this.props.joinGame(this.props.game.id);
   },
@@ -28,10 +33,10 @@ const GamesListTableRow = React.createClass({
         <td>{this.generatePlayerCell()}</td>
         <td>{moment(game.createdAt).format('MMM Do, h:mm a')}</td>
         <td>
-          {game.status}
+          {this.formatStatus()}
         </td>
         <td>
-          <button onClick={this.joinGameClickHandler}>Join Game</button>
+          <button className="button" onClick={this.joinGameClickHandler}>Join</button>
         </td>
       </tr>
     );
