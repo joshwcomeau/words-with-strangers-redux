@@ -5,16 +5,17 @@ import mongoose from 'mongoose';
 import Game from '../models/game.model';
 
 import {
-  REQUEST_GAMES_LIST,
-  CREATE_GAME,
-  SUBSCRIBE_TO_GAME,
-  UNSUBSCRIBE_FROM_GAME,
-  JOIN_GAME,
-  GAME_STATUS_CHANGED,
-  UPDATE_GAME_STATE,
-  SUBMIT_WORD,
   ADD_GAMES_TO_LIST,
+  CREATE_GAME,
+  GAME_STATUS_CHANGED,
+  JOIN_GAME,
+  PASS_TURN,
   PUSH_PATH,
+  REQUEST_GAMES_LIST,
+  SUBMIT_WORD,
+  SUBSCRIBE_TO_GAME,
+  UPDATE_GAME_STATE,
+  UNSUBSCRIBE_FROM_GAME
 } from '../../common/constants/actions.constants';
 
 import { GAME_STATUSES } from '../../common/constants/config.constants';
@@ -23,23 +24,19 @@ export default function(mainIo) {
   let io = mainIo.of('/game');
 
   io.on('connection', (sock) => {
-    sock.on(REQUEST_GAMES_LIST,     requestGamesList.bind(null, io, sock));
+
     sock.on(CREATE_GAME,            createGame.bind(null, io, sock));
-    sock.on(SUBSCRIBE_TO_GAME,      subscribeToGame.bind(null, io, sock));
     sock.on(JOIN_GAME,              joinGame.bind(null, io, sock));
+    sock.on(PASS_TURN,              passTurn.bind(null, io, sock));
+    sock.on(REQUEST_GAMES_LIST,     requestGamesList.bind(null, io, sock));
     sock.on(SUBMIT_WORD,            submitWord.bind(null, io, sock));
+    sock.on(SUBSCRIBE_TO_GAME,      subscribeToGame.bind(null, io, sock));
     sock.on(UNSUBSCRIBE_FROM_GAME,  unsubscribeFromGame.bind(null, io, sock));
   });
 }
 
 
 // PRIMARY SOCKET ACTIONS
-function requestGamesList(io, socket, data) {
-  Game.list( (err, games) => {
-    socket.emit(ADD_GAMES_TO_LIST, games);
-  });
-}
-
 
 function createGame(io, socket, data) {
   // TODO: Validations. Ensure user auth.
@@ -59,26 +56,6 @@ function createGame(io, socket, data) {
     // Dispatch an event to everyone else watching the games list,
     // so that they know there's a new game to join.
     socket.broadcast.emit(ADD_GAMES_TO_LIST, [game]);
-  });
-}
-
-
-function subscribeToGame(io, socket, data) {
-  // TODO: Add this user (or anonymous user) to the 'spectators' array.
-
-  // Attach our user data to this socket, so that it can be used when
-  // broadcasting to the room
-  if ( data.auth ) socket.auth_user = data.auth.user;
-
-  async.auto({
-    game: findGame.bind(null, data.gameId),
-    joinRoom: ['game', (step, r) => {
-      socket.join(r.game.roomName, step);
-    }]
-  }, (err, results) => {
-    if ( err ) return console.error("Error subscribing to game", err);
-
-    broadcastGame(io, results.game);
   });
 }
 
@@ -105,6 +82,27 @@ function joinGame(io, socket, data) {
 }
 
 
+function passTurn(io, socket, data) {
+  async.auto({
+    game: findGame.bind(null, data.gameId),
+    pass: ['game', (step, r) => {
+      r.game.passTurn(data.auth.user).save(step);
+    }]
+  }, (err, results) => {
+    if ( err ) return console.error("Error passing turn", err);
+
+    broadcastGame(io, results.game);
+  });
+}
+
+
+function requestGamesList(io, socket, data) {
+  Game.list( (err, games) => {
+    socket.emit(ADD_GAMES_TO_LIST, games);
+  });
+}
+
+
 function submitWord(io, socket, data) {
   async.auto({
     game: findGame.bind(null, data.gameId),
@@ -113,6 +111,26 @@ function submitWord(io, socket, data) {
     }]
   }, (err, results) => {
     if ( err ) return console.error("Error submitting word", err);
+
+    broadcastGame(io, results.game);
+  });
+}
+
+
+function subscribeToGame(io, socket, data) {
+  // TODO: Add this user (or anonymous user) to the 'spectators' array.
+
+  // Attach our user data to this socket, so that it can be used when
+  // broadcasting to the room
+  if ( data.auth ) socket.auth_user = data.auth.user;
+
+  async.auto({
+    game: findGame.bind(null, data.gameId),
+    joinRoom: ['game', (step, r) => {
+      socket.join(r.game.roomName, step);
+    }]
+  }, (err, results) => {
+    if ( err ) return console.error("Error subscribing to game", err);
 
     broadcastGame(io, results.game);
   });

@@ -52,12 +52,12 @@ GameSchema.plugin(toJSON);
 //////////////////////////////////////////////////////////////
 // INSTANCE METHODS /////////////////////////////////////////
 ////////////////////////////////////////////////////////////
-GameSchema.methods.join = function(player) {
+GameSchema.methods.join = function(user) {
   // Attach the player to the game
-  this.players.push( player );
+  this.players.push( user );
 
   // Give that player some starter tiles.
-  this.replenishPlayerRack(player);
+  this.replenishPlayerRack( user );
 
   // If the game has at least 2 players, start the game!
   if ( this.players.length > 1 ) this.status = GAME_STATUSES.in_progress;
@@ -90,6 +90,7 @@ GameSchema.methods.submitWord = function(tiles, user) {
 
   // 2. Calculate points, and create a new turn
   const word   = _.pluck( tiles, 'letter' ).join('');
+
   const points = calculatePointsForTurn( tiles, this.board, this.bonusSquares );
   const turnId = this.turns.length;
 
@@ -119,6 +120,23 @@ GameSchema.methods.submitWord = function(tiles, user) {
   return this;
 }
 
+GameSchema.methods.passTurn = function(user) {
+  // We are only allowed to pass if it's our turn.
+  // TODO: Some sort of exception handling? For now, given that it shouldn't
+  // be possible to invoke this method when it isn't our turn, I'm just going
+  // to ignore the request.
+  if ( this.currentTurnUserId !== user.id) return this;
+
+  this.turns.push({
+    points:   0,
+    pass:     true,
+    id:       this.turns.length,
+    playerId: user.id
+  });
+
+  return this;
+}
+
 GameSchema.methods.asSeenByUser = function(user = {}) {
   // TODO: This method is hideous. Find a better way.
 
@@ -129,6 +147,8 @@ GameSchema.methods.asSeenByUser = function(user = {}) {
   //     augmented with a `currentUser: true` flag.
   //   - the tiles that belong to the current user are augmented with a
   //     `belongsToCurrentUser: true` flag.
+  //   - a special 'isMyTurn' Boolean property lets the client know if it's
+  //     their turn or not.
 
 
   let game = this.toJSON();
@@ -148,7 +168,9 @@ GameSchema.methods.asSeenByUser = function(user = {}) {
       tile.belongsToCurrentUser = true;
     }
     return tile;
-  })
+  });
+
+  game.isMyTurn = this.currentTurnUserId === user.id
 
   return game;
 }
@@ -185,7 +207,7 @@ GameSchema.methods.assignTitle = function() {
 GameSchema.methods.assignBonusSquares = function() {
   // First, figure out how many bonus squares this game will receive.
   // Should be 25-35% of the total squares.
-  const [minPercentage, maxPercentage] = BONUS_SQUARE_PERCENTAGES;
+  const [ minPercentage, maxPercentage ] = BONUS_SQUARE_PERCENTAGES;
   const percentage = _.random(minPercentage, maxPercentage);
   const numOfTiles = Math.round( Math.pow(BOARD_SIZE, 2) * (percentage / 100) );
 
@@ -218,6 +240,21 @@ GameSchema.statics.list = function(callback) {
 ////////////////////////////////////////////////////////////
 GameSchema.virtual('roomName').get( function() {
   return `game_${this.id}`;
+});
+
+GameSchema.virtual('currentTurnUserId').get( function() {
+  // Assuming that the creator of the game is the first player in the
+  // 'players' array. I believe this is a safe assumption.
+
+  // Also assuming that you can't join or leave a game that is in progress.
+  // May need to revisit this at some point.
+
+  // if nobody's moved yet, it's the creator's turn.
+  if ( _.isEmpty(this.turns) ) return this.createdByUserId;
+
+  // Otherwise, just do the math
+  let player = this.players[ this.turns.length % this.players.length ];
+  return player.id;
 });
 
 

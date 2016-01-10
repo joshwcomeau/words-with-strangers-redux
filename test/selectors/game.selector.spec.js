@@ -4,8 +4,7 @@ import * as _                 from 'lodash';
 
 
 import gameSelector, {
-  calculateCurrentTurnPlayer,
-  isMyTurn
+  calculateCurrentTurnPlayer
 } from '../../common/selectors/game.selector';
 
 
@@ -36,23 +35,6 @@ describe('Game Selector', () => {
         { word: 'WORK'}
       ];
       expect( calculateCurrentTurnPlayer(turns, players) ).to.equal(player3);
-    });
-  });
-
-  describe('#isMyTurn', () => {
-    const me  = { name: 'Josh', currentUser: true };
-    const him = { name: 'Hansel' };
-    const her = { name: 'Gretel' };
-    const players = [ him, her, me ];
-
-    it('returns false when it is not my turn', () => {
-      const turns = [ { word: 'GERMAN' } ];
-      expect( isMyTurn(turns, players) ).to.equal(false);
-    });
-
-    it('returns true when it is my turn', () => {
-      const turns = [ { word: 'GERMAN' }, { word: 'SAUSAGE' } ];
-      expect( isMyTurn(turns, players) ).to.equal(true);
     });
   });
 });

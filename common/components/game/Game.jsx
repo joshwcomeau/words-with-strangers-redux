@@ -27,16 +27,16 @@ const Game = React.createClass({
           bonusSquares={this.props.bonusSquares}
           placeTile={this.props.actions.placeTile}
           switchTilePositions={this.props.actions.switchTilePositions}
-          isMyTurn={this.props.computed.isMyTurn}
+          isMyTurn={this.props.isMyTurn}
         />
         <TileRack
           tiles={this.props.rack}
           placeTile={this.props.actions.placeTile}
           switchTilePositions={this.props.actions.switchTilePositions}
-          isMyTurn={this.props.computed.isMyTurn}
+          isMyTurn={this.props.isMyTurn}
         />
         <Controls
-          isMyTurn={this.props.computed.isMyTurn}
+          isMyTurn={this.props.isMyTurn}
           isValidPlacement={this.props.computed.isValidPlacement}
           submitWord={this.props.actions.submitWord}
           shuffleRack={this.props.actions.shuffleRack}

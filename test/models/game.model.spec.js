@@ -168,6 +168,47 @@ describe('Game model', () => {
     });
   });
 
+  describe('#passTurn', () => {
+    before( done => {
+      game = new Game({
+        createdByUserId: player.id
+      });
+
+      game.join(player).join(opponent);
+
+      let random_player_tile = _.sample(
+        _.filter(game.rack, tile => tile.playerId === player.id)
+      );
+      game.submitWord([{
+        x:        1,
+        y:        1,
+        playerId: player.id,
+        letter:   random_player_tile.letter,
+        points:   5,
+        id:       random_player_tile.id
+      }], player).save( done );
+    });
+
+    it('does not let the creator pass; it is not his turn', () => {
+      expect(game.turns).to.have.length.of(1);
+      game.passTurn(player);
+      // It does nothing. No error, but no adding a turn either.
+      expect(game.turns).to.have.length.of(1);
+    });
+
+    it('does let the opponent pass', () => {
+      game.passTurn(opponent);
+
+      expect(game.turns).to.have.length.of(2);
+
+      let passedTurn = _.last(game.turns);
+      expect(passedTurn.points).to.equal(0);
+      expect(passedTurn.pass).to.equal(true);
+      expect(passedTurn.playerId.toString()).to.equal(opponent.id);
+    });
+
+  });
+
   describe('#assignBonusSquares', () => {
     let game;
 

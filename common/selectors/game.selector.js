@@ -28,6 +28,7 @@ const playersSelector         = state => {
   });
 }
 const createdByUserIdSelector = state => state.game.createdByUserId;
+const isMyTurnSelector = state => state.game.isMyTurn;
 
 
 const gameSelector = createSelector(
@@ -38,7 +39,8 @@ const gameSelector = createSelector(
   bonusSquaresSelector,
   playersSelector,
   createdByUserIdSelector,
-  (title, board, rack, turns, bonusSquares, players, createdByUserId) => {
+  isMyTurnSelector,
+  (title, board, rack, turns, bonusSquares, players, createdByUserId, isMyTurn) => {
     return {
       title,
       board,
@@ -47,8 +49,8 @@ const gameSelector = createSelector(
       bonusSquares,
       players,
       createdByUserId,
+      isMyTurn,
       computed: {
-        isMyTurn:         isMyTurn(turns, players),
         isValidPlacement: validatePlacement(board)
       }
 
@@ -62,30 +64,6 @@ export default gameSelector;
   //////////////////////////
  //// Helper Functions ////
 //////////////////////////
-
-// RETURNS: a Player object
-export function calculateCurrentTurnPlayer (turns, players) {
-  // Assuming that the creator of the game is the first player in the
-  // 'players' array. I believe this is a safe assumption.
-
-  // Also assuming that you can't join or leave a game that is in progress.
-  // May need to revisit this at some point.
-
-  // if nobody's moved yet, it's the creator's turn.
-  if ( _.isEmpty(turns) ) return _.first(players);
-
-  return players[ turns.length % players.length ];
-}
-
-// RETURNS: Boolean
-export function isMyTurn(turns, players) {
-  // If we don't have any players, it means the server hasn't hydrated the
-  // data yet. just set it to false for now; it will be updated.
-  if ( _.isEmpty(players) ) return false;
-
-  let player = calculateCurrentTurnPlayer(turns, players);
-  return !!player.currentUser;
-}
 
 // RETURNS: Boolean
 export function isValidPlacement(board) {
