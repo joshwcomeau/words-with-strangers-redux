@@ -66,10 +66,6 @@ export default function game(state = initialState, action) {
 
         // If there are multiple tiles at the same X position, we have some
         // sorting out to do.
-        // If the source tile came from the board, it's easy. We just increment
-        // the x position of all tiles after the newly-dropped one.
-        // If the source tile came from the rack, it depends which order the
-        //
         state = state.update('rack', tiles => tiles.map( tile => {
           if (
             tile.get('x') >= newTile.get('x') &&
@@ -81,6 +77,13 @@ export default function game(state = initialState, action) {
           }
         }));
       }
+
+      // If we aren't careful, our rack tile's X coordinates will stop
+      // being continuous. For example, if we move the 5th tile to the board,
+      // there will be a gap in the sequence when the 4th and 6th tiles don't
+      // update!
+      const orderAndUpdate = _.compose(resetRackTilePosition, orderTilesByX);
+      state = state.update('rack', orderAndUpdate);
 
       return state;
 
@@ -205,6 +208,14 @@ function resetRackTilePosition(rack) {
   return rack.map( (tile, index) => {
     return tile.set('x', index)
   });
+}
+
+function orderTilesByX(tiles) {
+  return tiles.sortBy( tile => tile.get('x') )
+}
+
+function orderAndResetRack(tiles) {
+  return resetRackTilePosition(orderTilesByX(tiles));
 }
 
 function getCurrentPlayer(state) {
