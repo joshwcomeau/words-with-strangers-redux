@@ -10,10 +10,7 @@ const GamesListHeader = (props) => (
 function generateNewButton({authenticated, createGame}) {
   if ( authenticated ) {
     return <button className="button" onClick={createGame}>Create New</button>
-  } else {
-    return <button className="button" disabled="true">Log in to Create Games</button>
   }
-
 }
 
 export default GamesListHeader;

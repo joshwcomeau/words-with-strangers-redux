@@ -119,7 +119,7 @@
   cursor: pointer;
 
   &:disabled {
-    background: $mediumgray;
+    background: $mediumgray !important;
 
     &:hover {
       background: $mediumgray;

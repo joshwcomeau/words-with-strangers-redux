@@ -71,7 +71,7 @@ export function register(credentials) {
       .then( evaluateResponse )
       .then( response => {
         dispatch(authenticationSuccess(response.token));
-        dispatch(pushPath('/games'))
+        dispatch(pushPath('/'))
       })
       .catch( err => {
         dispatch(authenticationFailure(err));

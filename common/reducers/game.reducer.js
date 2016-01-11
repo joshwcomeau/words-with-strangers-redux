@@ -112,8 +112,6 @@ export default function game(state = initialState, action) {
       const player  = getCurrentPlayer(state);
 
       // Create a new turn.
-      return state.update( 'turns', turns => turns.push(newTurn) );
-
       return state.update('turns', turns => turns.push(Map({
         word,
         points,

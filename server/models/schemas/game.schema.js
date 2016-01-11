@@ -169,8 +169,7 @@ GameSchema.methods.asSeenByUser = function(user = {}) {
     }
     return tile;
   });
-
-  game.isMyTurn = this.currentTurnUserId === user.id
+  game.isMyTurn = this.currentTurnUserId.toString() === user.id
 
   return game;
 }

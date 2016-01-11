@@ -21,6 +21,18 @@ const GamesListTableRow = React.createClass({
       </a>
     ));
   },
+  generateActionCell() {
+    if ( this.props.game.status !== 'waiting' ) return null;
+    if ( !this.props.authenticated ) return (
+      <button className="button disabled" disabled>Log in to join</button>
+    );
+
+    return (
+      <button className="button" onClick={this.joinGameClickHandler}>
+        Join
+      </button>
+    );
+  },
   render() {
     let game = this.props.game;
     return (
@@ -35,9 +47,7 @@ const GamesListTableRow = React.createClass({
         <td>
           {this.formatStatus()}
         </td>
-        <td>
-          <button className="button" onClick={this.joinGameClickHandler}>Join</button>
-        </td>
+        <td>{this.generateActionCell()}</td>
       </tr>
     );
   }
