@@ -13,6 +13,7 @@ const TileRack = React.createClass({
       tile={tile}
       switchTilePositions={this.props.switchTilePositions}
       isMyTurn={this.props.isMyTurn}
+      placeTile={this.props.placeTile}
       />)
     );
   },

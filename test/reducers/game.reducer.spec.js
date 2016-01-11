@@ -4,13 +4,13 @@ import { List, Map, fromJS }  from 'immutable';
 import gameReducer, {initialState} from '../../common/reducers/game.reducer';
 
 import {
-  ADD_TILES_TO_RACK,
   PASS_TURN,
   PLACE_TILE,
   RECALL_TILES_TO_RACK,
   SHUFFLE_RACK,
   SUBMIT_WORD,
-  UNSUBSCRIBE_FROM_GAME
+  UNSUBSCRIBE_FROM_GAME,
+  UPDATE_GAME_STATE
 }   from '../../common/constants/actions.constants';
 
 
@@ -30,19 +30,6 @@ describe('gameReducer', () => {
 
       expect(nextState).to.equal(initialState);
     });
-  });
-
-  it('handles ADD_TILES_TO_RACK', () => {
-    const state = fromJS({ board: [], rack: [] });
-    const action = {
-      type: ADD_TILES_TO_RACK, tiles: [{ letter: 'A' }, { letter: 'Z' }]
-    };
-    const nextState = gameReducer(state, action);
-
-    expect(nextState).to.equal(fromJS({
-      board: [],
-      rack: [{ letter: 'A' }, { letter: 'Z' }]
-    }));
   });
 
   describe('SUBMIT_WORD', () => {
@@ -161,21 +148,26 @@ describe('gameReducer', () => {
       }));
     });
 
-    // This is a major pain to implement, for relatively small gains.
-    // Not too concerned.
-    xit('handles PLACE_TILE from board to rack, with a specified `x`', () => {
+    it('handles PLACE_TILE from board to rack, with a specified `x`', () => {
+      // The way this works is you drop a board-tile onto a rack-tile, and we
+      // pass along a melded tile to the action: the letter/points of the
+      // board-tile with the x-coordinate of the rack tile.
       const state = fromJS({
-        board: [ { id: '1', letter: 'O', x: 4, y: 6 } ],
+        board: [
+          { id: '1', letter: 'O', x: 4, y: 6 },
+          { id: '2', letter: 'N', x: 4, y: 7 }
+        ],
         rack:  [
-          { id: '2', letter: 'J', x: 0 },
-          { id: '3', letter: 'S', x: 1 },
-          { id: '4', letter: 'H', x: 2 }
+          { id: '3', letter: 'S', x: 0 },
+          { id: '4', letter: 'A', x: 1 },
+          { id: '5', letter: 'P', x: 2 }
         ]
       });
       const action = {
         type: PLACE_TILE,
         tile: {
-          id: '1',
+          id: '2',
+          letter: 'N',
           location: 'rack',
           x: 1
         }
@@ -183,12 +175,14 @@ describe('gameReducer', () => {
       const nextState = gameReducer(state, action);
 
       expect(nextState).to.equal(fromJS({
-        board: [ { id: '2', letter: 'Z', x: 5, y: 6 } ],
+        board: [
+          { id: '1', letter: 'O', x: 4, y: 6 }
+        ],
         rack:  [
-          { id: '2', letter: 'J', x: 0 },
-          { id: '1', letter: 'O', x: 1 },
-          { id: '3', letter: 'S', x: 2 },
-          { id: '4', letter: 'H', x: 3 }
+          { id: '3', letter: 'S', x: 0 },
+          { id: '4', letter: 'A', x: 2 },
+          { id: '5', letter: 'P', x: 3 },
+          { id: '2', letter: 'N', x: 1 },
         ]
       }));
     });
@@ -270,6 +264,20 @@ describe('gameReducer', () => {
           { letter: 'D', x: 3 }
         ]
       }));
+    });
+  });
+
+
+
+  describe('UPDATE_GAME_STATE', () => {
+    it('updates after an opponent\'s move', () => {
+      const state = fromJS({
+        board: [
+          { id: '1', letter: 'A', x: 1, y: 4, turnId: 0 },
+          { id: '2', letter: 'Z', x: 2, y: 4, turnId: 0 }
+        ],
+        rack: []
+      });
     });
   });
 });

@@ -19,10 +19,23 @@ const tileTarget = {
     // Don't swap them if the underlying tile is established!
     if ( typeof underlyingTile.turnId !== 'undefined' ) return;
 
-    // Don't swap them if they're from different locations (board or rack);
-    if ( droppedTile.location !== underlyingTile.location ) return;
+    // If both tiles are in the same location, swap their positions.
+    if ( droppedTile.location === underlyingTile.location ) {
+      return props.switchTilePositions(droppedTile, underlyingTile);
+    }
 
-    return props.switchTilePositions(droppedTile, underlyingTile);
+    // If we're going from board to rack, insert the tile into the rack
+    // at the specified position.
+    if ( underlyingTile.location === 'rack' ) {
+      // The way this works is we're taking the droppedTile and assigning
+      // it the underlyingTile's index position. Then, the reducer will
+      // slide all subsequent tiles 1 spot to the right.
+      let droppedData = _.pick(droppedTile, ['id', 'letter', 'points'])
+      let tileData = _.extend( {}, underlyingTile, droppedData);
+
+      return props.placeTile(tileData);
+    }
+
   }
 }
 

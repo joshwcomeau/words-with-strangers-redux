@@ -29,6 +29,7 @@ const BoardSquare = React.createClass({
         tile={this.props.tile}
         switchTilePositions={this.props.switchTilePositions}
         isMyTurn={this.props.isMyTurn}
+        placeTile={this.props.placeTile}
       />
     );
   },

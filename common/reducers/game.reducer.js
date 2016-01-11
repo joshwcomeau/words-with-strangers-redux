@@ -1,7 +1,6 @@
 import * as _                 from 'lodash';
 import { List, Map, fromJS }  from 'immutable';
 import {
-  ADD_TILES_TO_RACK,
   PASS_TURN,
   PLACE_TILE,
   RECALL_TILES_TO_RACK,
@@ -27,12 +26,6 @@ export const initialState = fromJS({
 
 export default function game(state = initialState, action) {
   switch (action.type) {
-    case ADD_TILES_TO_RACK:
-      // convert tiles to Immutable
-      const tiles = fromJS(action.tiles);
-      return state.update( 'rack', rack => rack.concat(tiles) );
-
-
     case PASS_TURN:
       // NOTE: This is just for optimistic rendering.
       // The _real_ submission happens on the server, and if it succeeds,
@@ -60,6 +53,34 @@ export default function game(state = initialState, action) {
       // We'll delete the original tile, and then place a new tile.
       state = state.deleteIn( [originalTileLocation, originalTileIndex] );
       state = state.update( newTileLocation, tiles => tiles.push(newTile) );
+
+      // If we place a tile on top of a rack tile, it needs to take its place
+      // and push all subsequent tiles down 1 position.
+      if ( newTileLocation === 'rack' ) {
+        // Check to see if we have a duplicate 'x'
+        const rack = state.get('rack').toJS();
+        const xPositions = _.pluck(rack, 'x');
+
+        // if there's no conflict, we're good!
+        if ( xPositions.length === _.uniq(xPositions.length) ) return state;
+
+        // If there are multiple tiles at the same X position, we have some
+        // sorting out to do.
+        // If the source tile came from the board, it's easy. We just increment
+        // the x position of all tiles after the newly-dropped one.
+        // If the source tile came from the rack, it depends which order the
+        //
+        state = state.update('rack', tiles => tiles.map( tile => {
+          if (
+            tile.get('x') >= newTile.get('x') &&
+            tile.get('id') !== newTile.get('id')
+          ) {
+            return tile.update('x', x => x + 1);
+          } else {
+            return tile;
+          }
+        }));
+      }
 
       return state;
 
@@ -181,7 +202,9 @@ export default function game(state = initialState, action) {
 //////////////////////////
 
 function resetRackTilePosition(rack) {
-  return rack.map( (tile, index) => tile.set('x', index) );
+  return rack.map( (tile, index) => {
+    return tile.set('x', index)
+  });
 }
 
 function getCurrentPlayer(state) {
@@ -219,7 +242,7 @@ function createCopyOfTile(state, action, originalTile) {
 
   // Finally, all rack tiles need an 'x'. If none was provided,
   // simply make this the highest 'x' available.
-  if ( action.tile.location === 'rack' && !action.tile.x ) {
+  if ( action.tile.location === 'rack' && typeof action.tile.x === 'undefined' ) {
     newTile = newTile.set('x', state.get(action.tile.location).count());
   }
 
