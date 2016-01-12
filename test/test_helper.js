@@ -22,5 +22,5 @@ const dbUrl  = nconf.get('DB_URL')
 console.info("---- Wiping Database ----");
 execSync(`mongo ${dbName} --eval "db.dropDatabase();"`);
 
-console.info('----- Tests Starting ----');
+console.info('---- Tests Starting -----');
 mongoose.connect( dbUrl + dbName );
