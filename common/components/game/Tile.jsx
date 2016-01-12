@@ -47,7 +47,7 @@ const tileTarget = {
   connectDragSource:  connect.dragSource(),
   isDragging:         monitor.isDragging()
 }))
-export default class Tile extends Component {
+class Tile extends Component {
   static propTypes = {
     connectDragSource:  PropTypes.func.isRequired,
     connectDropTarget:  PropTypes.func.isRequired,
@@ -92,3 +92,5 @@ export default class Tile extends Component {
     return this.generateTile( this.canBeDragged() );
   }
 }
+
+export default Tile
