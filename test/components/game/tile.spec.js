@@ -5,18 +5,25 @@ import { expect }         from 'chai';
 import Tile from '../../../common/components/game/Tile.jsx';
 import Controls from '../../../common/components/game/Controls.jsx';
 
+// Obtain the reference to the component before React DnD wrapping
+const OriginalTile = Tile.DecoratedComponent.DecoratedComponent;
+// Stub the React DnD connector functions with an identity function
+const identity = el => el;
+
 describe('Tile', () => {
-  it('works', () => {
-    // Obtain the reference to the component before React DnD wrapping
-    const OriginalTile = Tile.DecoratedComponent.DecoratedComponent;
-    // Stub the React DnD connector functions with an identity function
-    const identity = el => el;
+  xit('validates propTypes', () => {
+    // TODO
+    // Use sinon to stub console warnings
+    // http://stackoverflow.com/questions/26124914/how-to-test-react-proptypes-through-jest
+  });
+
+  it('renders correctly', () => {
+
 
     const renderer = createRenderer();
     renderer.render(
       <OriginalTile
         connectDragSource={identity}
-        connectDropTarget={identity}
         isMyTurn={false}
         tile={{
           letter: 'J',
@@ -34,6 +41,6 @@ describe('Tile', () => {
       </div>
     );
 
-    expect(actualElement).to.deep.equal(expectedElement);
+    expect(actualElement).to.equalJSX(expectedElement);
   });
 });

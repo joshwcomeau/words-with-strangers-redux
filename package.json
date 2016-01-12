@@ -63,6 +63,7 @@
     "babel-cli": "^6.3.17",
     "babel-loader": "^6.2.0",
     "chai": "^3.4.1",
+    "chai-equal-jsx": "^1.0.9",
     "chai-immutable": "^1.5.3",
     "css-loader": "^0.23.0",
     "extract-text-webpack-plugin": "^1.0.0",
