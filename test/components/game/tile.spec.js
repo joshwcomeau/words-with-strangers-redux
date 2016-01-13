@@ -52,20 +52,63 @@ describe('Tile', () => {
       });
     });
 
+    it("requires tiles to have a 'letter' prop", () => {
+      insufficientProps = _.cloneDeep(exampleProps);
+      insufficientProps.tile = _.omit(insufficientProps.tile, 'letter');
+
+      console.log("INSUFF", insufficientProps)
+
+      shallowDOM.render(<OriginalTile {...insufficientProps} />);
+      errorRegex = new RegExp('Required prop `tile.letter` was not specified');
+
+      console.log("let args", consoleStub.callCount, consoleStub.args);
+      expect(consoleStub.calledOnce).to.equal(true);
+      expect(consoleStub.calledWithMatch(errorRegex)).to.equal(true);
+    });
+
+    it("requires tiles to have a 'points' prop", () => {
+      insufficientProps = _.cloneDeep(exampleProps);
+      insufficientProps.tile = _.omit(insufficientProps.tile, 'points');
+
+      console.log("INSUFF", insufficientProps)
+
+      shallowDOM.render(<OriginalTile {...insufficientProps} />);
+      errorRegex = new RegExp('Required prop `tile.points` was not specified');
+
+      console.log("let args", consoleStub.callCount, consoleStub.args);
+      expect(consoleStub.calledOnce).to.equal(true);
+      expect(consoleStub.calledWithMatch(errorRegex)).to.equal(true);
+    });
+
+    it("requires tiles to have a 'belongsToCurrentUser' prop", () => {
+      insufficientProps = _.cloneDeep(exampleProps);
+      insufficientProps.tile = _.omit(insufficientProps.tile, 'belongsToCurrentUser');
+
+      console.log("INSUFF", insufficientProps)
+
+      shallowDOM.render(<OriginalTile {...insufficientProps} />);
+      errorRegex = new RegExp('Required prop `tile.belongsToCurrentUser` was not specified');
+
+      console.log("let args", consoleStub.callCount, consoleStub.args);
+      expect(consoleStub.calledOnce).to.equal(true);
+      expect(consoleStub.calledWithMatch(errorRegex)).to.equal(true);
+    });
 
 
-    it('throws without `connectDragSource`', () => {
-    })
+
   });
-  xit('renders correctly', () => {
+
+  it('renders correctly', () => {
     shallowDOM.render(
       <OriginalTile
         connectDragSource={identity}
         connectDropTarget={identity}
+        isDragging={false}
+        isOver={false}
         isMyTurn={false}
         tile={{
           letter: 'J',
-          points: '2',
+          belongsToCurrentUser: 2,
           belongsToCurrentUser: true
         }}
       />
@@ -78,8 +121,6 @@ describe('Tile', () => {
         <div className="tile-points">2</div>
       </div>
     );
-
-    console.log(actualElement);
 
     expect(actualElement).to.equalJSX(expectedElement);
   });
