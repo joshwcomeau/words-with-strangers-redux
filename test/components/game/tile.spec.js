@@ -18,18 +18,15 @@ describe('Tile', () => {
   describe('propTypes', () => {
     let consoleStub;
 
-    before( () => {
-      consoleStub = sinon.stub(console, 'error');
-    })
-    after( () => {
-      // Remove the stub
-      consoleStub.restore();
-    });
+    before( () => consoleStub = sinon.stub(console, 'error') );
+    afterEach( () => consoleStub.reset() );
+    after( () => consoleStub.restore() );
 
     const exampleProps = {
       connectDragSource:  identity,
       connectDropTarget:  identity,
       isDragging:         false,
+      isOver:             false,
       isMyTurn:           false,
       tile: {
         letter: 'J',
@@ -37,22 +34,33 @@ describe('Tile', () => {
         belongsToCurrentUser: true
       }
     };
-    let insufficientProps;
+    let insufficientProps, errorRegex;
+
+    // Iterate through all top-level props, checking to see if it warns when
+    // one is missing
+    _.keys(exampleProps).forEach( prop => {
+      // Don't test `tile`. It's complicated, and will be tested separately.
+      if ( prop === 'tile' ) return
+
+      it(`throws without '${prop}'`, () => {
+        insufficientProps = _.omit(exampleProps, prop);
+        shallowDOM.render(<OriginalTile {...insufficientProps} />);
+        errorRegex = new RegExp(`Required prop \`${prop}\` was not specified`);
+
+        expect(consoleStub.calledOnce).to.equal(true);
+        expect(consoleStub.calledWithMatch(errorRegex)).to.equal(true);
+      });
+    });
+
+
 
     it('throws without `connectDragSource`', () => {
-      insufficientProps = _.omit(exampleProps, 'connectDragSource');
-      shallowDOM.render(<OriginalTile {...insufficientProps} />);
-
-      console.log(consoleStub.callCount);
-
-      expect(consoleStub.calledOnce).to.equal(true);
-      expect(consoleStub.calledWithExactly('lalala')).to.equal(true);
     })
   });
   xit('renders correctly', () => {
     shallowDOM.render(
       <OriginalTile
-
+        connectDragSource={identity}
         connectDropTarget={identity}
         isMyTurn={false}
         tile={{

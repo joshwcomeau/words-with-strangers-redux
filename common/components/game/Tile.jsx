@@ -49,9 +49,18 @@ const tileTarget = {
 }))
 class Tile extends Component {
   static propTypes = {
+    // React DnD things
     connectDragSource:  PropTypes.func.isRequired,
     connectDropTarget:  PropTypes.func.isRequired,
-    isDragging:         PropTypes.bool.isRequired
+    isDragging:         PropTypes.bool.isRequired,
+    isOver:             PropTypes.bool.isRequired,
+
+    isMyTurn:           PropTypes.bool.isRequired,
+    tile:               PropTypes.shape({
+      letter:               PropTypes.string.isRequired,
+      points:               PropTypes.number.isRequired,
+      belongsToCurrentUser: PropTypes.bool.isRequired
+    }).isRequired
   };
 
   canBeDragged() {
