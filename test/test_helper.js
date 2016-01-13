@@ -7,7 +7,7 @@ import chaiImmutable  from 'chai-immutable';
 import equalJSX       from 'chai-equal-jsx';
 
 
-console.info("---- Tests starting! ----");
+console.info("------ Setting up! ------");
 process.env.NODE_ENV = 'test';
 
 import '../server/initialize';
@@ -19,6 +19,7 @@ chai.use(equalJSX);
 // connect to and wipe the test DB
 const dbName = nconf.get('DB_NAME');
 const dbUrl  = nconf.get('DB_URL')
+
 console.info("---- Wiping Database ----");
 execSync(`mongo ${dbName} --eval "db.dropDatabase();"`);
 
