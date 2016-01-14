@@ -9,8 +9,6 @@ import Controls from '../../../common/components/game/Controls.jsx';
 
 // Obtain the reference to the component before React DnD wrapping
 const OriginalTile = Tile.DecoratedComponent.DecoratedComponent;
-// Stub the React DnD connector functions with an identity function
-const identity = el => el;
 
 const shallowDOM = createRenderer();
 
@@ -22,25 +20,19 @@ describe('Tile', () => {
     afterEach( () => consoleStub.reset() );
     after( () => consoleStub.restore() );
 
-    const exampleProps = {
-      connectDragSource:  identity,
-      connectDropTarget:  identity,
-      isDragging:         false,
-      isOver:             false,
-      isMyTurn:           false,
-      tile: {
-        letter: 'J',
-        points: 2,
-        belongsToCurrentUser: true
-      }
-    };
+    const exampleProps = generateProps();
     let insufficientProps, errorRegex;
 
     // Iterate through all top-level props, checking to see if it warns when
     // one is missing
     _.keys(exampleProps).forEach( prop => {
       // Don't test `tile`. It's complicated, and will be tested separately.
-      if ( prop === 'tile' ) return
+      if ( prop === 'tile' ) return;
+
+      // Don't test React DnD stubbed functions. Problems happen when they
+      // aren't supplied.
+      if ( _.includes(['connectDropTarget', 'connectDragSource'], prop) )
+        return;
 
       it(`throws without '${prop}'`, () => {
         insufficientProps = _.omit(exampleProps, prop);
@@ -57,7 +49,6 @@ describe('Tile', () => {
       it(`throws without Tile's '${tileProp}'`, () => {
         let tile = _.omit(exampleProps.tile, tileProp);
         insufficientProps = _.extend({}, exampleProps, { tile });
-        console.log("PROPS", insufficientProps)
         shallowDOM.render(<OriginalTile {...insufficientProps} />);
         errorRegex = new RegExp(`Required prop \`tile.${tileProp}\` was not specified`);
 
@@ -67,25 +58,55 @@ describe('Tile', () => {
     });
   });
 
-  it('renders correctly', () => {
-    shallowDOM.render(
-      <OriginalTile
-        connectDragSource={identity}
-        connectDropTarget={identity}
-        isDragging={false}
-        isOver={false}
-        isMyTurn={false}
-        tile={{
-          letter: 'J',
-          points: 2,
-          belongsToCurrentUser: true
-        }}
-      />
-    );
 
-    const actualElement = shallowDOM.getRenderOutput();
+  describe('draggability', () => {
+    // The rules for whether a tile can be dragged are simple:
+    // It needs to be my turn, my tile, and tentative.
+    it('is false when it is not my turn', () => {
+      const props = generateProps({ isMyTurn: false });
+      const element = render( <OriginalTile { ...props }/> );
+
+      const classNames = element.props.className.split(' ');
+      expect(classNames).to.include('tile');
+      expect(classNames).not.to.include('draggable');
+    });
+
+    it('is false when the tile is established', () => {
+      const props = generateProps({ tile: { turnId: 0 } });
+      const element = render( <OriginalTile { ...props }/> );
+
+      const classNames = element.props.className.split(' ');
+      expect(classNames).to.include('tile');
+      expect(classNames).not.to.include('draggable');
+    });
+
+    it('is false when it is not my tile', () => {
+      const props = generateProps({ tile: { belongsToCurrentUser: false } });
+      const element = render( <OriginalTile { ...props }/> );
+
+      const classNames = element.props.className.split(' ');
+      expect(classNames).to.include('tile');
+      expect(classNames).not.to.include('draggable');
+    });
+
+    it('is true when those 3 conditions are met', () => {
+      const props = generateProps();
+      const element = render( <OriginalTile { ...props }/> );
+
+      const classNames = element.props.className.split(' ');
+      expect(classNames).to.include('tile');
+      expect(classNames).to.include('draggable');
+    });
+
+
+  });
+
+
+
+  it('renders correctly', () => {
+    const actualElement = render( <OriginalTile { ...generateProps() }/> );
     const expectedElement = (
-      <div className="tile">
+      <div className="tile draggable">
         <div className="tile-letter">J</div>
         <div className="tile-points">2</div>
       </div>
@@ -94,3 +115,35 @@ describe('Tile', () => {
     expect(actualElement).to.equalJSX(expectedElement);
   });
 });
+
+
+  ////////////////////////////
+ /////// TEST HELPERS ///////
+////////////////////////////
+
+// Merge in quick tweaks to a working set of props
+function generateProps(overrides) {
+  // Stub the React DnD connector functions with an identity function
+  const identity = el => el;
+
+  const defaultProps = {
+    connectDragSource:  identity,
+    connectDropTarget:  identity,
+    isDragging:         false,
+    isOver:             false,
+    isMyTurn:           true,
+    tile: {
+      letter: 'J',
+      points: 2,
+      belongsToCurrentUser: true
+    }
+  };
+
+  return _.merge({}, defaultProps, overrides);
+}
+
+// Get rendered output
+function render(component) {
+  shallowDOM.render(component);
+  return shallowDOM.getRenderOutput();
+}

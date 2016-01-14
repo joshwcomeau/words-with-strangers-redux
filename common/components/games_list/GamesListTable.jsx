@@ -24,7 +24,7 @@ function generateList(games, joinGame, authenticated) {
   if ( _.isEmpty(games) ) {
     return (
       <tr>
-        <td colspan="5">
+        <td colSpan="5">
           <h5>Sorry, no active games.</h5>
           <p>Why not start one?</p>
         </td>
