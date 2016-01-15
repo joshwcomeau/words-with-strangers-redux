@@ -1,11 +1,19 @@
-import _                  from 'lodash';
-import React              from 'react';
-import { createRenderer } from 'react-addons-test-utils';
-import { expect }         from 'chai';
-import sinon              from 'sinon';
+import _          from 'lodash';
+import React      from 'react';
+import { expect } from 'chai';
+import sinon      from 'sinon';
 
-import Tile from '../../../common/components/game/Tile.jsx';
-import Controls from '../../../common/components/game/Controls.jsx';
+import TestUtils, { createRenderer } from 'react-addons-test-utils';
+
+import dndWrapInTestContext from '../../utils/dnd_wrap_in_test_context';
+
+import Tile       from '../../../common/components/game/Tile.jsx';
+import Controls   from '../../../common/components/game/Controls.jsx';
+
+// We need a DOM!
+import testdom    from 'testdom';
+testdom('<html><body></body></html>')
+
 
 // Obtain the reference to the component before React DnD wrapping
 const OriginalTile = Tile.DecoratedComponent.DecoratedComponent;
@@ -58,8 +66,40 @@ describe('Tile', () => {
     });
   });
 
+  // React DnD test docs are nonexistent.
+  // Maybe use: http://reactjsnews.com/testing-drag-and-drop-components-in-react-js/
 
-  describe('draggability', () => {
+  xdescribe('drag and drop', () => {
+
+    it('can drag one tile onto another', () => {
+      // Create a dummy "rack" component to house our Tiles
+      class Rack extends Component {
+        render() {
+          return (
+            <div id="rack">
+              {this.children}
+            </div>
+          )
+        }
+      };
+
+      const TileContext = dndWrapInTestContext(Tile);
+
+      let tile1 = generateProps({ tile: { x: 2, letter: 'A' } });
+      let tile2 = generateProps({ tile: { x: 4, letter: 'T' } });
+
+      const root = TestUtils.renderIntoDocument(
+          <TileContext {...tile2} />
+      );
+      // const manager = root.getManager();
+      // const backend = manager.getBackend();
+
+      let [renderedTile1, renderedTile2] = TestUtils.scryRenderedComponentsWithType(root, Tile);
+    });
+  });
+
+
+  describe('draggable class', () => {
     // The rules for whether a tile can be dragged are simple:
     // It needs to be my turn, my tile, and tentative.
     it('is false when it is not my turn', () => {
@@ -107,6 +147,7 @@ describe('Tile', () => {
       expect(classNames).to.include('tile');
       expect(classNames).to.include('is-established');
     });
+
     it('does not add a class when the tile is tentative', () => {
       const props = generateProps();
       const element = render( <OriginalTile { ...props }/> );
@@ -148,7 +189,8 @@ function generateProps(overrides) {
     tile: {
       letter: 'J',
       points: 2,
-      belongsToCurrentUser: true
+      belongsToCurrentUser: true,
+      location: 'rack'
     }
   };
 
