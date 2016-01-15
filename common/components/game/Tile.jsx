@@ -13,8 +13,8 @@ const tileSource = {
 const tileTarget = {
   drop(props, monitor) {
     // We want to swap tile positions when dropped on top of one.
-    let droppedTile = monitor.getItem();
-    let underlyingTile = props.tile;
+    const droppedTile = monitor.getItem();
+    const underlyingTile = props.tile;
 
     // Don't swap them if the underlying tile is established!
     if ( typeof underlyingTile.turnId !== 'undefined' ) return;

@@ -1,7 +1,7 @@
 import React  from 'react';
 import * as _ from 'lodash';
 
-const SidePanelPlayers = ({players}) => (
+const Players = ({players}) => (
   <div className="side-panel-players">{renderPlayers(players)}</div>
 );
 
@@ -21,4 +21,4 @@ function renderPlayers(players) {
 }
 
 
-export default SidePanelPlayers;
+export default Players;

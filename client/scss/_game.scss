@@ -231,6 +231,7 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
     .side-panel-turns {
       background: $lightgray;
       padding: $gutter-width;
+      height: 350px;
       max-height: 350px;
       overflow-y: scroll;
 

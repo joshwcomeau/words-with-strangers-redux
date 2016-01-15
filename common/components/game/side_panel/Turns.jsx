@@ -1,7 +1,7 @@
 import React  from 'react';
 import * as _ from 'lodash';
 
-const SidePanelTurns = ({players, turns}) => (
+const Turns = ({players, turns}) => (
   <div className="side-panel-turns">{renderTurns(players, turns)}</div>
 );
 
@@ -25,4 +25,4 @@ function renderTurns(players, turns) {
 }
 
 
-export default SidePanelTurns;
+export default Turns;
