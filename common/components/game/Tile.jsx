@@ -2,7 +2,7 @@ import React, { Component, PropTypes }  from 'react';
 import { DragSource, DropTarget }       from 'react-dnd';
 import classNames                       from 'classnames';
 
-import { isEstablished } from '../../lib/game_logic.lib';
+import { isEstablished, isTentative }   from '../../lib/game_logic.lib';
 
 const tileSource = {
   beginDrag(props) {
@@ -66,9 +66,9 @@ class Tile extends Component {
   canBeDragged() {
     const isMyTurn = this.props.isMyTurn;
     const isMyTile = this.props.tile.belongsToCurrentUser;
-    const isActive = typeof this.props.tile.turnId === 'undefined';
+    const isTentativeTile = isTentative(this.props.tile);
 
-    return isMyTurn && isMyTile && isActive;
+    return isMyTurn && isMyTile && isTentativeTile;
   }
 
   generateTile(draggable) {

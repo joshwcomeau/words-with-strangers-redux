@@ -97,11 +97,24 @@ describe('Tile', () => {
       expect(classNames).to.include('tile');
       expect(classNames).to.include('draggable');
     });
-
-
   });
 
-
+  describe("established tiles", () => {
+    it('adds a class when the tile is established', () => {
+      const props = generateProps({ tile: { turnId: 0 } });
+      const element = render( <OriginalTile { ...props }/> );
+      const classNames = element.props.className.split(' ');
+      expect(classNames).to.include('tile');
+      expect(classNames).to.include('is-established');
+    });
+    it('does not add a class when the tile is tentative', () => {
+      const props = generateProps();
+      const element = render( <OriginalTile { ...props }/> );
+      const classNames = element.props.className.split(' ');
+      expect(classNames).to.include('tile');
+      expect(classNames).not.to.include('is-established');
+    });
+  });
 
   it('renders correctly', () => {
     const actualElement = render( <OriginalTile { ...generateProps() }/> );
