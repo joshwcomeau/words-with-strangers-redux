@@ -183,7 +183,13 @@ export default function game(state = initialState, action) {
       // (eg. a move gets placed, which involves moving a bunch of tiles,
       // creating a word, etc.)
 
-      let game = fromJS(action.game);
+      // We first want to omit any data the server sends, that doesn't affect
+      // our UI state
+      let trimmedGame = _.omit(action.game,
+        ['createdAt', 'updatedAt', 'createdByUserId']
+      );
+
+      let game = fromJS(trimmedGame);
 
       // On the server, tiles in the rack don't have an 'x' coordinate.
       // On the client, though, we want tiles to be sortable based on this
@@ -191,8 +197,6 @@ export default function game(state = initialState, action) {
       game = game.update('rack', resetRackTilePosition);
 
       return state.mergeDeep( game );
-
-
 
     default:
       return state
