@@ -4,6 +4,8 @@ import { List, Map, fromJS }  from 'immutable';
 import gameReducer, {initialState} from '../../common/reducers/game.reducer';
 
 import {
+  BEGIN_SWAPPING,
+  CANCEL_SWAPPING,
   PASS_TURN,
   PLACE_TILE,
   RECALL_TILES_TO_RACK,
@@ -34,6 +36,61 @@ describe('gameReducer', () => {
 
   describe('SUBMIT_WORD', () => {
     // TODO
+  });
+
+  describe('BEGIN_SWAPPING', () => {
+    it('enables swapping', () => {
+      const state = fromJS({
+        swap: {
+          swapping: false,
+          tiles: []
+        }
+      });
+      const action = {
+        type: BEGIN_SWAPPING,
+      };
+      const nextState = gameReducer(state, action);
+
+      expect(nextState).to.equal(fromJS({
+        swap: {
+          swapping: true,
+          tiles: []
+        }
+      }));
+    });
+  });
+
+  describe('CANCEL_SWAPPING', () => {
+    it('enables swapping', () => {
+      const state = fromJS({
+        swap: {
+          swapping: true,
+          tiles: [
+            { id: 1 },
+            { id: 2 }
+          ]
+        },
+        rack: [
+          { id: 3, x: 0 }
+        ]
+      });
+      const action = {
+        type: CANCEL_SWAPPING,
+      };
+      const nextState = gameReducer(state, action);
+
+      expect(nextState).to.equal(fromJS({
+        swap: {
+          swapping: false,
+          tiles: []
+        },
+        rack: [
+          { id: 3, x: 0 },
+          { id: 1, x: 1 },
+          { id: 2, x: 2 }
+        ]
+      }));
+    });
   });
 
 

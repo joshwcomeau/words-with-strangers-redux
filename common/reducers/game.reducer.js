@@ -1,10 +1,13 @@
 import * as _                 from 'lodash';
 import { List, Map, fromJS }  from 'immutable';
 import {
+  BEGIN_SWAPPING,
+  CANCEL_SWAPPING,
   PASS_TURN,
   PLACE_TILE,
   RECALL_TILES_TO_RACK,
   SHUFFLE_RACK,
+  SUBMIT_SWAPPED_TILES,
   SUBMIT_WORD,
   SWITCH_TILE_POSITIONS,
   UNSUBSCRIBE_FROM_GAME,
@@ -21,11 +24,30 @@ export const initialState = fromJS({
   rack:         [],
   turns:        [],
   players:      [],
-  bonusSquares: []
+  bonusSquares: [],
+  swap: {
+    swapping: false,
+    bucket: []
+  }
 });
 
 export default function game(state = initialState, action) {
   switch (action.type) {
+    case BEGIN_SWAPPING:
+      return state.setIn(['swap', 'swapping'], true);
+
+    case CANCEL_SWAPPING:
+      // We need to move the swapped tiles back to the rack
+      // Grab those tiles first, so we can use them in the chain.
+      const swapTiles = state.getIn([ 'swap', 'bucket' ]);
+
+      return state
+        .setIn(['swap', 'swapping'], false)
+        // Empty out all tiles in the swap bucket
+        .setIn(['swap', 'bucket'], new List())
+        .update('rack', rack => rack.concat(swapTiles))
+        .update('rack', orderAndResetRack);
+
     case PASS_TURN:
       // NOTE: This is just for optimistic rendering.
       // The _real_ submission happens on the server, and if it succeeds,
@@ -82,8 +104,7 @@ export default function game(state = initialState, action) {
       // being continuous. For example, if we move the 5th tile to the board,
       // there will be a gap in the sequence when the 4th and 6th tiles don't
       // update!
-      const orderAndUpdate = _.compose(resetRackTilePosition, orderTilesByX);
-      state = state.update('rack', orderAndUpdate);
+      state = state.update('rack', orderAndResetRack);
 
       return state;
 
@@ -219,7 +240,7 @@ function orderTilesByX(tiles) {
 }
 
 function orderAndResetRack(tiles) {
-  return resetRackTilePosition(orderTilesByX(tiles));
+  return _.compose(resetRackTilePosition, orderTilesByX).call(null, tiles);
 }
 
 function getCurrentPlayer(state) {

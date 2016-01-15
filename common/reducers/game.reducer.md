@@ -12,22 +12,17 @@ Here is its state tree:
   status:   < String, enum: 'waiting', 'in_progress', 'complete', 'abandoned' >
   isMyTurn: < Boolean >
   board: [
-    {
-      id:       < String >
-      points:   < Integer >
-      letter:   < String >
-      x:        < Integer >
-      y:        < Integer >
-      turnId:   < Integer, optional >
-      playerId: < String>
-      belongsToCurrentUser: < Boolean >
-    }, {
-      ... etc
-    }
+    < Tile object (see below) >
   ]
   rack: [
-    { < Same as 'board' > }
+    { < Tile object > }
   ]
+  swap: {
+    swapping: < Boolean >
+    bucket: [
+      < Tile object >
+    ]
+  }
   bonusSquares: [
     {
       id: < String >
@@ -59,4 +54,21 @@ Here is its state tree:
   ]
 
 
+```
+
+Here's the Tile object, which exists in 3 separate arrays:
+
+```
+  {
+    id:       < String >
+    points:   < Integer >
+    letter:   < String >
+    x:        < Integer >
+    y:        < Integer >
+    turnId:   < Integer, optional >
+    playerId: < String>
+    belongsToCurrentUser: < Boolean >
+  }, {
+    ... etc
+  }
 ```

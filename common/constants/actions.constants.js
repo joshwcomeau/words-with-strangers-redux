@@ -8,6 +8,9 @@ export const UNSUBSCRIBE_FROM_GAME  = 'UNSUBSCRIBE_FROM_GAME';
 export const UPDATE_GAME_STATE      = 'UPDATE_GAME_STATE';
 export const SHUFFLE_RACK           = 'SHUFFLE_RACK';
 export const RECALL_TILES_TO_RACK   = 'RECALL_TILES_TO_RACK';
+export const BEGIN_SWAPPING         = 'BEGIN_SWAPPING';
+export const CANCEL_SWAPPING        = 'CANCEL_SWAPPING';
+export const SUBMIT_SWAPPED_TILES   = 'SUBMIT_SWAPPED_TILES';
 
 // GAMES_LIST constants
 export const REQUEST_GAMES_LIST     = 'REQUEST_GAMES_LIST';
