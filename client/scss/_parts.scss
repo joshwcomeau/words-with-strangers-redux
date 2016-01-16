@@ -126,6 +126,14 @@
     }
   }
 
+  &.cancel {
+    background: $red;
+
+    &:hover {
+      background: darken($red, 10%);
+    }
+  }
+
   &:hover {
     background: darken($fadedteal, 8%);
     transition: background 0.2s;

@@ -1,8 +1,6 @@
 import * as _                 from 'lodash';
 import { List, Map, fromJS }  from 'immutable';
 import {
-  BEGIN_SWAPPING,
-  CANCEL_SWAPPING,
   PASS_TURN,
   PLACE_TILE,
   RECALL_TILES_TO_RACK,
@@ -10,6 +8,7 @@ import {
   SUBMIT_SWAPPED_TILES,
   SUBMIT_WORD,
   SWITCH_TILE_POSITIONS,
+  TOGGLE_SWAPPING,
   UNSUBSCRIBE_FROM_GAME,
   UPDATE_GAME_STATE
 } from '../constants/actions.constants';
@@ -26,28 +25,13 @@ export const initialState = fromJS({
   players:      [],
   bonusSquares: [],
   swap: {
-    swapping: false,
+    active: false,
     bucket: []
   }
 });
 
 export default function game(state = initialState, action) {
   switch (action.type) {
-    case BEGIN_SWAPPING:
-      return state.setIn(['swap', 'swapping'], true);
-
-    case CANCEL_SWAPPING:
-      // We need to move the swapped tiles back to the rack
-      // Grab those tiles first, so we can use them in the chain.
-      const swapTiles = state.getIn([ 'swap', 'bucket' ]);
-
-      return state
-        .setIn(['swap', 'swapping'], false)
-        // Empty out all tiles in the swap bucket
-        .setIn(['swap', 'bucket'], new List())
-        .update('rack', rack => rack.concat(swapTiles))
-        .update('rack', orderAndResetRack);
-
     case PASS_TURN:
       // NOTE: This is just for optimistic rendering.
       // The _real_ submission happens on the server, and if it succeeds,
@@ -190,6 +174,25 @@ export default function game(state = initialState, action) {
       state = state.setIn( [tile1Location, tile1Index], tile1Props.merge(newTile1Coords));
 
       return state;
+
+
+      case TOGGLE_SWAPPING:
+        if ( state.getIn(['swap', 'active']) ) {
+          // If we're cancelling our swap, we need to toggle the `active`
+          // property, but also relegate any tiles in the swap bucket back
+          // to the rack.
+          const swapTiles = state.getIn([ 'swap', 'bucket' ]);
+
+          return state
+            .setIn(['swap', 'active'], false)
+            // Empty out all tiles in the swap bucket
+            .setIn(['swap', 'bucket'], new List())
+            .update('rack', rack => rack.concat(swapTiles))
+            .update('rack', orderAndResetRack);
+        } else {
+          // If we're activating the swap area, we just need to toggle it.
+          return state.setIn(['swap', 'active'], true);
+        }
 
 
     case UNSUBSCRIBE_FROM_GAME:

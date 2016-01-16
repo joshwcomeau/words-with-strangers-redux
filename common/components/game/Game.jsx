@@ -21,6 +21,9 @@ const Game = React.createClass({
           players={this.props.players}
           turns={this.props.turns}
           title={this.props.title}
+          swap={this.props.swap}
+          toggleSwapping={this.props.actions.toggleSwapping}
+          submitSwappedTiles={this.props.actions.submitSwappedTiles}
         />
         <Board
           tiles={this.props.board}

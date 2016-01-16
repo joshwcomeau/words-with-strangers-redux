@@ -4,9 +4,11 @@ import {
   PLACE_TILE,
   RECALL_TILES_TO_RACK,
   SHUFFLE_RACK,
+  SUBMIT_SWAPPED_TILES,
   SUBMIT_WORD,
   SUBSCRIBE_TO_GAME,
   SWITCH_TILE_POSITIONS,
+  TOGGLE_SWAPPING,
   UNSUBSCRIBE_FROM_GAME,
   UPDATE_GAME_STATE
 } from '../constants/actions.constants';
@@ -46,6 +48,19 @@ export function passTurn(gameId) {
     type: PASS_TURN,
     meta: { remote: '/game' },
     gameId
+  }
+}
+
+export function toggleSwapping() {
+  return {
+    type: TOGGLE_SWAPPING
+  }
+}
+
+// TODO: Replace me with a saga
+export function submitSwappedTimes(tiles) {
+  return {
+    type: SUBMIT_SWAPPED_TILES
   }
 }
 

@@ -263,6 +263,14 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
         color: $red;
       }
     }
+
+    .tile-swap-container {
+      padding: 0.5rem;
+
+      .button {
+        width: 100%;
+      }
+    }
   }
 
   #tile-rack {

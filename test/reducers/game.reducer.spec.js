@@ -4,13 +4,12 @@ import { List, Map, fromJS }  from 'immutable';
 import gameReducer, {initialState} from '../../common/reducers/game.reducer';
 
 import {
-  BEGIN_SWAPPING,
-  CANCEL_SWAPPING,
   PASS_TURN,
   PLACE_TILE,
   RECALL_TILES_TO_RACK,
   SHUFFLE_RACK,
   SUBMIT_WORD,
+  TOGGLE_SWAPPING,
   UNSUBSCRIBE_FROM_GAME,
   UPDATE_GAME_STATE
 }   from '../../common/constants/actions.constants';
@@ -38,34 +37,32 @@ describe('gameReducer', () => {
     // TODO
   });
 
-  describe('BEGIN_SWAPPING', () => {
-    it('enables swapping', () => {
+  describe('TOGGLE_SWAPPING', () => {
+    it('enables swapping when it was disabled', () => {
       const state = fromJS({
         swap: {
-          swapping: false,
-          tiles: []
+          active: false,
+          bucket: []
         }
       });
       const action = {
-        type: BEGIN_SWAPPING,
+        type: TOGGLE_SWAPPING,
       };
       const nextState = gameReducer(state, action);
 
       expect(nextState).to.equal(fromJS({
         swap: {
-          swapping: true,
-          tiles: []
+          active: true,
+          bucket: []
         }
       }));
     });
-  });
 
-  describe('CANCEL_SWAPPING', () => {
-    it('enables swapping', () => {
+    it('disables swapping when it was enabled', () => {
       const state = fromJS({
         swap: {
-          swapping: true,
-          tiles: [
+          active: true,
+          bucket: [
             { id: 1 },
             { id: 2 }
           ]
@@ -75,14 +72,14 @@ describe('gameReducer', () => {
         ]
       });
       const action = {
-        type: CANCEL_SWAPPING,
+        type: TOGGLE_SWAPPING,
       };
       const nextState = gameReducer(state, action);
 
       expect(nextState).to.equal(fromJS({
         swap: {
-          swapping: false,
-          tiles: []
+          active: false,
+          bucket: []
         },
         rack: [
           { id: 3, x: 0 },

@@ -1,30 +1,48 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 
 import TileSwapBucket from './TileSwapBucket';
 
-const TileSwapContainer = ({tiles, submitSwappedTiles, swapping}) => (
+
+const TileSwapContainer = ({swap, toggleSwapping, submitSwappedTiles}) => (
   <div className="tile-swap-container">
-    { swapping
-      ? renderActiveSwapping(tiles, submitSwappedTiles)
+    { swap.active
+      ? renderActiveSwapping(swap.bucket, submitSwappedTiles)
       : null
     }
-    <button className="button swap-toggle">
-      { swapping ? "Swap Tiles" : "Cancel Swap" }
-    </button>
+    { renderButton(swap.active, toggleSwapping) }
   </div>
 );
 
-function renderActiveSwapping(tiles, submitSwappedTiles) {
+TileSwapContainer.propTypes = {
+  toggleSwapping:     PropTypes.func.isRequired,
+  submitSwappedTiles: PropTypes.func.isRequired,
+  swap:               PropTypes.shape({
+    active:           PropTypes.bool.isRequired,
+    bucket:           PropTypes.array.isRequired
+  }).isRequired
+}
+
+function renderButton(active, toggleSwapping) {
+  const classes = classNames({
+    button: true,
+    cancel: active
+  });
+
+  return (
+    <button className={classes} onClick={toggleSwapping}>
+      { active ? "Cancel Swap" : "Swap Tiles" }
+    </button>
+  )
+}
+
+function renderActiveSwapping(bucket, submitSwappedTiles) {
   return (
     <div className="active-swapping">
-      <TileSwapBucket tiles={tiles} />
+      <TileSwapBucket bucket={bucket} />
       <button className="button submit-swapped-tiles">Swap</button>
     </div>
   )
 }
 
-function renderInactiveSwapping() {
-  return (
-    <button className="button swap-toggle">
-  )
-}
+export default TileSwapContainer
