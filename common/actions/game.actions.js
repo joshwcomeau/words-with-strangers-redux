@@ -57,10 +57,12 @@ export function toggleSwapping() {
   }
 }
 
-// TODO: Replace me with a saga
-export function submitSwappedTimes(tiles) {
+export function submitSwappedTiles(tiles) {
   return {
-    type: SUBMIT_SWAPPED_TILES
+    type: SUBMIT_SWAPPED_TILES,
+    meta: { remote: '/game'},
+    tiles,
+    gameId
   }
 }
 

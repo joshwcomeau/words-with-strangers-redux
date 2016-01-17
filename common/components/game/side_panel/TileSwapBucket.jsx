@@ -4,9 +4,13 @@ import { DropTarget }                   from 'react-dnd';
 
 const tileTarget = {
   drop(props, monitor) {
-    const droppedTile = monitor.getItem();
-    console.log("Tile dropped!", droppedTile);
-    console.log("Props on drop", props);
+    const tile = monitor.getItem();
+    const tileData = {
+      id: tile.id,
+      location: 'swap.bucket'
+    };
+
+    props.placeTile(tileData);
   }
 }
 
@@ -30,7 +34,9 @@ class TileSwapBucket extends Component {
   }
 
   render() {
-    return (
+    const { connectDropTarget } = this.props;
+
+    return connectDropTarget(
       <div className="tile-swap-bucket">
         { this.generateTilePlaceholders() }
       </div>

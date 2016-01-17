@@ -4,16 +4,19 @@ import classNames from 'classnames';
 import TileSwapBucket from './TileSwapBucket';
 
 
-const TileSwapContainer = ({swap, toggleSwapping, submitSwappedTiles}) => (
-  <div className="tile-swap-container">
-    { swap.active
-      ? renderActiveSwapping(swap.bucket, submitSwappedTiles, toggleSwapping)
-      : renderInactiveSwapping(toggleSwapping)
-    }
-  </div>
-);
+const TileSwap = (props) => {
+  return (
+    <div className="tile-swap-container">
+      {
+        props.swap.active
+        ? renderActiveSwapping(props)
+        : renderInactiveSwapping(props.toggleSwapping)
+      }
+    </div>
+  );
+};
 
-TileSwapContainer.propTypes = {
+TileSwap.propTypes = {
   toggleSwapping:     PropTypes.func.isRequired,
   submitSwappedTiles: PropTypes.func.isRequired,
   swap:               PropTypes.shape({
@@ -22,10 +25,10 @@ TileSwapContainer.propTypes = {
   }).isRequired
 }
 
-function renderActiveSwapping(bucket, submitSwappedTiles, toggleSwapping) {
+function renderActiveSwapping({swap, submitSwappedTiles, toggleSwapping, placeTile}) {
   return (
     <div className="active-swapping">
-      <TileSwapBucket bucket={bucket} />
+      <TileSwapBucket bucket={swap.bucket} placeTile={placeTile} />
       <div className="button-container">
         <button className="button submit-swapped-tiles">Swap</button>
         <button className="button cancel" onClick={toggleSwapping}>Cancel</button>
@@ -44,4 +47,4 @@ function renderInactiveSwapping(toggleSwapping) {
   );
 }
 
-export default TileSwapContainer
+export default TileSwap
