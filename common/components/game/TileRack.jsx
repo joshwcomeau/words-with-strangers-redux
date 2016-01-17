@@ -1,22 +1,58 @@
-import React          from 'react';
-import { DropTarget } from 'react-dnd';
-import * as _         from 'lodash';
-import classNames     from 'classnames';
+import React, { Component, PropTypes} from 'react';
+import { DropTarget }                 from 'react-dnd';
+import * as _                         from 'lodash';
+import classNames                     from 'classnames';
 
-import Tile           from './Tile.jsx';
+import Tile                           from './Tile.jsx';
 
-const TileRack = React.createClass({
+
+const rackTarget = {
+  drop(props, monitor) {
+
+    // It's possible that this is an event bubbling up from a switch-tile drop.
+    // If the player dropped a tile onto another tile to switch their positions,
+    // we want to ignore this event.
+    if ( monitor.didDrop() ) return;
+
+    const tile = monitor.getItem();
+
+    const tileData = {
+      id: tile.id,
+      location: 'rack',
+    };
+
+    // Invoke the action.
+    props.placeTile(tileData);
+  }
+}
+
+@DropTarget('tile', rackTarget, (connect, monitor) => ({
+  connectDropTarget:  connect.dropTarget(),
+  isOver:             monitor.isOver()
+}))
+class TileRack extends Component {
+  static propTypes = {
+    connectDropTarget:  PropTypes.func.isRequired,
+    isOver:             PropTypes.bool.isRequired,
+  };
+
   renderTiles() {
-    let tiles = _.sortBy(this.props.tiles, 'x');
+    const {
+      tiles,
+      isMyTurn,
+      placeTile,
+      switchTilePositions
+    } = this.props;
+
     return tiles.map( tile => (
       <Tile key={tile.id}
-      tile={tile}
-      switchTilePositions={this.props.switchTilePositions}
-      isMyTurn={this.props.isMyTurn}
-      placeTile={this.props.placeTile}
-      />)
-    );
-  },
+        tile={tile}
+        switchTilePositions={switchTilePositions}
+        isMyTurn={isMyTurn}
+        placeTile={placeTile}/>
+    ));
+  }
+
   render() {
     const { connectDropTarget, isOver } = this.props;
 
@@ -30,33 +66,7 @@ const TileRack = React.createClass({
       </div>
     );
   }
-});
+};
 
-const rackTarget = {
-  drop(props, monitor) {
-    // It's possible that this is an event bubbling up from a switch-tile drop.
-    // If the player dropped a tile onto another tile to switch their positions,
-    // we want to ignore this event.
-    if ( monitor.didDrop() ) return;
 
-    const tile = monitor.getItem();
-
-    const tileData = {
-      location: 'rack',
-      id:      tile.id
-    };
-
-    // Invoke the action.
-    props.placeTile(tileData);
-
-  }
-}
-
-function collect(connect, monitor) {
-  return {
-    connectDropTarget: connect.dropTarget(),
-    isOver: monitor.isOver()
-  }
-}
-
-export default DropTarget('tile', rackTarget, collect)(TileRack);;
+export default TileRack;
