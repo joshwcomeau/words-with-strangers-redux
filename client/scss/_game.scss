@@ -264,11 +264,50 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
       }
     }
 
-    .tile-swap-container {
-      padding: 0.5rem;
 
-      .button {
+    .tile-swap-container {
+      .enable-swap {
         width: 100%;
+      }
+
+      .button-container {
+        display: flex;
+
+        .submit-swapped-tiles {
+          flex: 3;
+          border-radius: 3px 0 0 3px;
+        }
+        .cancel {
+          flex: 1;
+          border-radius: 0 3px 3px 0;
+        }
+      }
+
+      .tile-swap-bucket {
+        padding-right: 8px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        line-height: 0;
+        text-align: center;
+
+        .tile-placeholder {
+          position: relative;
+          flex: 0 1 ($side-panel-width / 4) - (8px / 4);
+          height: ($side-panel-width / 4) - (8px / 4);
+
+
+
+          &:after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 0px;
+            bottom: 0px;
+            border: 2px dashed rgba(0,0,0,0.2);
+          }
+        }
       }
     }
   }

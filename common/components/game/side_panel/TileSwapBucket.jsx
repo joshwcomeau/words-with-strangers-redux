@@ -17,17 +17,15 @@ const tileTarget = {
 class TileSwapBucket extends Component {
   static propTypes = {
     // React DnD things
-    connectDragSource:  PropTypes.func.isRequired,
     connectDropTarget:  PropTypes.func.isRequired,
-    isDragging:         PropTypes.bool.isRequired,
     isOver:             PropTypes.bool.isRequired,
 
     bucket:             PropTypes.array.isRequired
   };
 
   generateTilePlaceholders() {
-    return _.range(6).map( () => (
-      <div className="tile-placeholder"></div>
+    return _.range(8).map( (key) => (
+      <div className="tile-placeholder" key={key}></div>
     ));
   }
 
