@@ -1,5 +1,8 @@
 import React, { Component, PropTypes }  from 'react';
 import { DropTarget }                   from 'react-dnd';
+import classNames                       from 'classnames';
+
+import Tile                             from '../Tile.jsx';
 
 
 const tileTarget = {
@@ -27,10 +30,21 @@ class TileSwapBucket extends Component {
     tiles:               PropTypes.array.isRequired
   };
 
-  generateTilePlaceholders() {
-    return _.range(8).map( (key) => (
-      <div className="tile-placeholder" key={key}></div>
-    ));
+  generateTiles() {
+    return _.range(8).map( (index) => {
+      const tile = this.props.tiles[index];
+      const classes = classNames({
+        'tile-square': true,
+        'contains-tile': !!tile
+      });
+
+      return (
+        <div className={classes} key={index}>
+          { tile ? <Tile tile={tile} isMyTurn={true} /> : null }
+          <div className="tile-placeholder" />
+        </div>
+      )
+    });
   }
 
   render() {
@@ -38,7 +52,7 @@ class TileSwapBucket extends Component {
 
     return connectDropTarget(
       <div className="tile-swap-bucket">
-        { this.generateTilePlaceholders() }
+        { this.generateTiles() }
       </div>
     )
   }
