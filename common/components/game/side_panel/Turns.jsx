@@ -12,7 +12,11 @@ function findPlayerById(playerId, players) {
 function renderTurn(username, turn) {
   let suffix;
   if ( turn.pass ) {
-    suffix = turn.passReason === 'swap' ? 'swapped.' : 'passed.';
+    suffix = (
+      <span className="turn-data turn-passed">
+        { turn.passReason === 'swap' ? 'swapped.' : 'passed.' }
+      </span>
+    );
   } else {
     suffix = (
       <span>

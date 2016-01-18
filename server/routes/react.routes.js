@@ -48,6 +48,7 @@ export default function(app) {
           <title>Words With Strangers</title>
           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
           <link rel="stylesheet" href="/static/styles.css" />
+          <script src="//use.edgefonts.net/cabin:n4,n5,n6,n7.js"></script>
         </head>
         <body>
           <div id="app">${html}</div>
