@@ -24,10 +24,7 @@ export const initialState = fromJS({
   turns:        [],
   players:      [],
   bonusSquares: [],
-  swap: {
-    active: false,
-    bucket: []
-  }
+  swap:         []
 });
 
 export default function game(state = initialState, action) {
@@ -169,29 +166,28 @@ export default function game(state = initialState, action) {
         y: tile1Props.get('y')
       }
 
-      state = state.setIn( [tile2Location, tile2Index], tile2Props.merge(newTile2Coords));
-
-      state = state.setIn( [tile1Location, tile1Index], tile1Props.merge(newTile1Coords));
-
-      return state;
+      return state
+        .setIn( [tile2Location, tile2Index], tile2Props.merge(newTile2Coords))
+        .setIn( [tile1Location, tile1Index], tile1Props.merge(newTile1Coords))
+        .update('rack', orderAndResetRack);
 
 
       case TOGGLE_SWAPPING:
-        if ( state.getIn(['swap', 'active']) ) {
+        if ( state.get('isSwapActive') ) {
           // If we're cancelling our swap, we need to toggle the `active`
           // property, but also relegate any tiles in the swap bucket back
           // to the rack.
-          const swapTiles = state.getIn([ 'swap', 'bucket' ]);
+          const swapTiles = state.get('swap');
 
           return state
-            .setIn(['swap', 'active'], false)
+            .set('isSwapActive', false)
             // Empty out all tiles in the swap bucket
-            .setIn(['swap', 'bucket'], new List())
+            .set('swap', new List())
             .update('rack', rack => rack.concat(swapTiles))
             .update('rack', orderAndResetRack);
         } else {
           // If we're activating the swap area, we just need to toggle it.
-          return state.setIn(['swap', 'active'], true);
+          return state.set('isSwapActive', true);
         }
 
 
@@ -257,8 +253,10 @@ function getOriginalTileData(state, actionTile) {
     return tile.get('id') === actionTile.id;
   };
 
-  // First, figure out whether the tile is located on the board, or the rack.
-  const tileLocation = state.get('rack').find(tileFinder) ? 'rack' : 'board';
+  // First, figure out whether the tile is located on the board, swap, or rack.
+  const tileLocation = ['board', 'rack', 'swap'].find( location => (
+    state.get(location).find(tileFinder)
+  ));
   const [ tileIndex, tile ] = state.get(tileLocation).findEntry(tileFinder);
 
   return [ tile, tileIndex, tileLocation ];

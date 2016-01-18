@@ -22,6 +22,7 @@ const Game = React.createClass({
           turns={this.props.turns}
           title={this.props.title}
           swap={this.props.swap}
+          isSwapActive={this.props.isSwapActive}
           toggleSwapping={this.props.actions.toggleSwapping}
           submitSwappedTiles={this.props.actions.submitSwappedTiles}
           placeTile={this.props.actions.placeTile}

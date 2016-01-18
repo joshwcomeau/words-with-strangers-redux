@@ -5,7 +5,9 @@ import Turns              from './Turns.jsx';
 import TileSwap           from './TileSwap.jsx';
 
 const SidePanel = ({
-  players, turns, title, swap, toggleSwapping, submitSwappedTiles, placeTile
+  players, turns, title, swap,
+  isSwapActive, toggleSwapping,
+  submitSwappedTiles, placeTile
 }) => (
   <div id="side-panel">
     <h4 className="side-panel-title">{title}</h4>
@@ -13,6 +15,7 @@ const SidePanel = ({
     <Turns players={players} turns={turns} />
     <TileSwap
       swap={swap}
+      isSwapActive={isSwapActive}
       toggleSwapping={toggleSwapping}
       submitSwappedTiles={submitSwappedTiles}
       placeTile={placeTile}

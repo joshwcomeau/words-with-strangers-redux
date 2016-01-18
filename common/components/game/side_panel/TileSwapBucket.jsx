@@ -7,7 +7,7 @@ const tileTarget = {
     const tile = monitor.getItem();
     const tileData = {
       id: tile.id,
-      location: 'swap.bucket'
+      location: 'swap'
     };
 
     props.placeTile(tileData);
@@ -24,7 +24,7 @@ class TileSwapBucket extends Component {
     connectDropTarget:  PropTypes.func.isRequired,
     isOver:             PropTypes.bool.isRequired,
 
-    bucket:             PropTypes.array.isRequired
+    tiles:               PropTypes.array.isRequired
   };
 
   generateTilePlaceholders() {

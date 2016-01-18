@@ -30,6 +30,7 @@ const playersSelector         = state => {
 }
 const createdByUserIdSelector = state => state.game.createdByUserId;
 const isMyTurnSelector = state => state.game.isMyTurn;
+const isSwapActiveSelector = state => state.game.isSwapActive;
 
 
 
@@ -43,7 +44,8 @@ const gameSelector = createSelector(
   playersSelector,
   createdByUserIdSelector,
   isMyTurnSelector,
-  (title, board, rack, turns, bonusSquares, swap, players, createdByUserId, isMyTurn) => {
+  isSwapActiveSelector,
+  (title, board, rack, turns, bonusSquares, swap, players, createdByUserId, isMyTurn, isSwapActive) => {
     return {
       title,
       board,
@@ -54,6 +56,7 @@ const gameSelector = createSelector(
       players,
       createdByUserId,
       isMyTurn,
+      isSwapActive,
       computed: {
         isValidPlacement: validatePlacement(board)
       }

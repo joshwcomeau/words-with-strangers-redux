@@ -8,7 +8,7 @@ const TileSwap = (props) => {
   return (
     <div className="tile-swap-container">
       {
-        props.swap.active
+        props.isSwapActive
         ? renderActiveSwapping(props)
         : renderInactiveSwapping(props.toggleSwapping)
       }
@@ -19,16 +19,14 @@ const TileSwap = (props) => {
 TileSwap.propTypes = {
   toggleSwapping:     PropTypes.func.isRequired,
   submitSwappedTiles: PropTypes.func.isRequired,
-  swap:               PropTypes.shape({
-    active:           PropTypes.bool.isRequired,
-    bucket:           PropTypes.array.isRequired
-  }).isRequired
+  swap:               PropTypes.array.isRequired,
+  isSwapActive:       PropTypes.bool
 }
 
-function renderActiveSwapping({swap, submitSwappedTiles, toggleSwapping, placeTile}) {
+function renderActiveSwapping({swap, isSwapActive, submitSwappedTiles, toggleSwapping, placeTile}) {
   return (
     <div className="active-swapping">
-      <TileSwapBucket bucket={swap.bucket} placeTile={placeTile} />
+      <TileSwapBucket tiles={swap} placeTile={placeTile} />
       <div className="button-container">
         <button className="button submit-swapped-tiles">Swap</button>
         <button className="button cancel" onClick={toggleSwapping}>Cancel</button>
