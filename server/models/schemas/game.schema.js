@@ -64,7 +64,7 @@ GameSchema.methods.join = function(user) {
 
   // Return self, for chainability;
   return this;
-}
+};
 
 GameSchema.methods.submitWord = function(tiles, user) {
   // TODO: Validations.
@@ -118,7 +118,7 @@ GameSchema.methods.submitWord = function(tiles, user) {
   this.replenishPlayerRack(user);
 
   return this;
-}
+};
 
 GameSchema.methods.passTurn = function(user) {
   // We are only allowed to pass if it's our turn.
@@ -135,7 +135,27 @@ GameSchema.methods.passTurn = function(user) {
   });
 
   return this;
-}
+};
+
+GameSchema.methods.swapTiles = function(tiles, user) {
+  // Swapping a tile consists of three distinct actions.
+  // 1) We need to remove the specified tiles from the player's rack
+  // 2) We need to give them some new tiles, as many as they sent.
+  // 3) We need to create a new turn for this player. This is their turn.
+
+  // Don't proceed if it isn't the user's turn.
+  if ( this.currentTurnUserId !== user.id) {
+    return this;
+  }
+
+  tiles.forEach( tile => {
+    this.rack.id(tile.id).remove()
+  });
+
+  return this
+    .replenishPlayerRack(user)
+    .passTurn(user);
+};
 
 GameSchema.methods.asSeenByUser = function(user = {}) {
   // TODO: This method is hideous. Find a better way.
@@ -169,10 +189,10 @@ GameSchema.methods.asSeenByUser = function(user = {}) {
     }
     return tile;
   });
-  game.isMyTurn = this.currentTurnUserId.toString() === user.id
+  game.isMyTurn = this.currentTurnUserId === user.id
 
   return game;
-}
+};
 
 
 GameSchema.methods.replenishPlayerRack = function(player) {
@@ -182,7 +202,9 @@ GameSchema.methods.replenishPlayerRack = function(player) {
   const numToRefill = FULL_RACK_SIZE - numOfRackTiles;
 
   this.rack = this.rack.concat( generateTiles(player.id, numToRefill) );
-}
+
+  return this;
+};
 
 
 GameSchema.methods.assignTitle = function() {
@@ -200,7 +222,7 @@ GameSchema.methods.assignTitle = function() {
   ].map(_.capitalize);
 
   this.title = [_.sample(adjectives), _.sample(nouns)].join(' ');
-}
+};
 
 
 GameSchema.methods.assignBonusSquares = function() {
@@ -215,7 +237,7 @@ GameSchema.methods.assignBonusSquares = function() {
     square = BonusSquareSchema.statics.generateBonusSquare(this);
     this.bonusSquares.push(square);
   });
-}
+};
 
 
 
@@ -249,7 +271,7 @@ GameSchema.virtual('currentTurnUserId').get( function() {
   // May need to revisit this at some point.
 
   // if nobody's moved yet, it's the creator's turn.
-  if ( _.isEmpty(this.turns) ) return this.createdByUserId;
+  if ( _.isEmpty(this.turns) ) return this.createdByUserId.toString();
 
   // Otherwise, just do the math
   let player = this.players[ this.turns.length % this.players.length ];

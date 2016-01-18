@@ -12,6 +12,7 @@ import {
   PASS_TURN,
   PUSH_PATH,
   REQUEST_GAMES_LIST,
+  SUBMIT_SWAPPED_TILES,
   SUBMIT_WORD,
   SUBSCRIBE_TO_GAME,
   UPDATE_GAME_STATE,
@@ -29,6 +30,7 @@ export default function(mainIo) {
     sock.on(JOIN_GAME,              joinGame.bind(null, io, sock));
     sock.on(PASS_TURN,              passTurn.bind(null, io, sock));
     sock.on(REQUEST_GAMES_LIST,     requestGamesList.bind(null, io, sock));
+    sock.on(SUBMIT_SWAPPED_TILES,   submitSwappedTiles.bind(null, io, sock));
     sock.on(SUBMIT_WORD,            submitWord.bind(null, io, sock));
     sock.on(SUBSCRIBE_TO_GAME,      subscribeToGame.bind(null, io, sock));
     sock.on(UNSUBSCRIBE_FROM_GAME,  unsubscribeFromGame.bind(null, io, sock));
@@ -100,6 +102,20 @@ function requestGamesList(io, socket, data) {
   Game.list( (err, games) => {
     socket.emit(ADD_GAMES_TO_LIST, games);
   });
+}
+
+
+function submitSwappedTiles(io, socket, data) {
+  async.auto({
+    game: findGame.bind(null, data.gameId),
+    swap: ['game', (step, r) => {
+      r.game.swapTiles(data.tiles, data.auth.user).save(step)
+    }]
+  }, (err, results) => {
+    if ( err ) return console.error("Error swapping tiles", err);
+
+    broadcastGame(io, results.game);
+  })
 }
 
 

@@ -57,12 +57,17 @@ export function toggleSwapping() {
   }
 }
 
-export function submitSwappedTiles(tiles) {
-  return {
-    type: SUBMIT_SWAPPED_TILES,
-    meta: { remote: '/game'},
-    tiles,
-    gameId
+export function submitSwappedTiles() {
+  return function(dispatch, getState) {
+    const tiles   = getState().get('swap');
+    const gameId  = getState().getIn(['game', 'id']);
+
+    return dispatch({
+      type: SUBMIT_SWAPPED_TILES,
+      meta: { remote: '/game'},
+      tiles,
+      gameId
+    })
   }
 }
 

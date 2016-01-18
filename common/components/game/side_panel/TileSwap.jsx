@@ -28,7 +28,7 @@ function renderActiveSwapping({swap, isSwapActive, submitSwappedTiles, toggleSwa
     <div className="active-swapping">
       <TileSwapBucket tiles={swap} placeTile={placeTile} />
       <div className="button-container">
-        <button className="button submit-swapped-tiles">Swap</button>
+        <button className="button submit" onClick={submitSwappedTiles}>Swap</button>
         <button className="button cancel" onClick={toggleSwapping}>Cancel</button>
       </div>
     </div>

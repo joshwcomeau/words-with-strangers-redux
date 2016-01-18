@@ -206,7 +206,69 @@ describe('Game model', () => {
       expect(passedTurn.pass).to.equal(true);
       expect(passedTurn.playerId.toString()).to.equal(opponent.id);
     });
+  });
 
+  describe('#swapTiles', () => {
+    before( done => {
+      game = new Game({
+        createdByUserId: player.id
+      });
+
+      game.join(player).join(opponent);
+
+      let random_player_tile = _.sample(
+        _.filter(game.rack, tile => tile.playerId === player.id)
+      );
+      game.save( done );
+    });
+
+    it('swaps tiles and passes turn', () => {
+      const originalPlayerRack = _.filter(game.rack, tile => (
+        tile.playerId === player.id
+      ));
+
+      expect(game.turns).to.have.length.of(0);
+      expect(originalPlayerRack).to.have.length.of(FULL_RACK_SIZE);
+
+      // We're gonna swap 3 tiles.
+      const tilesToSwap = _.sample(originalPlayerRack, 3);
+      game.swapTiles(tilesToSwap, player);
+
+      expect(game.turns).to.have.length.of(1);
+
+      const newPlayerRack = _.filter(game.rack, tile => (
+        tile.playerId === player.id
+      ));
+      expect(newPlayerRack).to.have.length.of(FULL_RACK_SIZE);
+
+      // We expect that the user was given 3 new tiles. Therefore, the difference
+      // between the old rack and the new one should be the 3 new tiles.
+      const difference = _.difference(originalPlayerRack, newPlayerRack);
+      expect(difference).to.have.length.of(3);
+    });
+
+    it('does not let a user swap tiles when not their turn', () => {
+      const originalPlayerRack = _.filter(game.rack, tile => (
+        tile.playerId === player.id
+      ));
+      const tilesToSwap = _.sample(originalPlayerRack, 3);
+
+      expect(game.turns).to.have.length.of(1);
+
+      // This call should do nothing.
+      // Doesn't throw an exception, since there should be no way for it to
+      // be called in this situation.
+      game.swapTiles(tilesToSwap, player);
+
+      // Ensure it did nothing.
+      expect(game.turns).to.have.length.of(1);
+
+      const newPlayerRack = _.filter(game.rack, tile => (
+        tile.playerId === player.id
+      ));
+      const difference = _.difference(originalPlayerRack, newPlayerRack);
+      expect(difference).to.have.length.of(0);
+    });
   });
 
   describe('#assignBonusSquares', () => {
