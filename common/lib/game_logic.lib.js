@@ -1,7 +1,11 @@
 import _ from 'lodash';
 import { BOARD_SIZE } from '../constants/config.constants.js';
 
-import words from '../data/words';
+// In development, we don't want to bother loading the dictionary.
+let dictionary;
+if ( process.env.NODE_ENV !== 'development' ) {
+  dictionary = require('../data/words');
+}
 
 // NAMING CONVENTION.
 
@@ -82,9 +86,12 @@ export function validateWord(word) {
   // The dictionary is set up as one big object, where the keys are the letters
   // of the alphabet (a-z), and the values are an array of words that start
   // with that letter.
-  return true;
+
+  // To make development life easier, we don't bother checking word validity.
+  if ( process.env.NODE_ENV === 'development' ) return true;
+
   const firstLetter = word[0];
-  return _.includes(words[firstLetter], word);
+  return _.includes(dictionary[firstLetter], word);
 }
 
 
