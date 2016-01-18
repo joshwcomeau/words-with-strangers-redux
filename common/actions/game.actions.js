@@ -59,7 +59,7 @@ export function toggleSwapping() {
 
 export function submitSwappedTiles() {
   return function(dispatch, getState) {
-    const tiles   = getState().get('swap');
+    const tiles   = getState().get('game').get('swap').toJS();
     const gameId  = getState().getIn(['game', 'id']);
 
     return dispatch({

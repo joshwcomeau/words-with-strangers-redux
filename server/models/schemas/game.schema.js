@@ -120,7 +120,7 @@ GameSchema.methods.submitWord = function(tiles, user) {
   return this;
 };
 
-GameSchema.methods.passTurn = function(user) {
+GameSchema.methods.passTurn = function(user, reason = 'pass') {
   // We are only allowed to pass if it's our turn.
   // TODO: Some sort of exception handling? For now, given that it shouldn't
   // be possible to invoke this method when it isn't our turn, I'm just going
@@ -128,10 +128,11 @@ GameSchema.methods.passTurn = function(user) {
   if ( this.currentTurnUserId !== user.id) return this;
 
   this.turns.push({
-    points:   0,
-    pass:     true,
-    id:       this.turns.length,
-    playerId: user.id
+    points:     0,
+    pass:       true,
+    passReason: reason,
+    id:         this.turns.length,
+    playerId:   user.id
   });
 
   return this;
@@ -144,9 +145,11 @@ GameSchema.methods.swapTiles = function(tiles, user) {
   // 3) We need to create a new turn for this player. This is their turn.
 
   // Don't proceed if it isn't the user's turn.
-  if ( this.currentTurnUserId !== user.id) {
-    return this;
-  }
+  if ( this.currentTurnUserId !== user.id) return this;
+  // ...Or if we haven't provided any tiles
+  if ( _.isEmpty(tiles) )
+    return console.error("You tried to swap tiles, but none were provided!");
+
 
   tiles.forEach( tile => {
     this.rack.id(tile.id).remove()
@@ -154,7 +157,7 @@ GameSchema.methods.swapTiles = function(tiles, user) {
 
   return this
     .replenishPlayerRack(user)
-    .passTurn(user);
+    .passTurn(user, 'swap');
 };
 
 GameSchema.methods.asSeenByUser = function(user = {}) {

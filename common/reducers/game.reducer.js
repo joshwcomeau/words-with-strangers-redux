@@ -123,6 +123,12 @@ export default function game(state = initialState, action) {
       return state.set('rack', rack);
 
 
+    case SUBMIT_SWAPPED_TILES:
+      // The actual swapping logic happens on the server.
+      // Here, we just need to empty the swap.
+      return state.set('swap', new List());
+
+
     case SUBMIT_WORD:
       // NOTE: This is just for optimistic rendering.
       // The _real_ submission happens on the server, and if it succeeds,

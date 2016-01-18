@@ -7,11 +7,12 @@ const Schema = mongoose.Schema;
 
 
 const TurnSchema = new Schema({
-  id:       { type: Number, required: true },
-  playerId: { type: Schema.Types.ObjectId, required: true },
-  word:     { type: String, required: true },
-  points:   { type: Number, min: 1, max: 250, required: true },
-  pass:     { type: Boolean, required: false }
+  id:         { type: Number, required: true },
+  playerId:   { type: Schema.Types.ObjectId, required: true },
+  word:       { type: String },
+  points:     { type: Number, min: 0, max: 250, required: true },
+  pass:       { type: Boolean, required: false },
+  passReason: { type: String, enum: ['pass', 'swap'] }
 });
 TurnSchema.plugin(createdAndUpdatedAt, { index: true });
 

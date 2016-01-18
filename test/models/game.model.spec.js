@@ -235,6 +235,7 @@ describe('Game model', () => {
       game.swapTiles(tilesToSwap, player);
 
       expect(game.turns).to.have.length.of(1);
+      expect(game.turns[0].passReason).to.equal('swap');
 
       const newPlayerRack = _.filter(game.rack, tile => (
         tile.playerId === player.id
