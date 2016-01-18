@@ -125,8 +125,10 @@ export default function game(state = initialState, action) {
 
     case SUBMIT_SWAPPED_TILES:
       // The actual swapping logic happens on the server.
-      // Here, we just need to empty the swap.
-      return state.set('swap', new List());
+      // Here, we just need to empty the swap, and deactivate it
+      return state
+        .set('swap', new List())
+        .set('isSwapActive', false);
 
 
     case SUBMIT_WORD:

@@ -273,7 +273,7 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
       .button-container {
         display: flex;
 
-        .submit-swapped-tiles {
+        .submit {
           flex: 3;
           border-radius: 3px 0 0 3px;
         }
@@ -285,7 +285,7 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
 
       .tile-swap-bucket {
         display: flex;
-        padding: 0 4px;
+        padding: 4px 4px 0;
         flex-direction: row;
         flex-wrap: wrap;
         line-height: 0;

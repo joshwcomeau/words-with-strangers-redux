@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
-import classNames from 'classnames';
+import classNames           from 'classnames';
+import _                    from 'lodash';
 
-import TileSwapBucket from './TileSwapBucket';
+import TileSwapBucket       from './TileSwapBucket';
 
 
 const TileSwap = (props) => {
@@ -24,11 +25,24 @@ TileSwap.propTypes = {
 }
 
 function renderActiveSwapping({swap, isSwapActive, submitSwappedTiles, toggleSwapping, placeTile}) {
+  const emptySwap = _.isEmpty(swap);
+  const submitClasses = classNames({
+    button: true,
+    submit: true,
+    disabled: emptySwap
+  });
+
   return (
     <div className="active-swapping">
       <TileSwapBucket tiles={swap} placeTile={placeTile} />
       <div className="button-container">
-        <button className="button submit" onClick={submitSwappedTiles}>Swap</button>
+        <button
+          className={submitClasses}
+          disabled={emptySwap}
+          onClick={submitSwappedTiles}
+        >
+          Swap
+        </button>
         <button className="button cancel" onClick={toggleSwapping}>Cancel</button>
       </div>
     </div>
