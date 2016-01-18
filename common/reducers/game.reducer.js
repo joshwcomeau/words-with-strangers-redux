@@ -55,10 +55,17 @@ export default function game(state = initialState, action) {
       const newTile = createCopyOfTile(state, action, originalTile);
       const newTileLocation = action.tile.location;
 
+      let newTileLookupPath;
+      if ( newTileLocation === 'swap' ) {
+        newTileLookupPath = ['swap', 'bucket'];
+      } else {
+        newTileLookupPath = [newTileLocation]
+      }
+
       // We aren't actually just moving the tile from one area to another.
       // We'll delete the original tile, and then place a new tile.
-      state = state.deleteIn( [originalTileLocation, originalTileIndex] );
-      state = state.update( newTileLocation, tiles => tiles.push(newTile) );
+      state = state.deleteIn( originalTileLocation.concat(originalTileIndex) );
+      state = state.updateIn( newTileLookupPath, tiles => tiles.push(newTile) );
 
       // If we place a tile on top of a rack tile, it needs to take its place
       // and push all subsequent tiles down 1 position.
@@ -257,11 +264,23 @@ function getOriginalTileData(state, actionTile) {
     return tile.get('id') === actionTile.id;
   };
 
-  // First, figure out whether the tile is located on the board, or the rack.
-  const tileLocation = state.get('rack').find(tileFinder) ? 'rack' : 'board';
-  const [ tileIndex, tile ] = state.get(tileLocation).findEntry(tileFinder);
+  // First, figure out whether the tile is located on the board, swap or rack.
+  let tileLookupPath;
+  if ( state.get('rack').find(tileFinder) ) {
+    tileLookupPath = ['rack'];
+  } else if ( state.get('board').find(tileFinder) ) {
+    tileLookupPath = ['board'];
+  } else if ( state.get('swap').get('bucket').find(tileFinder) ) {
+    tileLookupPath = ['swap', 'bucket'];
+  } else {
+    throw 'Cannot find the requested tile in any location';
+  }
 
-  return [ tile, tileIndex, tileLocation ];
+  const tileLocation = tileLookupPath[0];
+
+  const [ tileIndex, tile ] = state.getIn(tileLookupPath).findEntry(tileFinder);
+
+  return [ tile, tileIndex, tileLookupPath[0] ];
 }
 
 function createCopyOfTile(state, action, originalTile) {
