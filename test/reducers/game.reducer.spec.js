@@ -40,10 +40,8 @@ describe('gameReducer', () => {
   describe('TOGGLE_SWAPPING', () => {
     it('enables swapping when it was disabled', () => {
       const state = fromJS({
-        swap: {
-          active: false,
-          bucket: []
-        }
+        swap: [],
+        isSwapActive: false
       });
       const action = {
         type: TOGGLE_SWAPPING,
@@ -51,22 +49,18 @@ describe('gameReducer', () => {
       const nextState = gameReducer(state, action);
 
       expect(nextState).to.equal(fromJS({
-        swap: {
-          active: true,
-          bucket: []
-        }
+        swap: [],
+        isSwapActive: true
       }));
     });
 
     it('disables swapping when it was enabled', () => {
       const state = fromJS({
-        swap: {
-          active: true,
-          bucket: [
-            { id: 1 },
-            { id: 2 }
-          ]
-        },
+        swap: [
+          { id: 1 },
+          { id: 2 }
+        ],
+        isSwapActive: true,
         rack: [
           { id: 3, x: 0 }
         ]
@@ -77,10 +71,8 @@ describe('gameReducer', () => {
       const nextState = gameReducer(state, action);
 
       expect(nextState).to.equal(fromJS({
-        swap: {
-          active: false,
-          bucket: []
-        },
+        swap: [],
+        isSwapActive: false,
         rack: [
           { id: 3, x: 0 },
           { id: 1, x: 1 },
