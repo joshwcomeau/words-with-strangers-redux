@@ -17,7 +17,7 @@ const rackSelector            = state => addLocationToTiles(state, 'rack');
 const titleSelector           = state => state.game.title;
 const turnsSelector           = state => state.game.turns;
 const bonusSquaresSelector    = state => state.game.bonusSquares;
-const swapSelector            = state => state.game.swap;
+const swapSelector            = state => addLocationToTiles(state, 'swap');
 const playersSelector         = state => {
   // We also want to store the points that each player has earned in this
   // game so far, on the players object.
