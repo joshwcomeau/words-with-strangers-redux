@@ -3,10 +3,13 @@ import { DropTarget }                   from 'react-dnd';
 import classNames                       from 'classnames';
 
 import Tile                             from '../Tile.jsx';
+import soundEffects                     from '../../../lib/sound_effects.lib';
 
 
 const tileTarget = {
   drop(props, monitor) {
+    soundEffects.play('place_tile');
+
     const tile = monitor.getItem();
     const tileData = {
       id: tile.id,

@@ -3,15 +3,19 @@ import { DragSource, DropTarget }       from 'react-dnd';
 import classNames                       from 'classnames';
 
 import { isEstablished, isTentative }   from '../../lib/game_logic.lib';
+import soundEffects                     from '../../lib/sound_effects.lib';
 
 const tileSource = {
   beginDrag(props) {
+    soundEffects.play('pick_tile');
     return props.tile;
   }
 };
 
 const tileTarget = {
   drop(props, monitor) {
+    soundEffects.play('place_tile');
+
     // We want to swap tile positions when dropped on top of one.
     const droppedTile = monitor.getItem();
     const underlyingTile = props.tile;
@@ -59,7 +63,6 @@ class Tile extends Component {
     tile:               PropTypes.shape({
       letter:               PropTypes.string.isRequired,
       points:               PropTypes.number.isRequired,
-      belongsToCurrentUser: PropTypes.bool.isRequired,
       location:             PropTypes.string.isRequired
     }).isRequired
   };

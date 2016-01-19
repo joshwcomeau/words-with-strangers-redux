@@ -4,11 +4,11 @@ import * as _                         from 'lodash';
 import classNames                     from 'classnames';
 
 import Tile                           from './Tile.jsx';
+import soundEffects                   from '../../lib/sound_effects.lib';
 
 
 const rackTarget = {
   drop(props, monitor) {
-
     // It's possible that this is an event bubbling up from a switch-tile drop.
     // If the player dropped a tile onto another tile to switch their positions,
     // we want to ignore this event.
@@ -22,6 +22,7 @@ const rackTarget = {
     };
 
     // Invoke the action.
+    soundEffects.play('place_tile');
     props.placeTile(tileData);
   }
 }
