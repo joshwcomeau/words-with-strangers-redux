@@ -23,13 +23,15 @@ import {
 
 export function pickTile() {
   return {
-    type: PICK_TILE
+    type: PICK_TILE,
+    meta: { sound: 'pick_tile' }
   }
 }
 
 export function placeTile(tile) {
   return {
     type: PLACE_TILE,
+    meta: { sound: 'place_tile' },
     tile
   };
 }

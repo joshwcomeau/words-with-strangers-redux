@@ -1,8 +1,8 @@
-import { createStore, applyMiddleware }  from 'redux';
-import thunk                             from 'redux-thunk';
+import { createStore, applyMiddleware }       from 'redux';
+import thunk                                  from 'redux-thunk';
 
-import rootReducer          from '../reducers';
-import { socketMiddleware } from '../middleware';
+import rootReducer                            from '../reducers';
+import { socketMiddleware, soundsMiddleware } from '../middleware';
 
 
 export default function configureStore(initialState, sockets = []) {
@@ -17,6 +17,7 @@ export default function configureStore(initialState, sockets = []) {
 
   // Add in our misc middleware:
   middlewares.push( thunk );
+  middlewares.push( soundsMiddleware );
 
   const createStoreWithMiddleware = applyMiddleware.apply(null, middlewares)(createStore);
 

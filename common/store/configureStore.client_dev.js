@@ -6,7 +6,8 @@ import DevTools     from '../containers/DevTools.jsx';
 
 import {
   loggerMiddleware,
-  socketMiddleware
+  socketMiddleware,
+  soundsMiddleware,
 } from '../middleware';
 
 
@@ -24,6 +25,7 @@ export default function configureStore(initialState, sockets = []) {
 
   // Add in our misc middleware:
   middlewares.push( thunk );
+  middlewares.push( soundsMiddleware );
 
   const createStoreWithMiddleware = compose(
     applyMiddleware.apply(this, middlewares),
