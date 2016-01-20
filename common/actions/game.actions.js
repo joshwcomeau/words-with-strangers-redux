@@ -89,9 +89,28 @@ export function unsubscribeFromGame(gameId) {
 }
 
 export function updateGameState(game) {
-  return {
-    type: UPDATE_GAME_STATE,
-    game
+  return function(dispatch, getState) {
+    // This is a blanket event that fires whenever the server has some kind
+    // of update for the client.
+    //
+    // One of the events that this could represent is the opponent ending their
+    // turn, and in this case we want to play a sound effect to notify the
+    // player that it's their turn now.
+    //
+    // To accomplish this, we'll check if the current state says it is not
+    // my turn, but the game being sent from the server says it is.
+    let action = {
+      type: UPDATE_GAME_STATE,
+      game
+    };
+
+    const wasMyTurn = getState().getIn(['game', 'isMyTurn']);
+    const isMyTurn  = game.isMyTurn;
+
+    if ( (wasMyTurn === false) && (isMyTurn === true) )
+      action.meta = { sound: 'turn_notification' };
+
+    return dispatch(action);
   }
 }
 
