@@ -24,7 +24,7 @@ TileSwap.propTypes = {
   isSwapActive:       PropTypes.bool
 }
 
-function renderActiveSwapping({swap, isSwapActive, submitSwappedTiles, toggleSwapping, placeTile}) {
+function renderActiveSwapping({swap, isSwapActive, submitSwappedTiles, toggleSwapping, pickTile, placeTile}) {
   const emptySwap = _.isEmpty(swap);
   const submitClasses = classNames({
     button: true,
@@ -34,7 +34,7 @@ function renderActiveSwapping({swap, isSwapActive, submitSwappedTiles, toggleSwa
 
   return (
     <div className="active-swapping">
-      <TileSwapBucket tiles={swap} placeTile={placeTile} />
+      <TileSwapBucket tiles={swap} pickTile={pickTile} placeTile={placeTile} />
       <div className="button-container">
         <button
           className={submitClasses}

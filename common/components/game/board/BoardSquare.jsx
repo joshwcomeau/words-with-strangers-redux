@@ -5,7 +5,6 @@ import classNames           from 'classnames';
 
 import Tile                 from '../Tile.jsx';
 import BonusSquare          from './BonusSquare.jsx';
-import soundEffects         from '../../../lib/sound_effects.lib';
 
 const BoardSquare = React.createClass({
   propTypes: {
@@ -30,6 +29,7 @@ const BoardSquare = React.createClass({
         tile={this.props.tile}
         switchTilePositions={this.props.switchTilePositions}
         isMyTurn={this.props.isMyTurn}
+        pickTile={this.props.pickTile}
         placeTile={this.props.placeTile}
       />
     );
@@ -67,7 +67,6 @@ const BoardSquare = React.createClass({
 
 const squareTarget = {
   drop(props, monitor) {
-    soundEffects.play('place_tile');
 
     // TODO: This shares a LOT of behaviour with TileRack.jsx's rackTarget.
     // Move it into some kind of lib file for DnD stuff?

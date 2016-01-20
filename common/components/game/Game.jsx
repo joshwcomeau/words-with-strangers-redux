@@ -25,17 +25,20 @@ const Game = React.createClass({
           isSwapActive={this.props.isSwapActive}
           toggleSwapping={this.props.actions.toggleSwapping}
           submitSwappedTiles={this.props.actions.submitSwappedTiles}
+          pickTile={this.props.actions.pickTile}
           placeTile={this.props.actions.placeTile}
         />
         <Board
           tiles={this.props.board}
           bonusSquares={this.props.bonusSquares}
+          pickTile={this.props.actions.pickTile}
           placeTile={this.props.actions.placeTile}
           switchTilePositions={this.props.actions.switchTilePositions}
           isMyTurn={this.props.isMyTurn}
         />
         <TileRack
           tiles={this.props.rack}
+          pickTile={this.props.actions.pickTile}
           placeTile={this.props.actions.placeTile}
           switchTilePositions={this.props.actions.switchTilePositions}
           isMyTurn={this.props.isMyTurn}

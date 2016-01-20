@@ -1,5 +1,6 @@
 // GAME constants
 export const SWITCH_TILE_POSITIONS  = 'SWITCH_TILE_POSITIONS';
+export const PICK_TILE              = 'PICK_TILE';
 export const PLACE_TILE             = 'PLACE_TILE';
 export const SUBMIT_WORD            = 'SUBMIT_WORD';
 export const PASS_TURN              = 'PASS_TURN';

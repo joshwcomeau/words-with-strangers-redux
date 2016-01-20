@@ -3,12 +3,10 @@ import { DropTarget }                   from 'react-dnd';
 import classNames                       from 'classnames';
 
 import Tile                             from '../Tile.jsx';
-import soundEffects                     from '../../../lib/sound_effects.lib';
 
 
 const tileTarget = {
   drop(props, monitor) {
-    soundEffects.play('place_tile');
 
     const tile = monitor.getItem();
     const tileData = {
@@ -34,8 +32,10 @@ class TileSwapBucket extends Component {
   };
 
   generateTiles() {
+    const { tiles, pickTile } = this.props;
+
     return _.range(8).map( (index) => {
-      const tile = this.props.tiles[index];
+      const tile = tiles[index];
       const classes = classNames({
         'tile-square': true,
         'contains-tile': !!tile
@@ -43,7 +43,7 @@ class TileSwapBucket extends Component {
 
       return (
         <div className={classes} key={index}>
-          { tile ? <Tile tile={tile} isMyTurn={true} /> : null }
+          { tile ? <Tile tile={tile} isMyTurn={true} pickTile={pickTile} /> : null }
           <div className="tile-placeholder" />
         </div>
       )

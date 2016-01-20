@@ -7,7 +7,8 @@ import TileSwap           from './TileSwap.jsx';
 const SidePanel = ({
   players, turns, title, swap,
   isSwapActive, toggleSwapping,
-  submitSwappedTiles, placeTile
+  pickTile, placeTile,
+  submitSwappedTiles
 }) => (
   <div id="side-panel">
     <h4 className="side-panel-title">{title}</h4>
@@ -18,6 +19,7 @@ const SidePanel = ({
       isSwapActive={isSwapActive}
       toggleSwapping={toggleSwapping}
       submitSwappedTiles={submitSwappedTiles}
+      pickTile={pickTile}
       placeTile={placeTile}
     />
 

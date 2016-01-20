@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 
 import {
+  PICK_TILE,
   PLACE_TILE,
   RECALL_TILES_TO_RACK,
   SHUFFLE_RACK,
@@ -19,6 +20,12 @@ import {
   validateWord
 }  from '../lib/game_logic.lib';
 
+
+export function pickTile() {
+  return {
+    type: PICK_TILE
+  }
+}
 
 export function placeTile(tile) {
   return {

@@ -27,6 +27,7 @@ const Board = React.createClass({
         key={x+'-'+y}
         x={x}
         y={y}
+        pickTile={this.props.pickTile}
         placeTile={this.props.placeTile}
         switchTilePositions={this.props.switchTilePositions}
         isMyTurn={this.props.isMyTurn}

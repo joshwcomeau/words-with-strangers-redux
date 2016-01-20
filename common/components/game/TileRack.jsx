@@ -41,6 +41,7 @@ class TileRack extends Component {
     const {
       tiles,
       isMyTurn,
+      pickTile,
       placeTile,
       switchTilePositions
     } = this.props;
@@ -50,7 +51,9 @@ class TileRack extends Component {
         tile={tile}
         switchTilePositions={switchTilePositions}
         isMyTurn={isMyTurn}
-        placeTile={placeTile}/>
+        pickTile={pickTile}
+        placeTile={placeTile}
+      />
     ));
   }
 
