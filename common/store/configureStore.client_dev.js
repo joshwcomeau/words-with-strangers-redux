@@ -1,15 +1,12 @@
 import { createStore, applyMiddleware, compose }  from 'redux';
-import thunk                                      from 'redux-thunk';
+import thunkMiddleware                            from 'redux-thunk';
+import soundsMiddleware                           from 'redux-sounds';
 
 import rootReducer  from '../reducers';
 import DevTools     from '../containers/DevTools.jsx';
 import sounds       from '../data/sounds';
 
-import {
-  loggerMiddleware,
-  socketMiddleware,
-  soundsMiddleware,
-} from '../middleware';
+import { loggerMiddleware, socketMiddleware } from '../middleware';
 
 
 export default function configureStore(initialState, sockets = []) {
@@ -25,7 +22,7 @@ export default function configureStore(initialState, sockets = []) {
   sockets.forEach( (socket) => middlewares.push( socketMiddleware(socket) ) );
 
   // Add in our misc middleware:
-  middlewares.push( thunk );
+  middlewares.push( thunkMiddleware );
   middlewares.push( soundsMiddleware(sounds) );
 
   const createStoreWithMiddleware = compose(
