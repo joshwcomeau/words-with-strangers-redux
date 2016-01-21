@@ -3,6 +3,7 @@ import thunk                                      from 'redux-thunk';
 
 import rootReducer  from '../reducers';
 import DevTools     from '../containers/DevTools.jsx';
+import sounds       from '../data/sounds';
 
 import {
   loggerMiddleware,
@@ -25,7 +26,7 @@ export default function configureStore(initialState, sockets = []) {
 
   // Add in our misc middleware:
   middlewares.push( thunk );
-  middlewares.push( soundsMiddleware );
+  middlewares.push( soundsMiddleware(sounds) );
 
   const createStoreWithMiddleware = compose(
     applyMiddleware.apply(this, middlewares),

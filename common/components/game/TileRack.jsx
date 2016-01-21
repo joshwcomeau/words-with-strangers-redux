@@ -4,7 +4,6 @@ import * as _                         from 'lodash';
 import classNames                     from 'classnames';
 
 import Tile                           from './Tile.jsx';
-import soundEffects                   from '../../lib/sound_effects.lib';
 
 
 const rackTarget = {
@@ -22,7 +21,6 @@ const rackTarget = {
     };
 
     // Invoke the action.
-    soundEffects.play('place_tile');
     props.placeTile(tileData);
   }
 }
