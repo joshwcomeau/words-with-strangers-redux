@@ -4,6 +4,11 @@ import { Link } from 'react-router';
 import moment   from 'moment';
 
 const GamesListTableRow = React.createClass({
+  isAuthUserAPlayer() {
+    const { game, authUser } = this.props;
+    if ( !authUser ) return false;
+    return game.players.find( player => player.id === authUser.id )
+  },
   formatStatus() {
     let status = this.props.game.status;
     return status.split('_').map(_.capitalize).join(' ');
@@ -22,16 +27,32 @@ const GamesListTableRow = React.createClass({
     ));
   },
   generateActionCell() {
-    if ( this.props.game.status !== 'waiting' ) return null;
-    if ( !this.props.authenticated ) return (
-      <button className="button disabled" disabled>Log in to join</button>
-    );
+    const { game, authenticated, authUser } = this.props;
 
-    return (
-      <button className="button" onClick={this.joinGameClickHandler}>
-        Join
-      </button>
-    );
+    // If the game isn't waiting, the "action" is just a link to the game.
+    // The text will depend on whether the authUser is in the game or not.
+    if ( game.status !== 'waiting' ) {
+      const linkText = this.isAuthUserAPlayer() ? 'Resume' : 'Spectate';
+      return (
+        <Link className="button" to={`/games/${game.id}`}>{linkText}</Link>
+      );
+    }
+
+    if ( !authenticated ) {
+      return (
+        <button className="button disabled" disabled>Login to join</button>
+      );
+    } else if ( this.isAuthUserAPlayer() ) {
+      return (
+        <Link className="button" to={`/games/${game.id}`}>Resume</Link>
+      );
+    } else {
+      return (
+        <button className="button" onClick={this.joinGameClickHandler}>
+          Join
+        </button>
+      );
+    }
   },
   render() {
     let game = this.props.game;

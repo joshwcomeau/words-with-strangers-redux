@@ -10,6 +10,7 @@ const GamesList = React.createClass({
     this.props.actions.requestGamesList()
   },
   render() {
+
     return (
       <div id="games-list" className="center-section">
         <GamesListHeader
@@ -19,6 +20,7 @@ const GamesList = React.createClass({
         <div className="card">
           <GamesListTable
             authenticated={this.props.auth.authenticated}
+            authUser={this.props.auth.user}
             games={this.props.gamesList}
             joinGame={this.props.actions.joinGame}
           />

@@ -3,7 +3,7 @@ import React  from 'react';
 
 import GamesListTableRow from './GamesListTableRow.jsx';
 
-const GamesListTable = ({games, joinGame, authenticated}) => (
+const GamesListTable = ({games, joinGame, authenticated, authUser}) => (
   <table>
     <thead>
       <tr>
@@ -15,12 +15,12 @@ const GamesListTable = ({games, joinGame, authenticated}) => (
       </tr>
     </thead>
     <tbody>
-      {generateList(games, joinGame, authenticated)}
+      {generateList(games, joinGame, authenticated, authUser)}
     </tbody>
   </table>
 );
 
-function generateList(games, joinGame, authenticated) {
+function generateList(games, joinGame, authenticated, authUser) {
   if ( _.isEmpty(games) ) {
     return (
       <tr>
@@ -38,6 +38,7 @@ function generateList(games, joinGame, authenticated) {
       game={game}
       joinGame={joinGame}
       authenticated={authenticated}
+      authUser={authUser}
     />
   ));
 }

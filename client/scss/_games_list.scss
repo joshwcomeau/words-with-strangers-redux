@@ -50,13 +50,15 @@
     }
 
     th:last-of-type, td:last-of-type {
-      text-align: right;
+      text-align: center;
     }
 
     .button {
-      padding-left: 1rem;
-      padding-right: 1rem;
+      width: 5rem;
       background: $green;
+      font-size: 11px;
+      height: 2rem;
+      line-height: 2rem;
     }
 
     .game-list-player {
