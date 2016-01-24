@@ -72,12 +72,18 @@ export function submitSwappedTiles() {
     const tiles   = getState().get('game').get('swap').toJS();
     const gameId  = getState().getIn(['game', 'id']);
 
+    // Return any tentative tiles to the rack, since the turn shouldn't
+    // be ended with stuff on the board.
+    dispatch({
+      type: RECALL_TILES_TO_RACK
+    });
+
     return dispatch({
       type: SUBMIT_SWAPPED_TILES,
       meta: { remote: '/game'},
       tiles,
       gameId
-    })
+    });
   }
 }
 
