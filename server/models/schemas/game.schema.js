@@ -53,6 +53,11 @@ GameSchema.plugin(toJSON);
 // INSTANCE METHODS /////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 GameSchema.methods.join = function(user) {
+  // Don't let a player join the game multiple times.
+  if ( this.players.find( player => player.id === user.id) )
+    throw new Error('Stop that!');
+
+
   // Attach the player to the game
   this.players.push( user );
 

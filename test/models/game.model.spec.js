@@ -166,6 +166,12 @@ describe('Game model', () => {
         expect(game.status).to.equal(GAME_STATUSES.in_progress);
       });
     });
+
+    context('attempting to join a game multiple times', () => {
+      it('throws an exception', () => {
+        expect(game.join.bind(null, opponent)).to.throw();
+      })
+    })
   });
 
   describe('#passTurn', () => {
