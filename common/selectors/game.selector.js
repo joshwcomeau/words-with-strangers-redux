@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import * as _             from 'lodash';
+import _                  from 'lodash';
 
 import {
   validatePlacement,
@@ -31,7 +31,12 @@ const playersSelector         = state => {
 const createdByUserIdSelector = state => state.game.createdByUserId;
 const isMyTurnSelector = state => state.game.isMyTurn;
 const isSwapActiveSelector = state => state.game.isSwapActive;
+const winnerSelector = state => {
+  if ( state.game.status !== 'completed' ) return undefined;
 
+  const playersWithPoints = playersSelector(state);
+  return _.last( _.sortBy(playersWithPoints, 'points') );
+}
 
 
 const gameSelector = createSelector(
@@ -46,7 +51,8 @@ const gameSelector = createSelector(
   createdByUserIdSelector,
   isMyTurnSelector,
   isSwapActiveSelector,
-  (id, title, board, rack, turns, bonusSquares, swap, players, createdByUserId, isMyTurn, isSwapActive) => {
+  winnerSelector,
+  (id, title, board, rack, turns, bonusSquares, swap, players, createdByUserId, isMyTurn, isSwapActive, winner) => {
     return {
       id,
       title,
@@ -59,6 +65,7 @@ const gameSelector = createSelector(
       createdByUserId,
       isMyTurn,
       isSwapActive,
+      winner,
       computed: {
         isValidPlacement: validatePlacement(board)
       }
