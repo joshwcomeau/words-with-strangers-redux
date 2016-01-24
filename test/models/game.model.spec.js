@@ -10,6 +10,7 @@ import BonusSquareSchema from '../../server/models/schemas/bonus_square.schema'
 import {
   BOARD_SIZE,
   GAME_STATUSES,
+  POINTS_TO_WIN,
   FULL_RACK_SIZE,
   MINUTES_TO_SHOW_GAME,
   BONUS_SQUARE_PERCENTAGES
@@ -174,6 +175,59 @@ describe('Game model', () => {
     })
   });
 
+  describe('#submitWord', () => {
+    before(() => {
+      game = new Game({
+        createdByUserId: player.id,
+        // Make sure this test isn't affected by bonus squares
+        bonusSquares: [ { x: 10, y: 10 }]
+      });
+
+      game.join(player).join(opponent);
+    });
+
+    describe('game state change', () => {
+      let randomPlayerTile;
+      before( done => {
+        randomPlayerTile = _.sample(
+          _.filter(game.rack, tile => tile.playerId === player.id)
+        );
+        game.submitWord([{
+          x:        1,
+          y:        1,
+          playerId: player.id,
+          letter:   randomPlayerTile.letter,
+          points:   randomPlayerTile.points,
+          id:       randomPlayerTile.id
+        }], player).save( done );
+      });
+
+      it('adds a turn', () => {
+        expect(game.turns).to.have.length.of(1);
+
+        const turn = game.turns[0];
+        expect(turn.word).to.equal(randomPlayerTile.letter);
+        expect(turn.points).to.equal(randomPlayerTile.points);
+        expect(turn.playerId.toString()).to.equal(player.id);
+      });
+
+      it('adds the tile to the board', () => {
+        expect(game.board).to.have.length.of(1);
+
+        const boardTile = game.board[0];
+        expect(boardTile.letter).to.equal(randomPlayerTile.letter);
+        expect(boardTile.points).to.equal(randomPlayerTile.points);
+        expect(boardTile.turnId).to.equal(0);
+      });
+
+      it('generates new tiles for the player', () => {
+        let tiles = _.filter(game.rack, tile => tile.playerId === player.id);
+
+        expect(tiles).to.have.length.of(8);
+      })
+    });
+  });
+
   describe('#passTurn', () => {
     before( done => {
       game = new Game({
@@ -182,16 +236,16 @@ describe('Game model', () => {
 
       game.join(player).join(opponent);
 
-      let random_player_tile = _.sample(
+      let randomPlayerTile = _.sample(
         _.filter(game.rack, tile => tile.playerId === player.id)
       );
       game.submitWord([{
         x:        1,
         y:        1,
         playerId: player.id,
-        letter:   random_player_tile.letter,
+        letter:   randomPlayerTile.letter,
         points:   5,
-        id:       random_player_tile.id
+        id:       randomPlayerTile.id
       }], player).save( done );
     });
 
@@ -222,7 +276,7 @@ describe('Game model', () => {
 
       game.join(player).join(opponent);
 
-      let random_player_tile = _.sample(
+      let randomPlayerTile = _.sample(
         _.filter(game.rack, tile => tile.playerId === player.id)
       );
       game.save( done );

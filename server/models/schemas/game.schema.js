@@ -112,14 +112,14 @@ GameSchema.methods.submitWord = function(tiles, user) {
     return tile;
   })
 
-  // 3. remove from rack
+  // 4. remove from rack
   // This is also pretty easy. We just need to delete these tiles
   // from the rack.
   tentativeTiles.forEach( tile => {
     this.rack.id(tile.id).remove()
   });
 
-  // 4. Make sure the player gets some new tiles.
+  // 5. Make sure the player gets some new tiles.
   this.replenishPlayerRack(user);
 
   return this;
@@ -296,7 +296,7 @@ GameSchema.pre('save', function(next) {
 
   if ( !this.title ) this.assignTitle();
 
-  this.assignBonusSquares();
+  if ( _.isEmpty(this.bonusSquares) ) this.assignBonusSquares();
 
   return next();
 });
