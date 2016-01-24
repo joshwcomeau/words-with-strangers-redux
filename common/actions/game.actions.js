@@ -54,10 +54,19 @@ export function subscribeToGame(gameId) {
 }
 
 export function passTurn(gameId) {
-  return {
-    type: PASS_TURN,
-    meta: { remote: '/game' },
-    gameId
+  return function(dispatch, getState) {
+
+    // Return any tentative tiles to the rack, since the turn shouldn't
+    // be ended with stuff on the board.
+    dispatch({
+      type: RECALL_TILES_TO_RACK
+    });
+
+    dispatch({
+      type: PASS_TURN,
+      meta: { remote: '/game' },
+      gameId
+    });
   }
 }
 
