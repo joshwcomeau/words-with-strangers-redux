@@ -64,7 +64,10 @@ export function passTurn(gameId) {
 
     dispatch({
       type: PASS_TURN,
-      meta: { remote: '/game' },
+      meta: {
+        favico: 'reset',
+        remote: '/game'
+      },
       gameId
     });
   }
@@ -89,7 +92,10 @@ export function submitSwappedTiles() {
 
     return dispatch({
       type: SUBMIT_SWAPPED_TILES,
-      meta: { remote: '/game'},
+      meta: {
+        favico: 'reset',
+        remote: '/game'
+      },
       tiles,
       gameId
     });
@@ -124,7 +130,10 @@ export function updateGameState(game) {
     const isMyTurn  = game.isMyTurn;
 
     if ( (wasMyTurn === false) && (isMyTurn === true) )
-      action.meta = { sound: 'turn_notification' };
+      action.meta = {
+        favico: 'increment',
+        sound: 'turn_notification'
+      };
 
     return dispatch(action);
   }
@@ -159,7 +168,10 @@ export function submitWord(type) {
 
     dispatch({
       type: SUBMIT_WORD,
-      meta: { remote: '/game' },
+      meta: {
+        favico: 'reset',
+        remote: '/game'
+      },
       tiles: wordTiles,
       gameId: game.id
     });

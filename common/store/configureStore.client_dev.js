@@ -28,7 +28,7 @@ export default function configureStore(initialState, sockets = []) {
   // Add in our misc middleware:
   middlewares.push( thunkMiddleware );
   middlewares.push( soundsMiddleware(sounds) );
-  middlewares.push( favicoMiddleware({}) );
+  middlewares.push( favicoMiddleware({ animation: 'fade' }) );
 
   const createStoreWithMiddleware = compose(
     applyMiddleware.apply(this, middlewares),

@@ -1,6 +1,7 @@
 // Add favicon tweaks in response to actions.
 import Favico from 'favico.js';
 
+
 const defaultFavicoOptions  = { animation: 'slide' };
 const favicoEnumValues      = [ 'increment', 'decrement', 'reset' ];
 
@@ -10,7 +11,7 @@ export default function(favicoOptions = defaultFavicoOptions) {
 
   return store => next => action => {
     // Ignore actions that don't tweak the favico
-    if ( !action.meta || !action.meta.favico ) {
+    if ( !action.meta || typeof action.meta.favico === 'undefined' ) {
       return next(action);
     }
 
@@ -33,10 +34,7 @@ export default function(favicoOptions = defaultFavicoOptions) {
 
       favicoVal = suppliedFavicoVal;
     } else {
-      let favicoAction = favicoEnumValues.find(suppliedFavicoVal);
-      if ( favicoAction ) favicoAction = favicoAction.toLowerCase();
-
-      switch (favicoAction) {
+      switch ( suppliedFavicoVal.toLowerCase() ) {
         case 'increment': favicoVal++; break;
         case 'decrement': favicoVal--; break;
         case 'reset':     favicoVal=0; break;
@@ -50,6 +48,9 @@ export default function(favicoOptions = defaultFavicoOptions) {
           return next(action);
       }
     }
+
+    // Don't allow negative numbers
+    favicoVal = ( favicoVal < 0 ) ? 0 : favicoVal;
 
     // Set the 'badge' to be our derived value.
     // The favico.js library will show it if it's a positive number,
