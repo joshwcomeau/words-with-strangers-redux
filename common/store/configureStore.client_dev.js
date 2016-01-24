@@ -6,7 +6,11 @@ import rootReducer  from '../reducers';
 import DevTools     from '../containers/DevTools.jsx';
 import sounds       from '../data/sounds';
 
-import { loggerMiddleware, socketMiddleware } from '../middleware';
+import {
+  loggerMiddleware,
+  socketMiddleware,
+  favicoMiddleware
+} from '../middleware';
 
 
 export default function configureStore(initialState, sockets = []) {
@@ -24,6 +28,7 @@ export default function configureStore(initialState, sockets = []) {
   // Add in our misc middleware:
   middlewares.push( thunkMiddleware );
   middlewares.push( soundsMiddleware(sounds) );
+  middlewares.push( favicoMiddleware({}) );
 
   const createStoreWithMiddleware = compose(
     applyMiddleware.apply(this, middlewares),

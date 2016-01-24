@@ -46,6 +46,11 @@ export default function(app) {
       <html>
         <head>
           <title>Words With Strangers</title>
+          <link rel="icon"
+            href="https://s3.amazonaws.com/wordswithstrangers/favicon/favicon.png"
+            sizes="128x128"
+            type="image/png"
+          />
           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
           <link rel="stylesheet" href="/static/styles.css" />
           <script src="//use.edgefonts.net/cabin:n4,n5,n6,n7.js"></script>
