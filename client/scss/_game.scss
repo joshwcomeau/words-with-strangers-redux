@@ -323,6 +323,11 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
         }
       }
     }
+
+    .pass-turn-container {
+      padding-top: 0 !important;
+      .button { width: 100%; }
+    }
   }
 
   #tile-rack {

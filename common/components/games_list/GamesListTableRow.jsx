@@ -40,7 +40,7 @@ const GamesListTableRow = React.createClass({
 
     if ( !authenticated ) {
       return (
-        <button className="button disabled" disabled>Login to join</button>
+        <button className="button" disabled>Login to join</button>
       );
     } else if ( this.isAuthUserAPlayer() ) {
       return (

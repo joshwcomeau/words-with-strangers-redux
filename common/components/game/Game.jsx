@@ -18,13 +18,16 @@ const Game = React.createClass({
     return (
       <div id="game">
         <SidePanel
+          gameId={this.props.id}
           players={this.props.players}
           turns={this.props.turns}
           title={this.props.title}
           swap={this.props.swap}
           isSwapActive={this.props.isSwapActive}
+          isMyTurn={this.props.isMyTurn}
           toggleSwapping={this.props.actions.toggleSwapping}
           submitSwappedTiles={this.props.actions.submitSwappedTiles}
+          passTurn={this.props.actions.passTurn}
           pickTile={this.props.actions.pickTile}
           placeTile={this.props.actions.placeTile}
         />

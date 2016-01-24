@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 
 import {
+  PASS_TURN,
   PICK_TILE,
   PLACE_TILE,
   RECALL_TILES_TO_RACK,

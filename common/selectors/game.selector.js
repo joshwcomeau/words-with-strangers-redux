@@ -7,14 +7,14 @@ import {
   calculatePointsForTurn
 }  from '../lib/game_logic.lib';
 
-
+const idSelector              = state => state.game.id;
+const titleSelector           = state => state.game.title;
 const boardSelector           = state => {
   let board = addLocationToTiles(state, 'board');
   board = addTurnPointsToEndOfWord(state, board);
   return board;
 };
 const rackSelector            = state => addLocationToTiles(state, 'rack');
-const titleSelector           = state => state.game.title;
 const turnsSelector           = state => state.game.turns;
 const bonusSquaresSelector    = state => state.game.bonusSquares;
 const swapSelector            = state => addLocationToTiles(state, 'swap');
@@ -35,6 +35,7 @@ const isSwapActiveSelector = state => state.game.isSwapActive;
 
 
 const gameSelector = createSelector(
+  idSelector,
   titleSelector,
   boardSelector,
   rackSelector,
@@ -45,8 +46,9 @@ const gameSelector = createSelector(
   createdByUserIdSelector,
   isMyTurnSelector,
   isSwapActiveSelector,
-  (title, board, rack, turns, bonusSquares, swap, players, createdByUserId, isMyTurn, isSwapActive) => {
+  (id, title, board, rack, turns, bonusSquares, swap, players, createdByUserId, isMyTurn, isSwapActive) => {
     return {
+      id,
       title,
       board,
       rack,
