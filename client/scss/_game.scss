@@ -425,3 +425,44 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
     }
   }
 }
+
+.results-container {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  background: rgba(0,0,0,0.4);
+
+  .results {
+    position: absolute;
+    height: 350px;
+    width: 75%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background: $white;
+    text-align: center;
+    padding: 2rem;
+    box-shadow: 3px 3px 9px rgba(0,0,0,0.2);
+
+    img {
+      width: 145px;
+    }
+
+    h2 {
+      font-size: 52px;
+      font-weight: 900;
+      margin: 1rem 0 2rem 0;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.3em;
+    }
+  }
+}

@@ -6,6 +6,7 @@ import TileRack   from './TileRack.jsx';
 import SidePanel  from './side_panel/SidePanel.jsx';
 import Board      from './board/Board.jsx';
 import Controls   from './Controls.jsx';
+import Results    from './Results.jsx';
 
 const Game = React.createClass({
   componentWillMount() {
@@ -53,6 +54,11 @@ const Game = React.createClass({
           shuffleRack={this.props.actions.shuffleRack}
           recallTilesToRack={this.props.actions.recallTilesToRack}
         />
+        {
+          this.props.status === 'completed'
+          ? <Results isWinner={this.props.isWinner} />
+          : null
+        }
       </div>
     );
   }

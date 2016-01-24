@@ -8,6 +8,7 @@ import {
 }  from '../lib/game_logic.lib';
 
 const idSelector              = state => state.game.id;
+const statusSelector          = state => state.game.status;
 const titleSelector           = state => state.game.title;
 const boardSelector           = state => {
   let board = addLocationToTiles(state, 'board');
@@ -31,16 +32,20 @@ const playersSelector         = state => {
 const createdByUserIdSelector = state => state.game.createdByUserId;
 const isMyTurnSelector = state => state.game.isMyTurn;
 const isSwapActiveSelector = state => state.game.isSwapActive;
-const winnerSelector = state => {
+const isWinnerSelector = state => {
   if ( state.game.status !== 'completed' ) return undefined;
 
-  const playersWithPoints = playersSelector(state);
-  return _.last( _.sortBy(playersWithPoints, 'points') );
+  const players = playersSelector(state);
+  const winner =  _.last( _.sortBy(players, 'points') );
+  const currentUser = _.find(players, { currentUser: true });
+
+  return winner.id !== currentUser.id
 }
 
 
 const gameSelector = createSelector(
   idSelector,
+  statusSelector,
   titleSelector,
   boardSelector,
   rackSelector,
@@ -51,10 +56,11 @@ const gameSelector = createSelector(
   createdByUserIdSelector,
   isMyTurnSelector,
   isSwapActiveSelector,
-  winnerSelector,
-  (id, title, board, rack, turns, bonusSquares, swap, players, createdByUserId, isMyTurn, isSwapActive, winner) => {
+  isWinnerSelector,
+  (id, status, title, board, rack, turns, bonusSquares, swap, players, createdByUserId, isMyTurn, isSwapActive, isWinner) => {
     return {
       id,
+      status,
       title,
       board,
       rack,
@@ -65,7 +71,7 @@ const gameSelector = createSelector(
       createdByUserId,
       isMyTurn,
       isSwapActive,
-      winner,
+      isWinner,
       computed: {
         isValidPlacement: validatePlacement(board)
       }
