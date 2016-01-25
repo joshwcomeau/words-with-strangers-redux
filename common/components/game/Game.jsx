@@ -23,6 +23,7 @@ const Game = React.createClass({
           players={this.props.players}
           turns={this.props.turns}
           title={this.props.title}
+          status={this.props.status}
           swap={this.props.swap}
           isSwapActive={this.props.isSwapActive}
           isMyTurn={this.props.isMyTurn}
