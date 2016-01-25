@@ -181,18 +181,16 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
       padding: 1rem;
     }
 
-    $player-row-height: 2rem;
-    $player-row-padding: 0.25rem;
+    $player-row-height: 3rem;
+    $player-row-padding: 0.6rem;
 
     .side-panel-players {
       background: $darkgray;
       color: $white;
-      padding: $gutter-width;
 
       .side-panel-player {
         position: relative;
         line-height: $player-row-height;
-        padding: $player-row-padding;
         border-bottom: 1px solid rgba(255,255,255,0.1);
         font-size: 0.8rem;
 
@@ -206,12 +204,27 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
           border-bottom: 0;
         }
 
+        .player-data {
+          position: relative;
+          z-index: 2;
+        }
+        .player-progress {
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: -1px;
+          background: $green;
+          width: 0;
+          border-bottom: 1px solid rgba(255,255,255,0.2);
+          transition: 2s;
+        }
+
         .avatar {
-          width: $player-row-height;
-          height: $player-row-height;
+          width: $player-row-height - 0.8rem;
+          height: $player-row-height - 0.8rem;
           border-radius: 100%;
           float: left;
-          margin-right: 0.6rem;
+          margin: 0.4rem $player-row-padding;
           background-size: cover;
           background-position: center center;
         }
@@ -220,9 +233,9 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
           position: absolute;
           font-weight: bold;
           color: $mediumgray;
-          top: $player-row-padding;
+          top: 0;
           right: $player-row-padding;
-          bottom: $player-row-padding;
+          bottom: 0;
         }
 
       }
