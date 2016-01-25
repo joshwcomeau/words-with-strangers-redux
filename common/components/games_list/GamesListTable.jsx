@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import moment from 'moment';
 import React  from 'react';
 
 import GamesListTableRow from './GamesListTableRow.jsx';
@@ -32,7 +33,11 @@ function generateList(games, joinGame, authenticated, authUser) {
     );
   }
 
-  return games.map( (game) => (
+  const sortedGames = games.sort( (gameA, gameB) => {
+    return moment(gameB.createdAt).unix() - moment(gameA.createdAt).unix();
+  });
+
+  return sortedGames.map( (game) => (
     <GamesListTableRow
       key={game.id}
       game={game}

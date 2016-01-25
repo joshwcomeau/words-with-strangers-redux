@@ -15,9 +15,12 @@ export default function game(state = initialState, action) {
 
     case GAME_STATUS_CHANGED:
       // Find the index of the changed game
-      let gameIndex = state.findIndex( game => game.id === action.game.id );
+      let oldGame = state.find( game => {
+        return game.get('id') === action.game.id;
+      });
 
-      return state.mergeIn([gameIndex], action.game);
+      // Delete the old game, and add in the new one
+      return state.delete(oldGame).add( fromJS(action.game) );
 
     default:
       return state
