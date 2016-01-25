@@ -35,11 +35,9 @@ const isSwapActiveSelector = state => state.game.isSwapActive;
 const isWinnerSelector = state => {
   if ( state.game.status !== 'completed' ) return undefined;
 
-  const players = playersSelector(state);
-  const winner =  _.last( _.sortBy(players, 'points') );
-  const currentUser = _.find(players, { currentUser: true });
+  const currentUser = _.find(state.game.players, { currentUser: true });
 
-  return winner.id !== currentUser.id
+  return state.game.winnerUserId === currentUser.id
 }
 
 

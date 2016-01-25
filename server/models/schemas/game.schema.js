@@ -14,6 +14,7 @@ import generateTiles            from '../../lib/tile_generator.lib';
 import {
   BOARD_SIZE,
   GAME_STATUSES,
+  POINTS_TO_WIN,
   GAME_STATUSES_ENUM,
   FULL_RACK_SIZE,
   MINUTES_TO_SHOW_GAME,
@@ -37,7 +38,15 @@ const GameSchema = new Schema({
   createdByUserId:  {
     required: true,
     type: Schema.Types.ObjectId,
-    ref: 'User' },
+    ref: 'User'
+  },
+  winnerUserId:     {
+    // Originally this was going to be a derived field, but this is safer.
+    // I might want to add the ability to 'surrender', in which case the
+    // winner wouldn't necessarily be the user with the highest points.
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
   players:          { type: [], default: [] },
   board:            { type: [TileSchema] },
   rack:             { type: [TileSchema] },
@@ -121,6 +130,19 @@ GameSchema.methods.submitWord = function(tiles, user) {
 
   // 5. Make sure the player gets some new tiles.
   this.replenishPlayerRack(user);
+
+  // 6. Figure out if this is a game-winning turn
+  const userPointsTotal = this.turns.reduce( (total, turn) => {
+    // Ignore skipped/swapped turns
+    if ( turn.pass ) return total;
+
+    return total + turn.points;
+  }, 0);
+
+  if ( userPointsTotal >= POINTS_TO_WIN ) {
+    this.status = 'completed';
+    this.winnerUserId = user.id;
+  }
 
   return this;
 };
