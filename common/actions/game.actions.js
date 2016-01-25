@@ -119,21 +119,37 @@ export function updateGameState(game) {
     // turn, and in this case we want to play a sound effect to notify the
     // player that it's their turn now.
     //
-    // To accomplish this, we'll check if the current state says it is not
-    // my turn, but the game being sent from the server says it is.
+    // This could also be the notification that I've won or lost the game.
+    // This event also requires a sound.
+    //
+    // To accomplish this, I'll perform some various checks and attach
+    // the sound metadata for the midd
     let action = {
       type: UPDATE_GAME_STATE,
       game
     };
 
-    const wasMyTurn = getState().getIn(['game', 'isMyTurn']);
-    const isMyTurn  = game.isMyTurn;
-
-    if ( (wasMyTurn === false) && (isMyTurn === true) )
+    // If the game is over, play the appropriate win/lose chime.
+    if ( game.status === 'completed' ) {
+      const currentUser = _.find(game.players, { currentUser: true });
+      const winner      = currentUser.id === game.winnerUserId;
+      const sound       = winner ? 'game_win' : 'game_lose';
       action.meta = {
         favico: 'increment',
-        sound: 'turn_notification'
-      };
+        sound
+      }
+    } else {
+      const wasMyTurn = getState().getIn(['game', 'isMyTurn']);
+      const isMyTurn  = game.isMyTurn;
+
+      if ( (wasMyTurn === false) && (isMyTurn === true) ) {
+        action.meta = {
+          favico: 'increment',
+          sound: 'turn_notification'
+        };
+      }
+    }
+
 
     return dispatch(action);
   }
