@@ -215,6 +215,7 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
           bottom: -1px;
           background: $green;
           width: 0;
+          max-width: 105%;
           border-bottom: 1px solid rgba(255,255,255,0.2);
           transition: 2s;
         }
@@ -439,42 +440,6 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
   }
 
   #results {
-    position: fixed;
-    z-index: 10;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: 0;
-    background: rgba(0,0,0,0.7);
-
-    .results-outer {
-      position: absolute;
-      height: 350px;
-      width: 575px;
-      max-width: 75%;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin: auto;
-      text-align: center;
-      background: darken($lightgray, 10%);
-      box-shadow: 3px 3px 9px rgba(0,0,0,0.2);
-      border-radius: 2px;
-    }
-    .results-inner {
-      position: absolute;
-      top: 6px;
-      left: 6px;
-      right: 6px;
-      bottom: 6px;
-      background: $white;
-      padding: 2rem;
-      box-shadow: 1px 1px 1px rgba(0,0,0,0.2);
-      border-radius: 2px;
-    }
-
     img {
       width: 145px;
     }
@@ -488,6 +453,7 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
     p {
       font-size: 18px;
       line-height: 1.3em;
+      margin-bottom: 2rem;
     }
 
     .win h2 {

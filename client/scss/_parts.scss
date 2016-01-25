@@ -113,7 +113,7 @@
   display: inline-block;
   height: 2.3rem;
   line-height: 2.3rem;
-  padding-top: 0;
+  padding: 0 1rem;
   border-radius: 3px;
   border: 0;
   outline: none;
@@ -169,5 +169,43 @@
     &:hover {
       background: darken($googlered, 8%);
     }
+  }
+}
+
+.modal {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  background: rgba(0,0,0,0.7);
+
+  .modal-outer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    height: 425px;
+    width: 575px;
+    max-width: 75%;
+    text-align: center;
+    background: darken($lightgray, 10%);
+    box-shadow: 3px 3px 9px rgba(0,0,0,0.2);
+    border-radius: 2px;
+  }
+  .modal-inner {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    background: $white;
+    padding: 2rem;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+    border-radius: 2px;
   }
 }
