@@ -136,6 +136,9 @@ GameSchema.methods.submitWord = function(tiles, user) {
     // Ignore skipped/swapped turns
     if ( turn.pass ) return total;
 
+    // Only consider the current user's points!
+    if ( turn.playerId != user.id ) return total;
+
     return total + turn.points;
   }, 0);
 
