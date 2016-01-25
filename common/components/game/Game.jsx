@@ -40,20 +40,9 @@ const Game = React.createClass({
           switchTilePositions={this.props.actions.switchTilePositions}
           isMyTurn={this.props.isMyTurn}
         />
-        <TileRack
-          tiles={this.props.rack}
-          pickTile={this.props.actions.pickTile}
-          placeTile={this.props.actions.placeTile}
-          switchTilePositions={this.props.actions.switchTilePositions}
-          isMyTurn={this.props.isMyTurn}
-        />
-        <Controls
-          isMyTurn={this.props.isMyTurn}
-          isValidPlacement={this.props.computed.isValidPlacement}
-          submitWord={this.props.actions.submitWord}
-          shuffleRack={this.props.actions.shuffleRack}
-          recallTilesToRack={this.props.actions.recallTilesToRack}
-        />
+        { generateRack(this.props) }
+        { generateControls(this.props) }
+        { generateWaiting(this.props)}
         {
           this.props.status === 'completed'
           ? <Results isWinner={this.props.isWinner} />
@@ -62,7 +51,44 @@ const Game = React.createClass({
       </div>
     );
   }
-
 });
+
+function generateRack(props) {
+  if ( props.status === 'in_progress' ) {
+    return (
+      <TileRack
+        tiles={props.rack}
+        pickTile={props.actions.pickTile}
+        placeTile={props.actions.placeTile}
+        switchTilePositions={props.actions.switchTilePositions}
+        isMyTurn={props.isMyTurn}
+      />
+    );
+  }
+}
+
+function generateControls(props) {
+  if ( props.status === 'in_progress' ) {
+    return (
+      <Controls
+        isMyTurn={props.isMyTurn}
+        isValidPlacement={props.computed.isValidPlacement}
+        submitWord={props.actions.submitWord}
+        shuffleRack={props.actions.shuffleRack}
+        recallTilesToRack={props.actions.recallTilesToRack}
+      />
+    );
+  }
+}
+
+function generateWaiting(props) {
+  if ( props.status === 'waiting' ) {
+    return (
+      <div id="waiting">
+        <h2>Waiting for Players...</h2>
+      </div>
+    );
+  }
+}
 
 export default DragDropContext(Html5Backend)(Game);

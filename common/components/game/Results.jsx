@@ -2,9 +2,9 @@ import React  from 'react';
 import _      from 'lodash';
 
 const Results = ({ isWinner }) => (
-  <div className="results-container">
+  <div id="results">
     <div className="results-outer">
-      <div className="results">
+      <div className="results-inner">
         { isWinner ? generateWin() : generateLose() }
       </div>
     </div>

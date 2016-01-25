@@ -437,66 +437,94 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
       }
     }
   }
-}
 
-.results-container {
-  position: fixed;
-  z-index: 10;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: 0;
-  background: rgba(0,0,0,0.7);
-
-  .results-outer {
-    position: absolute;
-    height: 350px;
-    width: 575px;
-    max-width: 75%;
+  #results {
+    position: fixed;
+    z-index: 10;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    margin: auto;
-    text-align: center;
-    background: darken($lightgray, 10%);
-    box-shadow: 3px 3px 9px rgba(0,0,0,0.2);
-    border-radius: 2px;
+    margin: 0;
+    background: rgba(0,0,0,0.7);
+
+    .results-outer {
+      position: absolute;
+      height: 350px;
+      width: 575px;
+      max-width: 75%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      text-align: center;
+      background: darken($lightgray, 10%);
+      box-shadow: 3px 3px 9px rgba(0,0,0,0.2);
+      border-radius: 2px;
+    }
+    .results-inner {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      right: 6px;
+      bottom: 6px;
+      background: $white;
+      padding: 2rem;
+      box-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+      border-radius: 2px;
+    }
+
+    img {
+      width: 145px;
+    }
+
+    h2 {
+      font-size: 52px;
+      font-weight: 900;
+      margin: 1rem 0 2rem 0;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 1.3em;
+    }
+
+    .win h2 {
+      color: $green;
+    }
+
+    .lose h2 {
+      color: $red;
+    }
   }
-  .results {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    right: 6px;
-    bottom: 6px;
+
+  #waiting {
+    position: relative;
+    padding: $gutter-width*2;
+    margin: $gutter-width*2 0;
     background: $white;
-    padding: 2rem;
-    box-shadow: 1px 1px 1px rgba(0,0,0,0.2);
-    border-radius: 2px;
-  }
+    text-align: center;
+    width:  $board-width;
+    animation: float 10s ease-in-out infinite;
 
-  img {
-    width: 145px;
-  }
+    h2 {
+      position: relative;
+      font-size: 1.5rem;
+      font-weight: 700;
+      animation: pulse 4.5s infinite;
+    }
 
-  h2 {
-    font-size: 52px;
-    font-weight: 900;
-    margin: 1rem 0 2rem 0;
-  }
+    @keyframes pulse {
+      0%    { opacity: 0.4; }
+      50%   { opacity: 1;   }
+      100%  { opacity: 0.4; }
+    }
 
-  p {
-    font-size: 18px;
-    line-height: 1.3em;
+    @keyframes float {
+      0%    { transform: translate(0, -4px); }
+      50%   { transform: translate(0, 4px); }
+      100%  { transform: translate(0, -4px); }
+    }
   }
-
-  .win h2 {
-    color: $green;
-  }
-
-  .lose h2 {
-    color: $red;
-  }
-
 }
