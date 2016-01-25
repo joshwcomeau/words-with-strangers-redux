@@ -3,8 +3,10 @@ import _      from 'lodash';
 
 const Results = ({ isWinner }) => (
   <div className="results-container">
-    <div className="results">
-      { isWinner ? generateWin() : generateLose() }
+    <div className="results-outer">
+      <div className="results">
+        { isWinner ? generateWin() : generateLose() }
+      </div>
     </div>
   </div>
 );
