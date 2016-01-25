@@ -277,7 +277,7 @@ GameSchema.methods.assignBonusSquares = function() {
 GameSchema.statics.list = function(callback) {
   // For now, we want all non-abandoned games created in the last 5 days.
   return this.find({
-    status:     { $ne: GAME_STATUSES.abandoned },
+    status:     { $in: [GAME_STATUSES.waiting, GAME_STATUSES.in_progress] },
     createdAt:  {
       $gte: moment().subtract(MINUTES_TO_SHOW_GAME, 'minutes').toDate()
     }
