@@ -9,7 +9,7 @@ const Players = ({players}) => (
     {
       players
         .sort( (p1, p2) => p2.points - p1.points )
-        .map( player => <Player key={player.id} player={player} /> )
+        .map( player => <Player key={player.id} {...player} /> )
     }
   </div>
 );

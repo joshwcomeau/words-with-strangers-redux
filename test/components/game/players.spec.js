@@ -17,13 +17,11 @@ describe('Players component', () => {
     afterEach(  () => consoleStub.reset() );
     after(      () => consoleStub.restore() );
 
-    it('warns when players are not provided', () => {
-      shallowDOM.render(<Players players={[]}/>);
-
-      expect(consoleStub).to.have.been.calledOnce;
-
+    it('throws when players are not provided', () => {
+      // It doesn't even make it to the console warn, because not having
+      // a players array causes the component to crash. Just as well.
+      expect(shallowDOM.render.bind(null, <Players />)).to.throw();
     });
-
   });
   it('sorts players by points', () => {
     const dick    = { id: '456', username: 'Dick', points: 12 };
@@ -37,7 +35,7 @@ describe('Players component', () => {
     const [ p1, p2 ] = component.props.children;
 
     expect(component.props.children).to.have.length.of(2);
-    expect(p1.props.player).to.deep.equal(dick);
-    expect(p2.props.player).to.deep.equal(tom);
+    expect(p1.props).to.deep.equal(dick);
+    expect(p2.props).to.deep.equal(tom);
   });
 });

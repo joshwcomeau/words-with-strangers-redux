@@ -60,7 +60,8 @@ class Tile extends Component {
     tile:               PropTypes.shape({
       letter:               PropTypes.string.isRequired,
       points:               PropTypes.number.isRequired,
-      location:             PropTypes.string.isRequired
+      location:             PropTypes.string.isRequired,
+      belongsToCurrentUser: PropTypes.bool.isRequired
     }).isRequired
   };
 

@@ -217,9 +217,7 @@ GameSchema.methods.asSeenByUser = function(user = {}) {
 
   game.rack = game.rack.map( tile => _.extend(tile, { belongsToCurrentUser: true }));
   game.board = game.board.map( tile => {
-    if ( tile.playerId === user.id ) {
-      tile.belongsToCurrentUser = true;
-    }
+    tile.belongsToCurrentUser = tile.playerId === user.id;
     return tile;
   });
   game.isMyTurn = this.currentTurnUserId === user.id
