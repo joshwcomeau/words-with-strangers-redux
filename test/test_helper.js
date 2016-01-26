@@ -5,6 +5,7 @@ import nconf          from 'nconf';
 import chai           from 'chai';
 import chaiImmutable  from 'chai-immutable';
 import equalJSX       from 'chai-equal-jsx';
+import sinonChai      from 'sinon-chai';
 
 
 console.info("------ Setting up! ------");
@@ -14,7 +15,7 @@ import '../server/initialize';
 
 chai.use(chaiImmutable);
 chai.use(equalJSX);
-
+chai.use(sinonChai);
 
 // connect to and wipe the test DB
 const dbName = nconf.get('DB_NAME');

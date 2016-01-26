@@ -1,34 +1,27 @@
-import React  from 'react';
-import * as _ from 'lodash';
+import React, { PropTypes } from 'react';
+import _                    from 'lodash';
 
-import { POINTS_TO_WIN } from '../../../constants/config.constants';
+import Player from './Player.jsx'
+
 
 const Players = ({players}) => (
-  <div className="side-panel-players">{renderPlayers(players)}</div>
+  <div className="side-panel-players">
+    {
+      players
+        .sort( (p1, p2) => p2.points - p1.points )
+        .map( player => <Player key={player.id} player={player} /> )
+    }
+  </div>
 );
 
-function renderPlayers(players) {
-  // Sort players by whoever's winning.
-  players = _.sortBy(players, 'points').reverse();
-
-  return players.map( (player) => {
-    const percentage = Math.round((player.points / POINTS_TO_WIN) * 100);
-    const styles = {
-      width: percentage+"%"
-    }
-
-    return (
-      <div className="side-panel-player" key={player.id}>
-        <div className="player-data">
-          <div className="avatar" style={{backgroundImage: `url('${player.profilePhoto}')`}}></div>
-          <div className="username">{player.username}</div>
-          <div className="points">{player.points}</div>
-        </div>
-        <div className="player-progress" style={styles}></div>
-      </div>
-    );
-  });
-}
-
+Players.propTypes = {
+  players: PropTypes.arrayOf(
+    PropTypes.shape({
+      id:       PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+      points:   PropTypes.number.isRequired
+    })
+  ).isRequired,
+};
 
 export default Players;

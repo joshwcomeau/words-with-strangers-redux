@@ -1,0 +1,43 @@
+import _          from 'lodash';
+import React      from 'react';
+import { expect } from 'chai';
+import sinon      from 'sinon';
+import TestUtils  from 'react-addons-test-utils';
+
+import Players    from '../../../common/components/game/side_panel/Players.jsx';
+
+const shallowDOM = TestUtils.createRenderer();
+
+
+describe('Players component', () => {
+  describe('propTypes', () => {
+    let consoleStub;
+
+    before(     () => consoleStub = sinon.stub(console, 'error') );
+    afterEach(  () => consoleStub.reset() );
+    after(      () => consoleStub.restore() );
+
+    it('warns when players are not provided', () => {
+      shallowDOM.render(<Players players={[]}/>);
+
+      expect(consoleStub).to.have.been.calledOnce;
+
+    });
+
+  });
+  it('sorts players by points', () => {
+    const dick    = { id: '456', username: 'Dick', points: 12 };
+    const tom     = { id: '123', username: 'Tom', points: 5 }
+    const players = [ tom, dick ];
+
+    shallowDOM.render(<Players players={players} />);
+
+    const component = shallowDOM.getRenderOutput();
+
+    const [ p1, p2 ] = component.props.children;
+
+    expect(component.props.children).to.have.length.of(2);
+    expect(p1.props.player).to.deep.equal(dick);
+    expect(p2.props.player).to.deep.equal(tom);
+  });
+});
