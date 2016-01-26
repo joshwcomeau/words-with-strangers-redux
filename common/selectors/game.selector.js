@@ -39,6 +39,7 @@ const isWinnerSelector = state => {
 
   return state.game.winnerUserId === currentUser.id
 }
+const authUserSelector = state => state.auth.user;
 
 
 const gameSelector = createSelector(
@@ -55,7 +56,8 @@ const gameSelector = createSelector(
   isMyTurnSelector,
   isSwapActiveSelector,
   isWinnerSelector,
-  (id, status, title, board, rack, turns, bonusSquares, swap, players, createdByUserId, isMyTurn, isSwapActive, isWinner) => {
+  authUserSelector,
+  (id, status, title, board, rack, turns, bonusSquares, swap, players, createdByUserId, isMyTurn, isSwapActive, isWinner, authUser) => {
     return {
       id,
       status,
@@ -70,6 +72,7 @@ const gameSelector = createSelector(
       isMyTurn,
       isSwapActive,
       isWinner,
+      authUser,
       computed: {
         isValidPlacement: validatePlacement(board)
       }
