@@ -566,12 +566,8 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
 
         &:hover {
           transition: 0.25s;
-          &.left {
-            border-right:10px solid $green;
-          }
-          &.right {
-            border-left:10px solid $green;
-          }
+          &.left { border-right:10px solid $green; }
+          &.right { border-left:10px solid $green; }
         }
       }
 

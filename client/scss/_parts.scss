@@ -126,6 +126,7 @@
 
   &:disabled {
     background: $mediumgray !important;
+    cursor: not-allowed;
 
     &:hover {
       background: $mediumgray;
