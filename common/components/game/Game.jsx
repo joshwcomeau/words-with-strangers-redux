@@ -50,7 +50,11 @@ const Game = React.createClass({
           ? <Results isWinner={this.props.isWinner} />
           : null
         }
-        <RulesCard authUser={this.props.authUser} />
+        {
+          this.props.isViewingRules
+          ? <RulesCard toggleRules={this.props.actions.toggleRules} />
+          : null
+        }
       </div>
     );
   }

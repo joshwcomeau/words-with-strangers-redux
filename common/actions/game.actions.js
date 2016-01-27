@@ -10,6 +10,7 @@ import {
   SUBMIT_WORD,
   SUBSCRIBE_TO_GAME,
   SWITCH_TILE_POSITIONS,
+  TOGGLE_RULES,
   TOGGLE_SWAPPING,
   UNSUBSCRIBE_FROM_GAME,
   UPDATE_GAME_STATE
@@ -70,6 +71,12 @@ export function passTurn(gameId) {
       },
       gameId
     });
+  }
+}
+
+export function toggleRules() {
+  return {
+    type: TOGGLE_RULES
   }
 }
 

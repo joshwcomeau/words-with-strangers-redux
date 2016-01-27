@@ -11,6 +11,7 @@ export const SWITCH_TILE_POSITIONS  = 'SWITCH_TILE_POSITIONS';
 export const TOGGLE_SWAPPING        = 'TOGGLE_SWAPPING';
 export const UNSUBSCRIBE_FROM_GAME  = 'UNSUBSCRIBE_FROM_GAME';
 export const UPDATE_GAME_STATE      = 'UPDATE_GAME_STATE';
+export const TOGGLE_RULES           = 'TOGGLE_RULES';
 
 // GAMES_LIST constants
 export const ADD_GAMES_TO_LIST      = 'ADD_GAMES_TO_LIST';

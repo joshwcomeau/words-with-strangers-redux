@@ -1,6 +1,8 @@
 import * as _                 from 'lodash';
 import { List, Map, fromJS }  from 'immutable';
 import {
+  CREATE_GAME,
+  JOIN_GAME,
   PASS_TURN,
   PLACE_TILE,
   RECALL_TILES_TO_RACK,
@@ -8,6 +10,7 @@ import {
   SUBMIT_SWAPPED_TILES,
   SUBMIT_WORD,
   SWITCH_TILE_POSITIONS,
+  TOGGLE_RULES,
   TOGGLE_SWAPPING,
   UNSUBSCRIBE_FROM_GAME,
   UPDATE_GAME_STATE
@@ -29,6 +32,12 @@ export const initialState = fromJS({
 
 export default function game(state = initialState, action) {
   switch (action.type) {
+    case CREATE_GAME:
+      return state.set('isViewingRules', true);
+
+    case JOIN_GAME:
+      return state.set('isViewingRules', true);
+
     case PASS_TURN:
       // NOTE: This is just for optimistic rendering.
       // The _real_ submission happens on the server, and if it succeeds,
@@ -178,6 +187,10 @@ export default function game(state = initialState, action) {
         .setIn( [tile2Location, tile2Index], tile2Props.merge(newTile2Coords))
         .setIn( [tile1Location, tile1Index], tile1Props.merge(newTile1Coords))
         .update('rack', orderAndResetRack);
+
+
+      case TOGGLE_RULES:
+        return state.update('isViewingRules', val => !val);
 
 
       case TOGGLE_SWAPPING:

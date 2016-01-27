@@ -12,10 +12,6 @@ import rules from '../../data/rules';
 // Closing the rules is a legitimate action, but browsing between them is
 // uninteresting to the app at large.
 class RulesCard extends Component {
-  static propTypes = {
-    authUser: PropTypes.object.isRequired
-  };
-
   constructor(props) {
     super(props);
 
@@ -38,7 +34,7 @@ class RulesCard extends Component {
   }
 
   generateRules() {
-    return rules.map( rule => <Rule {...rule} /> );
+    return rules.map( (rule, n) => <Rule key={n} {...rule} /> );
   }
 
   generateDots() {
@@ -50,6 +46,7 @@ class RulesCard extends Component {
 
       return (
         <div
+          key={n}
           className={classes}
           onClick={this.select.bind(this, n)}
         />
@@ -77,7 +74,7 @@ class RulesCard extends Component {
             <div className="arrow right" onClick={this.increment.bind(this)} />
           </div>
 
-          <button className="button" onClick={this.props.dismissModal}>
+          <button className="button" onClick={this.props.toggleRules}>
             Start Game
           </button>
 

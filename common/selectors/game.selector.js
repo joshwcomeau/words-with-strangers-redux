@@ -32,6 +32,7 @@ const playersSelector         = state => {
 const createdByUserIdSelector = state => state.game.createdByUserId;
 const isMyTurnSelector = state => state.game.isMyTurn;
 const isSwapActiveSelector = state => state.game.isSwapActive;
+const isViewingRulesSelector = state => state.game.isViewingRules;
 const isWinnerSelector = state => {
   if ( state.game.status !== 'completed' ) return undefined;
 
@@ -55,9 +56,10 @@ const gameSelector = createSelector(
   createdByUserIdSelector,
   isMyTurnSelector,
   isSwapActiveSelector,
+  isViewingRulesSelector,
   isWinnerSelector,
   authUserSelector,
-  (id, status, title, board, rack, turns, bonusSquares, swap, players, createdByUserId, isMyTurn, isSwapActive, isWinner, authUser) => {
+  (id, status, title, board, rack, turns, bonusSquares, swap, players, createdByUserId, isMyTurn, isSwapActive, isViewingRules, isWinner, authUser) => {
     return {
       id,
       status,
@@ -71,6 +73,7 @@ const gameSelector = createSelector(
       createdByUserId,
       isMyTurn,
       isSwapActive,
+      isViewingRules,
       isWinner,
       authUser,
       computed: {
