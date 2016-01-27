@@ -41,6 +41,7 @@ export function placeTile(tile) {
 export function switchTilePositions(tile1, tile2) {
   return {
     type: SWITCH_TILE_POSITIONS,
+    meta: { sound: 'place_tile' },
     tile1,
     tile2
   }

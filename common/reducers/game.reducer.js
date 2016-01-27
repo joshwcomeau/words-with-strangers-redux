@@ -116,13 +116,13 @@ export default function game(state = initialState, action) {
         .map( tile => tile.delete('x').delete('y'));
 
       // Remove them from the board
-      state = state.set('board', state.get('board').filterNot( isTentative ) );
+      state = state.update( 'board', board => board.filterNot(isTentative) );
 
       // Add them to the rack
-      state = state.set('rack', state.get('rack').concat(tentativeTiles))
+      state = state.update( 'rack', rack => rack.concat(tentativeTiles) );
 
       // Finally, update the 'x' coordinate of all tentative tiles.
-      state = state.set('rack', resetRackTilePosition( state.get('rack') ));
+      state = state.update( 'rack', resetRackTilePosition );
 
       return state;
 

@@ -77,6 +77,7 @@ const gameSelector = createSelector(
       isWinner,
       authUser,
       computed: {
+        isSpectator: isSpectator(players),
         isValidPlacement: validatePlacement(board)
       }
 
@@ -96,6 +97,10 @@ export function isValidPlacement(board) {
   return validatePlacement(board);
 }
 
+// RETURNS: Boolean
+export function isSpectator(players) {
+  return !_.find(players, { currentUser: true })
+}
 
 // RETURNS: An Array of Tile objects
 function addLocationToTiles(state, location) {

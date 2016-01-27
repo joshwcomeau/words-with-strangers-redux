@@ -61,7 +61,8 @@ const Game = React.createClass({
 });
 
 function generateRack(props) {
-  if ( props.status === 'in_progress' ) {
+  console.log(props.computed);
+  if ( props.status === 'in_progress' && !props.computed.isSpectator ) {
     return (
       <TileRack
         tiles={props.rack}
@@ -75,7 +76,7 @@ function generateRack(props) {
 }
 
 function generateControls(props) {
-  if ( props.status === 'in_progress' ) {
+  if ( props.status === 'in_progress' && !props.computed.isSpectator ) {
     return (
       <Controls
         isMyTurn={props.isMyTurn}
