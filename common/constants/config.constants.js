@@ -4,7 +4,7 @@
 // Game constants.
 export const BOARD_SIZE               = 13;
 export const FULL_RACK_SIZE           = 8;
-export const POINTS_TO_WIN            = 10;
+export const POINTS_TO_WIN            = 200;
 
 
 // How many milliseconds should a default flash message display for?

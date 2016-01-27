@@ -493,4 +493,29 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
       100%  { transform: translate(0, -4px); }
     }
   }
+
+  #rules-card {
+    .modal-outer {
+      width: 425px;
+      height: 550px;
+    }
+    .modal-inner {
+      overflow: hidden;
+    }
+
+    h2 {
+      font-size: 3rem;
+      color: $red;
+      font-weight: 700;
+    }
+
+    .rule-image {
+      width: 284px;
+      margin: 1rem 0;
+    }
+
+    p {
+      font-size: 20px;
+    }
+  }
 }

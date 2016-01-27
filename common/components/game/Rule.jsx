@@ -3,8 +3,8 @@ import _ from 'lodash';
 
 const Rule = ({image, text}) => (
   <div className="rule">
-    <div className="rule-image" style={{ backgroundImage: `url('${image}')` }} />
-    <p>{text}</p>
+    <img src={image} className="rule-image" />
+    <p dangerouslySetInnerHTML={{__html: text}}></p>
   </div>
 );
 

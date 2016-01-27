@@ -19,14 +19,14 @@ class RulesCard extends Component {
   generateRules() {
     const rules = [
       {
-        image: 'http://www.vetprofessionals.com/catprofessional/images/home-cat.jpg',
-        text: 'Never stare at the cat'
+        image: 'https://s3.amazonaws.com/wordswithstrangers/rule_1.png',
+        text: "Place tiles and spell words.<br>It's scrabble, but with more randomization."
       }, {
-        image: 'https://i.ytimg.com/vi/tntOCGkgt98/maxresdefault.jpg',
-        text: 'Rolled-up cats are inarguably cuter than unrolled ones.'
+        image: 'https://s3.amazonaws.com/wordswithstrangers/rule_2.png',
+        text: 'Unlucky tiles? Swap them out for better ones.'
       }, {
-        image: 'http://www.atlanticveterinaryhospital.ca/wp-content/uploads/2015/11/cat4.jpg',
-        text: 'This cat is in predator mode. Cute, fluffy predator.'
+        image: 'https://s3.amazonaws.com/wordswithstrangers/rule_3.png',
+        text: 'First to 250 points wins!'
       }
     ]
 
