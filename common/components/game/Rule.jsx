@@ -4,7 +4,7 @@ import _ from 'lodash';
 const Rule = ({image, text}) => (
   <div className="rule">
     <img src={image} className="rule-image" />
-      <p dangerouslySetInnerHTML={{ __html: convertNewlinesToBrs(text) }} />
+    <p dangerouslySetInnerHTML={{ __html: convertNewlinesToBrs(text) }} />
   </div>
 );
 

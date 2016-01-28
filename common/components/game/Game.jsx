@@ -44,7 +44,7 @@ const Game = React.createClass({
         />
         { generateRack(this.props) }
         { generateControls(this.props) }
-        { generateWaiting(this.props)}
+        { generateNotice(this.props)}
         {
           this.props.status === 'completed'
           ? <Results isWinner={this.props.isWinner} />
@@ -61,7 +61,6 @@ const Game = React.createClass({
 });
 
 function generateRack(props) {
-  console.log(props.computed);
   if ( props.status === 'in_progress' && !props.computed.isSpectator ) {
     return (
       <TileRack
@@ -89,11 +88,17 @@ function generateControls(props) {
   }
 }
 
-function generateWaiting(props) {
+function generateNotice(props) {
   if ( props.status === 'waiting' ) {
     return (
-      <div id="waiting">
+      <div id="notice">
         <h2>Waiting for Players...</h2>
+      </div>
+    );
+  } else if ( props.computed.isSpectator ) {
+    return (
+      <div id="notice">
+        <h2>You are a spectator.</h2>
       </div>
     );
   }

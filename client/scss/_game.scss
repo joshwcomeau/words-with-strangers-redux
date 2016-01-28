@@ -465,7 +465,7 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
     }
   }
 
-  #waiting {
+  #notice {
     position: relative;
     padding: $gutter-width*2;
     margin: $gutter-width*2 0;
