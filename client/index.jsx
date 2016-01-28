@@ -1,5 +1,7 @@
 import 'babel-polyfill';
 import 'isomorphic-fetch';
+import 'web-animations-js';
+
 import io                       from 'socket.io-client';
 import React                    from 'react';
 import { render }               from 'react-dom';

@@ -27,7 +27,7 @@ const playersSelector         = state => {
   return state.game.players.map( player => {
     player.points = _.sum( turnsByPlayers[player.id], 'points');
     return player;
-  });
+  }).sort( (p1, p2) => p2.points - p1.points );
 }
 const createdByUserIdSelector = state => state.game.createdByUserId;
 const isMyTurnSelector = state => state.game.isMyTurn;
