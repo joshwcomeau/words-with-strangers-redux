@@ -1,5 +1,6 @@
 import React, { PropTypes, Component }  from 'react';
 import _                                from 'lodash';
+import MagicMove                        from '../../../vendor/react-magic-move';
 
 import Player from './Player.jsx'
 
@@ -28,11 +29,14 @@ class Players extends Component {
   render() {
     return (
       <div className="side-panel-players">
-        {
-          this.props.players.map( player => (
-            <Player key={player.id} {...player} />
-          ))
-        }
+        <MagicMove>
+
+          {
+            this.props.players.map( player => (
+              <Player key={player.id} {...player} />
+            ))
+          }
+        </MagicMove>
       </div>
     );
   }
