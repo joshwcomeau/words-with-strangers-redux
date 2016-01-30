@@ -4,6 +4,7 @@ import * as _                         from 'lodash';
 import classNames                     from 'classnames';
 
 import Tile                           from './Tile.jsx';
+import MagicMove                      from '../../vendor/MagicMove';
 
 
 const rackTarget = {
@@ -64,7 +65,9 @@ class TileRack extends Component {
 
     return connectDropTarget(
       <div id="tile-rack" className={classes}>
-        {this.renderTiles()}
+        <MagicMove>
+          {this.renderTiles()}
+        </MagicMove>
       </div>
     );
   }

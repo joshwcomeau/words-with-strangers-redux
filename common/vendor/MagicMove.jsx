@@ -11,28 +11,38 @@ class MagicMove extends Component {
     React.Children.forEach(this.props.children, child => {
       const virtualNode = this.refs[child.key];
       const domNode     = ReactDOM.findDOMNode(virtualNode);
+      // Get the top/left/right/bottom positions of this element,
+      // and store it in the state.
       const boundingBox = domNode.getBoundingClientRect();
-
-      // Store this bounding box in the state, so that it can be accessed in
-      // `componentDidUpdate`. By conparing the relative positions between the
-      // two, we'll know how the box has to move =)
-      let stateObj      = { [child.key]: boundingBox };
-      this.setState(stateObj);
+      this.setState({ [child.key]: boundingBox });
     });
   }
 
   componentDidUpdate(prevProps) {
+    // If we haven't assigned any keys to state yet, it's the first render.
+    // The first render cannot possibly have any animations. No work needed.
+    if ( !this.state ) return;
+
     React.Children.forEach(this.props.children, child => {
       const virtualNode = this.refs[child.key];
       const domNode     = ReactDOM.findDOMNode(virtualNode);
 
       const newBox = domNode.getBoundingClientRect();
       const oldBox = this.state[child.key];
-      const deltaY = oldBox.top  - newBox.top;
       const deltaX = oldBox.left - newBox.left;
+      const deltaY = oldBox.top  - newBox.top;
 
-      // TODO: animation!
-      // https://aerotwist.com/blog/flip-your-animations/
+      // If the deltas have not changed, no animation is necessary.
+      if ( !deltaX && !deltaY ) return;
+
+      // Ok, so the component is now in a new spot.
+      // Animate it from where it was to where it is.
+      domNode.animate([
+        { transform: `translate(${deltaX}px, ${deltaY}px)`},
+        { transform: 'translate(0,0)'}
+      ], {
+        duration: 150
+      });
 
     });
   }
@@ -44,7 +54,6 @@ class MagicMove extends Component {
   }
 
   render() {
-    console.log('Magic move render', this.state)
     return (
       <div>
         {this.childrenWithRefs()}

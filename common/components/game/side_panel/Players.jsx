@@ -19,7 +19,6 @@ class Players extends Component {
     return (
       <div className="side-panel-players">
         <MagicMove>
-
           {
             this.props.players.map( player => (
               <Player key={player.id} {...player} />
