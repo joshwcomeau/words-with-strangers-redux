@@ -2,9 +2,9 @@ import React, { Component, PropTypes} from 'react';
 import { DropTarget }                 from 'react-dnd';
 import * as _                         from 'lodash';
 import classNames                     from 'classnames';
+import FlipMove                       from 'react-flip-move';
 
 import Tile                           from './Tile.jsx';
-import MagicMove                      from '../../vendor/MagicMove';
 
 
 const rackTarget = {
@@ -65,9 +65,9 @@ class TileRack extends Component {
 
     return connectDropTarget(
       <div id="tile-rack" className={classes}>
-        <MagicMove>
+        <FlipMove duration="200">
           {this.renderTiles()}
-        </MagicMove>
+        </FlipMove>
       </div>
     );
   }

@@ -1,8 +1,9 @@
 import React, { PropTypes, Component }  from 'react';
 import _                                from 'lodash';
-import MagicMove                        from '../../../vendor/MagicMove';
+import FlipMove                         from 'react-flip-move';
 
 import Player from './Player.jsx'
+
 
 class Players extends Component {
   static propTypes = {
@@ -18,13 +19,13 @@ class Players extends Component {
   render() {
     return (
       <div className="side-panel-players">
-        <MagicMove>
+        <FlipMove duration="500">
           {
             this.props.players.map( player => (
               <Player key={player.id} {...player} />
             ))
           }
-        </MagicMove>
+        </FlipMove>
       </div>
     );
   }

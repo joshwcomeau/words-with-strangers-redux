@@ -37,7 +37,7 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
 
   &.draggable { cursor: move; }
 
-  &.is-dragging { opacity: 0; }
+  &.is-dragging { opacity: 0.7; }
 
   &.is-established {
     background: lighten($yellow, 15%);
