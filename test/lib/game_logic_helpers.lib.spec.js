@@ -675,7 +675,23 @@ describe('Game Logic Helpers', () => {
       ];
 
       const points = applyBonuses(tiles, bonuses);
-      expect( points ).to.equal( ( (4*2)+(3*3)+2) * 3 );
+      expect( points ).to.equal( ( (4*2)+(3*3)+2 ) * 3 );
+    });
+
+    it('picks the highest word bonus when multiple are available', () => {
+      const tiles = [
+        { x: 4, y: 4, points: 4 },
+        { x: 4, y: 5, points: 3 },
+        { x: 4, y: 6, points: 2 }
+      ];
+      const bonuses = [
+        { x: 4, y: 4, effect: { wordMultiplier: 2 }},
+        { x: 4, y: 5, effect: { tileMultiplier: 3 }},
+        { x: 4, y: 6, effect: { wordMultiplier: 3 }}
+      ];
+
+      const points = applyBonuses(tiles, bonuses);
+      expect( points ).to.equal( ( 4+(3*3)+2 ) * 3 );
     });
 
     it('handles a single bonus that doubles both letter and word', () => {

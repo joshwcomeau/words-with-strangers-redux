@@ -133,7 +133,7 @@ export function applyBonuses(tiles, bonuses) {
     return memo + tile.points * tileMultiplier;
   }, 0);
 
-  const wordBonus = _.find(bonuses, bonus => bonus.effect.wordMultiplier);
+  const wordBonus = _.maxBy(bonuses, bonus => bonus.effect.wordMultiplier);
   const wordMultiplier = getBonusMultiplier(wordBonus, 'wordMultiplier');
 
   return scoreWithTileBonuses * wordMultiplier;
