@@ -114,7 +114,7 @@ describe('Game model', () => {
       Game.list( (err, games) => {
         expect( err ).not.to.exist;
         expect( games.length ).to.equal(3);
-        expect( _.pluck(games, 'title') ).to.deep.equal(['YES','YES','YES']);
+        expect( _.map(games, 'title') ).to.deep.equal(['YES','YES','YES']);
         done()
       });
     });
@@ -291,7 +291,7 @@ describe('Game model', () => {
       expect(originalPlayerRack).to.have.length.of(FULL_RACK_SIZE);
 
       // We're gonna swap 3 tiles.
-      const tilesToSwap = _.sample(originalPlayerRack, 3);
+      const tilesToSwap = _.sampleSize(originalPlayerRack, 3);
       game.swapTiles(tilesToSwap, player);
 
       expect(game.turns).to.have.length.of(1);
@@ -312,7 +312,7 @@ describe('Game model', () => {
       const originalPlayerRack = _.filter(game.rack, tile => (
         tile.playerId === player.id
       ));
-      const tilesToSwap = _.sample(originalPlayerRack, 3);
+      const tilesToSwap = _.sampleSize(originalPlayerRack, 3);
 
       expect(game.turns).to.have.length.of(1);
 
@@ -369,8 +369,8 @@ describe('Game model', () => {
 
     it('should assure that all coordinates are valid', () => {
       const coords = [].concat(
-        _.pluck(game.bonusSquares, 'x'),
-        _.pluck(game.bonusSquares, 'y')
+        _.map(game.bonusSquares, 'x'),
+        _.map(game.bonusSquares, 'y')
       );
 
       coords.forEach( coord => {
@@ -382,9 +382,9 @@ describe('Game model', () => {
     it('should include a valid effect', () => {
       // Because each tile is generated the same way, it seems like a safe
       // assumption to just test the first one, rather than all 50+.
-      const bonusSquare   = _.first(game.bonusSquares);
+      const bonusSquare   = _.head(game.bonusSquares);
 
-      const validEffects = _.pluck(BonusSquareSchema.statics.validEffects, 'effect');
+      const validEffects = _.map(BonusSquareSchema.statics.validEffects, 'effect');
       const applicableEffect = _.find(validEffects, (validEffect) => {
         const validEffectKey  = _.keys(validEffect)[0];
         const validEffectVal  = _.values(validEffect)[0];
@@ -395,7 +395,7 @@ describe('Game model', () => {
       });
       expect(applicableEffect).to.be.ok;
 
-      const labels = _.pluck(BonusSquareSchema.statics.validEffects, 'label');
+      const labels = _.map(BonusSquareSchema.statics.validEffects, 'label');
       expect(labels).to.include(bonusSquare.label);
     });
   });

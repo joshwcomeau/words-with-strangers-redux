@@ -35,7 +35,7 @@
     "isomorphic-fetch": "^2.2.0",
     "jsonwebtoken": "^5.4.1",
     "jwt-decode": "^1.4.0",
-    "lodash": "^3.10.1",
+    "lodash": "^4.1.0",
     "moment": "^2.10.6",
     "mongoose": "^4.3.3",
     "morgan": "^1.6.1",

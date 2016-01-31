@@ -103,7 +103,7 @@ GameSchema.methods.submitWord = function(tiles, user) {
   });
 
   // 2. Calculate points, and create a new turn
-  const word   = _.pluck( tiles, 'letter' ).join('');
+  const word   = _.map( tiles, 'letter' ).join('');
 
   const points = calculatePointsForTurn( tiles, this.board, this.bonusSquares );
   const turnId = this.turns.length;

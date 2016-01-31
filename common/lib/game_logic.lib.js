@@ -69,7 +69,7 @@ export function validatePlacement(board) {
   if ( isFirstTurn(board) ) return true;
 
   // If the word incorporates established tiles, we're good!
-  if ( _.any(word, isEstablished ) ) return true;
+  if ( _.some(word, isEstablished ) ) return true;
 
   // Otherwise, we need to check for orthogonal established tiles.
   // _ _ I _ _    Turns   _ _ I _ _
@@ -223,7 +223,7 @@ export function calculatePointsForTurn(tiles, board, bonusSquares = []) {
 
     // If there are any established tiles in this orthogonal word,
     // we get the points for it as well!
-    let hasEstablishedTiles = _.any(orthogonalTiles, isEstablished );
+    let hasEstablishedTiles = _.some(orthogonalTiles, isEstablished );
     if ( hasEstablishedTiles ) {
       points += calculatePointsForWord(orthogonalTiles);
     }
@@ -357,7 +357,7 @@ export function findNeighbouringTiles(tile, board) {
 // RETURNS: An integer
 export function getDeltaOfAxis(tiles, axis) {
   const axisPoints = tiles.map( tile => tile[axis]).sort();
-  return _.last(axisPoints) - _.first(axisPoints);
+  return _.last(axisPoints) - _.head(axisPoints);
 }
 
 
@@ -370,7 +370,7 @@ export function wordHasEstablishedNeighbors(word, board) {
 
   let upperNeighbor, upperNeighborCoords, lowerNeighbor, lowerNeighborCoords;
 
-  return _.any(word, tile => {
+  return _.some(word, tile => {
 
     upperNeighborCoords = _.pick(tile, ['x', 'y']);
     lowerNeighborCoords = _.pick(tile, ['x', 'y']);
@@ -406,7 +406,7 @@ export function rewindAndCaptureWord({ activeAxis, tiles, board}) {
 
 
   // First, find the earliest letter.
-  earliestTile = _.first( _.sortBy(tiles, tile => tile[activeAxis]) );
+  earliestTile = _.head( _.sortBy(tiles, tile => tile[activeAxis]) );
 
   // Create a cursor tile that will traverse back away from the earliest
   // letter. It's called a cursor simply because it moves along a row.
@@ -458,7 +458,7 @@ export function rewindAndCaptureWord({ activeAxis, tiles, board}) {
   //     * *       *
 
   const wordContainsAllTiles = _.every(tiles, tile => {
-    return _.findWhere(wordTiles, { id: tile.id });
+    return _.find(wordTiles, { id: tile.id });
   });
   if ( !wordContainsAllTiles ) return null;
 

@@ -178,7 +178,7 @@ export function submitWord(type) {
     const game          = initialState.toJS().game;
     const boardObj      = game.board;
     const wordTiles     = getPlacedWord(boardObj);
-    const word          = _.pluck(wordTiles, 'letter').join('').toLowerCase();
+    const word          = _.map(wordTiles, 'letter').join('').toLowerCase();
     const isValidWord   = validateWord(word);
 
 

@@ -71,7 +71,7 @@ export default function game(state = initialState, action) {
       if ( newTileLocation === 'rack' ) {
         // Check to see if we have a duplicate 'x'
         const rack = state.get('rack').toJS();
-        const xPositions = _.pluck(rack, 'x');
+        const xPositions = _.map(rack, 'x');
 
         // if there's no conflict, we're good!
         if ( xPositions.length === _.uniq(xPositions.length) ) return state;
@@ -146,7 +146,7 @@ export default function game(state = initialState, action) {
       // it sends an UPDATE_GAME_STATE event to the client.
 
       // Figure out what word they're spelling
-      const word    = _.pluck( action.tiles, 'letter').join('');
+      const word    = _.map( action.tiles, 'letter').join('');
       const points  = calculatePointsForTurn(
         action.tiles,
         state.get('board').toJS(),
@@ -260,7 +260,7 @@ function orderTilesByX(tiles) {
 }
 
 function orderAndResetRack(tiles) {
-  return _.compose(resetRackTilePosition, orderTilesByX).call(null, tiles);
+  return _.flowRight(resetRackTilePosition, orderTilesByX).call(null, tiles);
 }
 
 function getCurrentPlayer(state) {

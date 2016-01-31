@@ -56,7 +56,7 @@ function getPointValueForLetter(letter) {
 }
 
 export default function generateTiles(playerId, num = 8) {
-  let letters = _.sample(distributionArray, num)
+  let letters = _.sampleSize(distributionArray, num)
 
   return letters.map( letter => ({
     letter,
