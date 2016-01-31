@@ -21,9 +21,9 @@ export default function configureStore(initialState, sockets = []) {
   middlewares.push( thunkMiddleware );
   middlewares.push( soundsMiddleware(sounds) );
 
-  const createStoreWithMiddleware = applyMiddleware.apply(null, middlewares)(createStore);
-
-  const store = createStoreWithMiddleware(rootReducer, initialState);
-
-  return store
+  return createStore(
+    rootReducer,
+    initialState,
+    applyMiddleware.apply(null, middlewares)
+  );
 }

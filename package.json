@@ -52,7 +52,7 @@
     "react-flip-move": "^0.1.1",
     "react-redux": "^4.0.0",
     "react-router": "^1.0.3",
-    "redux": "^3.0.4",
+    "redux": "^3.1.6",
     "redux-simple-router": "^1.0.1",
     "redux-sounds": "^1.1.0",
     "redux-thunk": "^1.0.0",

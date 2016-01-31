@@ -30,14 +30,14 @@ export default function configureStore(initialState, sockets = []) {
   middlewares.push( soundsMiddleware(sounds) );
   middlewares.push( favicoMiddleware({ animation: 'fade' }) );
 
-  const createStoreWithMiddleware = compose(
-    applyMiddleware.apply(this, middlewares),
-    DevTools.instrument()
-  )(createStore);
-
-  const store = createStoreWithMiddleware(rootReducer, initialState);
-
-
+  const store = createStore(
+    rootReducer,
+    initialState,
+    compose(
+      applyMiddleware.apply(this, middlewares),
+      DevTools.instrument()
+    )
+  );
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
@@ -47,6 +47,7 @@ export default function configureStore(initialState, sockets = []) {
     });
   }
 
+  // Allow direct access to the store, for debugging/testing
   window.__store = store;
 
   return store
