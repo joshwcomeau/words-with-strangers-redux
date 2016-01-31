@@ -3,6 +3,7 @@ import React      from 'react';
 import { expect } from 'chai';
 import sinon      from 'sinon';
 import TestUtils  from 'react-addons-test-utils';
+import FlipMove   from 'react-flip-move';
 
 import Players    from '../../../common/components/game/side_panel/Players.jsx';
 
@@ -23,19 +24,24 @@ describe('Players component', () => {
       expect(shallowDOM.render.bind(null, <Players />)).to.throw();
     });
   });
-  it('sorts players by points', () => {
+  it('renders a FlipMove with players as child props', () => {
+    const tom     = { id: '123', username: 'Tom', points: 5 };
     const dick    = { id: '456', username: 'Dick', points: 12 };
-    const tom     = { id: '123', username: 'Tom', points: 5 }
     const players = [ tom, dick ];
 
     shallowDOM.render(<Players players={players} />);
 
     const component = shallowDOM.getRenderOutput();
 
-    const [ p1, p2 ] = component.props.children;
+    const childFlipMove = component.props.children;
+    expect(childFlipMove.type).to.equal(FlipMove)
 
-    expect(component.props.children).to.have.length.of(2);
-    expect(p1.props).to.deep.equal(dick);
-    expect(p2.props).to.deep.equal(tom);
+    const childPlayers = childFlipMove.props.children;
+
+    const [ p1, p2 ] = childPlayers;
+
+    expect(childPlayers).to.have.length.of(2);
+    expect(p1.props).to.deep.equal(tom);
+    expect(p2.props).to.deep.equal(dick);
   });
 });
