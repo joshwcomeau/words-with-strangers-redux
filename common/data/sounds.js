@@ -1,14 +1,19 @@
 const s3Url = "https://s3.amazonaws.com/wordswithstrangers/sounds";
 
 const sounds = {
-  place_tile:        `${s3Url}/place_tile.mp3`,
-  pick_tile:         {
-    volume: 0.5,
-    urls: [`${s3Url}/pick_tile.mp3`],
-  },
-  game_win:          `${s3Url}/game_win.mp3`,
-  game_lose:         `${s3Url}/game_lose.mp3`,
-  turn_notification: `${s3Url}/turn_notification.mp3`
+  game: {
+    urls: [`${s3Url}/wws_sprite.mp3`],
+    sprite: {
+      pickTile:         [500, 20],
+      placeTile:        [600, 20],
+      turnNotification: [700, 740],
+      win:              [1500, 2500],
+      lose:             [4000, 2450],
+      drawerOpen:       [6500, 600],
+      drawerClose:      [7500, 400],
+      playerEnter:      [8000, 650]
+    }
+  }
 };
 
 export default sounds;

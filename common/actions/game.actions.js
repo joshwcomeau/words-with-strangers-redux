@@ -26,14 +26,14 @@ import {
 export function pickTile() {
   return {
     type: PICK_TILE,
-    meta: { sound: 'pick_tile' }
+    meta: { sound: 'game.pickTile' }
   }
 }
 
 export function placeTile(tile) {
   return {
     type: PLACE_TILE,
-    meta: { sound: 'place_tile' },
+    meta: { sound: 'game.placeTile' },
     tile
   };
 }
@@ -41,7 +41,7 @@ export function placeTile(tile) {
 export function switchTilePositions(tile1, tile2) {
   return {
     type: SWITCH_TILE_POSITIONS,
-    meta: { sound: 'place_tile' },
+    meta: { sound: 'game.placeTile' },
     tile1,
     tile2
   }
@@ -141,7 +141,7 @@ export function updateGameState(game) {
     if ( game.status === 'completed' ) {
       const currentUser = _.find(game.players, { currentUser: true });
       const winner      = currentUser.id === game.winnerUserId;
-      const sound       = winner ? 'game_win' : 'game_lose';
+      const sound       = winner ? 'game.win' : 'game.lose';
       action.meta = {
         favico: 'increment',
         sound
@@ -153,7 +153,7 @@ export function updateGameState(game) {
       if ( (wasMyTurn === false) && (isMyTurn === true) ) {
         action.meta = {
           favico: 'increment',
-          sound: 'turn_notification'
+          sound: 'game.turnNotification'
         };
       }
     }
