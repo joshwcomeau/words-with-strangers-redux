@@ -6,10 +6,13 @@ import { POINTS_TO_WIN } from '../../../constants/config.constants';
 // Can't make this guy a stateless functional component because MagicMove
 // needs to use its refs.
 class Player extends Component {
+  calculateProgressStyle() {
+    // Using transform:scale instead of width, for 60+fps goodness.
+    const scale = (this.props.points / POINTS_TO_WIN);
+    return { transform: `scaleX(${scale})` };
+  }
   render() {
     const { username, profilePhoto, points } = this.props;
-    const percentage = Math.round((points / POINTS_TO_WIN) * 100);
-    const styles = { width: percentage+"%" }
 
     return (
       <div className="side-panel-player">
@@ -18,7 +21,7 @@ class Player extends Component {
           <div className="username">{username}</div>
           <div className="points">{points}</div>
         </div>
-        <div className="player-progress" style={styles} />
+        <div className="player-progress" style={this.calculateProgressStyle()} />
       </div>
     );
   }

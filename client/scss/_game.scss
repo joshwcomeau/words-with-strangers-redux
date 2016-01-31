@@ -215,10 +215,10 @@ $game-width: $board-width + ( $gutter-width * 2 ) + $side-panel-width;
           left: 0;
           bottom: -1px;
           background: $green;
-          width: 0;
-          max-width: 105%;
+          width: 100%;
           border-bottom: 1px solid rgba(255,255,255,0.2);
           transition: 2s;
+          transform-origin: left;
         }
 
         .avatar {
