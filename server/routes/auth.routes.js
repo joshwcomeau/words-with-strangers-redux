@@ -1,22 +1,28 @@
 // Authentication routes.
 // Deals with registration, login, logout.
-import nconf          from 'nconf';
-import * as _         from 'lodash';
+import nconf            from 'nconf';
+import * as _           from 'lodash';
 
-import jwt            from 'jsonwebtoken';
-import passport       from 'passport';
-import passportLocal  from 'passport-local';
-import passportJwt    from 'passport-jwt';
+import jwt              from 'jsonwebtoken';
+import passport         from 'passport';
+import passportLocal    from 'passport-local';
+import passportJwt      from 'passport-jwt';
+import passportTwitter  from 'passport-twitter';
 
-import User           from '../models/user.model';
+import User             from '../models/user.model';
 
 
 export default function(app) {
   app.use(passport.initialize());
-  const LocalStrategy = passportLocal.Strategy;
-  const JwtStrategy   = passportJwt.Strategy;
-  const jwtOptions    = { secretOrKey: nconf.get('JWT_SECRET') };
+  const LocalStrategy   = passportLocal.Strategy;
+  const JwtStrategy     = passportJwt.Strategy;
+  const TwitterStrategy = passportTwitter.Strategy;
+  const jwtOptions      = { secretOrKey: nconf.get('JWT_SECRET') };
 
+
+  // ============
+  // JWT ========
+  // ============
   passport.use(new JwtStrategy(jwtOptions, (jwtPayload, done) => {
     User.findById(jwtPayload.id, (err, user) => {
       if (err)    return done(err, false);
@@ -25,6 +31,30 @@ export default function(app) {
     });
   }));
 
+  // ============
+  // TWITTER ====
+  // ============
+  passport.use(new TwitterStrategy({
+    consumerKey:      nconf.get('TWITTER_API_KEY'),
+    consumerSecret:   nconf.get('TWITTER_API_SECRET'),
+    callbackURL:      nconf.get('TWITTER_CALLBACK')
+  }, (token, tokenSecret, profile, done) => {
+    process.nextTick( () => {
+      User.findOne({ twitterId: profile.id }, (err, user) => {
+        if (err) return done(err);
+
+        if ( user ) {
+          // We successfully authenticated!
+          // TODO: Move this to middleware.
+          const userJson = _.pick(user.toJSON(), ['id', 'username', 'profilePhoto']);
+
+          const token = jwt.sign(userJson, nconf.get('JWT_SECRET'));
+
+          return res.json({ token });
+        }
+      })
+    })
+  }));
 
   app.post('/api/authenticate', (req, res) => {
     User.findOne({

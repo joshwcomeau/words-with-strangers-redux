@@ -10,6 +10,8 @@ import {
 
 const UserSchema = new mongoose.Schema({
   username:     { type: String, required: true, unique: true },
+  twitterId:    { type: String },
+  googleId:     { type: String },
   password:     { type: String },
   profilePhoto: { type: String }
 });
