@@ -127,6 +127,8 @@ export function updateGameState(game) {
     // turn, and in this case we want to play a sound effect to notify the
     // player that it's their turn now.
     //
+    // It could be a new player entering the game.
+    //
     // This could also be the notification that I've won or lost the game.
     // This event also requires a sound.
     //
@@ -137,8 +139,14 @@ export function updateGameState(game) {
       game
     };
 
+    // If a new player just joined the game, play the sound
+    if ( game.players.length > getState().toJS().game.players.length ) {
+      action.meta = {
+        sound: 'game.playerEnter'
+      };
+    }
     // If the game is over, play the appropriate win/lose chime.
-    if ( game.status === 'completed' ) {
+    else if ( game.status === 'completed' ) {
       const currentUser = _.find(game.players, { currentUser: true });
       const winner      = currentUser.id === game.winnerUserId;
       const sound       = winner ? 'game.win' : 'game.lose';
