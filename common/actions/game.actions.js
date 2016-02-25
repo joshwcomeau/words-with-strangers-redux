@@ -68,7 +68,8 @@ export function passTurn(gameId) {
       type: PASS_TURN,
       meta: {
         favico: 'reset',
-        remote: '/game'
+        remote: '/game',
+        sound: 'game.completeTurn'
       },
       gameId
     });
@@ -102,7 +103,8 @@ export function submitSwappedTiles() {
       type: SUBMIT_SWAPPED_TILES,
       meta: {
         favico: 'reset',
-        remote: '/game'
+        remote: '/game',
+        sound: 'game.completeTurn'
       },
       tiles,
       gameId
@@ -202,7 +204,8 @@ export function submitWord(type) {
       type: SUBMIT_WORD,
       meta: {
         favico: 'reset',
-        remote: '/game'
+        remote: '/game',
+        sound: 'game.completeTurn'
       },
       tiles: wordTiles,
       gameId: game.id

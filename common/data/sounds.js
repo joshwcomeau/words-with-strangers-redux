@@ -11,7 +11,8 @@ const sounds = {
       lose:             [4000, 2450],
       drawerOpen:       [6500, 600],
       drawerClose:      [7500, 400],
-      playerEnter:      [8000, 650]
+      playerEnter:      [8000, 650],
+      completeTurn:     [8650, 800]
     }
   }
 };
