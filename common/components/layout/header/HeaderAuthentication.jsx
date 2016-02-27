@@ -60,17 +60,6 @@ const HeaderAuthentication = React.createClass({
               {this.props.error ? this.showError() : null}
               <button className="button tori-login">Sign In</button>
             </form>
-            <div className="divider" data-text="or"></div>
-            <div className="oauth-buttons">
-              <button className="button twitter">
-                <i className="fa fa-twitter"></i>
-                Sign In With Twitter
-              </button>
-              <button className="button google">
-                <i className="fa fa-google-plus"></i>
-                Sign In With Google
-              </button>
-            </div>
             <div className="divider" data-text="Don't have an account?"></div>
             <Link
               to="/register"

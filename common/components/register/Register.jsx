@@ -84,7 +84,7 @@ const Register = React.createClass({
                   maxLength: 50
                 }}
                 validationErrors={{
-                  minLength: "Gotta be at least 8 characters. Don't be so hackable!",
+                  minLength: "Gotta be at least 8 characters.",
                   maxLength: "Woah there, cowboy. Password length is limited to 50 characters."
                 }}
                 required
