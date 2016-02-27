@@ -4,6 +4,8 @@
 
 [![build status](https://travis-ci.org/joshwcomeau/words-with-strangers-redux.svg)](https://travis-ci.org/joshwcomeau/words-with-strangers-redux)
 
+## [Play now!](http://wordswithstrangers.ca/)
+
 
 After building a Scrabble clone with React and Meteor, I decided to take the training wheels off and give it a try with a home-grown stack, with Redux as my state manager (primarily on the client, but it sets up initial state on the server), React as my presentation layer, and Socket.io to handle most communication across the app.
 
