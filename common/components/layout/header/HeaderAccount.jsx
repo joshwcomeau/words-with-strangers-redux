@@ -19,10 +19,9 @@ const HeaderAccount = React.createClass({
       <div className={this.isActive() ? '' : 'hide'}>
         <div className="dropdown-menu-blocker account-menu-blocker" onClick={this.toggleMenu}></div>
           <div className="dropdown-menu account-menu right-arrow">
-            <Link to={`/profile/${this.props.user.username}`} className="profile-link">
+            <a className="profile-link">
               <strong>{this.props.user.username}</strong><br />
-              <span>View My Profile</span>
-            </Link>
+            </a>
             <a className="log-out-link" onClick={this.props.logout}>
               Log Out
             </a>
