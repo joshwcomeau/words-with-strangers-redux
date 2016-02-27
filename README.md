@@ -7,6 +7,7 @@
 ## [Play now!](http://wordswithstrangers.ca/)
 
 
+## Introduction
 After building a Scrabble clone with React and Meteor, I decided to take the training wheels off and give it a try with a home-grown stack, with Redux as my state manager (primarily on the client, but it sets up initial state on the server), React as my presentation layer, and Socket.io to handle most communication across the app.
 
 There have been a lot of hard problems along the way, and certain areas are in dire need of some cleanup, but I've learned a lot and I'm hoping some of the solutions found can help others working with a similar stack.
