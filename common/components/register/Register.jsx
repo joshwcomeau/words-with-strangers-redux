@@ -50,16 +50,6 @@ const Register = React.createClass({
             <h3>The world's shortest signup form.</h3>
           </div>
           <div className="card-body">
-            <button className="button twitter">
-              <i className="fa fa-twitter"></i>
-              Sign Up With Twitter
-            </button>
-            <button className="button google">
-              <i className="fa fa-google-plus"></i>
-              Sign Up With Google
-            </button>
-
-            <div className="divider" data-text="Or"></div>
             <Formsy.Form
               ref={ ref => this.form = ref }
               onValidSubmit={this.submit}
