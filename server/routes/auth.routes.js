@@ -88,8 +88,12 @@ export default function(app) {
 
   app.post('/api/register', (req, res) => {
     // TODO: Validations
-    const selectedAnimalNum = _.random(1, 3);
-    const animalPhotoUrl    = `https://s3.amazonaws.com/wordswithstrangers/animal-0${selectedAnimalNum}.png`
+    let selectedAnimalNum = _.random(1, 20);
+
+    // Make it zero-padded
+    if ( selectedAnimalNum < 10 ) selectedAnimalNum = `0${selectedAnimalNum}`;
+
+    const animalPhotoUrl    = `https://s3.amazonaws.com/wordswithstrangers/animal-${selectedAnimalNum}.png`
 
     const user = new User({
       username:     req.body.username,
