@@ -2,6 +2,7 @@
 ### An experiment with universal React, Redux and Socket.io.
 ##### Also featuring immutable.js, ES6, react-dnd, redux-simple-router and more.
 
+[![build status](https://travis-ci.org/joshwcomeau/words-with-strangers-redux.svg)](https://travis-ci.org/joshwcomeau/words-with-strangers-redux)
 
 
 After building a Scrabble clone with React and Meteor, I decided to take the training wheels off and give it a try with a home-grown stack, with Redux as my state manager (primarily on the client, but it sets up initial state on the server), React as my presentation layer, and Socket.io to handle most communication across the app.
@@ -124,6 +125,6 @@ switch (action.type) {
 
 This app has so-so coverage of reducers, custom game logic, and server models. Uses mocha as a test runner and Chai for assertions (using Expect).
 
-Tests can be run with NPM: `npm test`.
+Tests can be run with NPM: `npm run test`.
 
 Specific files can be tested by passing in filenames: `npm test **/game.reducer*`. Or, you can use `describe.only` and `describe.except`.
