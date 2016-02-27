@@ -25,7 +25,7 @@ const HeaderAuthentication = React.createClass({
 
   showError() {
     return (
-      <div className="error">{this.props.error.details}</div>
+      <div className="error-message">{this.props.error.details}</div>
     );
   },
 
