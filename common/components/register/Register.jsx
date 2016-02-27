@@ -11,13 +11,18 @@ const Register = React.createClass({
     if ( nextProps.error ) {
       let errors = {};
 
+      console.log(nextProps.error)
+
       switch(nextProps.error.type) {
         case 'duplicate_username':
-          errors = {username: 'Sorry, someone else has already taken that username. What a jerk.'}
+          errors = {username: 'Sorry, someone else has already taken that username. What a jerk.'};
+          break;
         case 'reserved_username':
-          errors = {username: 'Sorry, that username is a reserved word =('}
+          errors = {username: 'Sorry, that username is a reserved word =('};
+          break;
         default:
-          errors = {username: 'Oh no! A miscellaneous server error has occured.'}
+          errors = {username: 'Oh no! A miscellaneous server error has occured.'};
+          break;
       }
 
       this.form.updateInputsWithError(errors);
@@ -43,8 +48,6 @@ const Register = React.createClass({
     return (
       <div id="register">
         <div className="card">
-
-          { /* Step 1 - Auth info like email/pass, or Oauth verification */ }
           <div className="card-header">
             <h1>Registration</h1>
             <h3>The world's shortest signup form.</h3>
