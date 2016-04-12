@@ -55,7 +55,7 @@
     "react-dnd": "^2.0.2",
     "react-dnd-html5-backend": "^2.0.0",
     "react-dom": "^0.14.3",
-    "react-flip-move": "1.0.5",
+    "react-flip-move": "2.0.0-beta3",
     "react-redux": "^4.0.0",
     "react-router": "^1.0.3",
     "redux": "^3.1.6",
